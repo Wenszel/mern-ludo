@@ -1,9 +1,10 @@
 import './App.css';
+import NameInput from './components/NameInput';
 
 function App() {
   return (
     <div>
-      Hello World!
+      <NameInput></NameInput>
     </div>
   );
 }
