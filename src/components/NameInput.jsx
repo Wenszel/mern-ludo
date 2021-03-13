@@ -1,23 +1,14 @@
 import React, { useState } from 'react';
-const NameInput = ()=>{
+import axios from 'axios';
+
+const NameInput = () => {
     const [inputValue, setInputValue] = useState('');
     const handleInputChange = (e) => {
         setInputValue(e.target.value);
     }
+
     const handleButtonClick = () => {
-        const request = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name: inputValue })
-        };
-        fetch('localhost:3000/room/add', request)
-        .then(response => {
-            if(response.status == 200){
-                //redirect
-            }else{
-                //error
-            }
-        });
+        axios.post('http://localhost:3000/room/add')
     }
     return(
         <div>
