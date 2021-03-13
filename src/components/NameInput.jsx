@@ -10,7 +10,7 @@ const NameInput = ()=>{
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name: inputValue })
         };
-        fetch('localhost:3000/adduser', request)
+        fetch('localhost:3000/room/add', request)
         .then(response => {
             if(response.status == 200){
                 //redirect
@@ -21,7 +21,7 @@ const NameInput = ()=>{
     }
     return(
         <div>
-            <input placeholder = "Podaj swoje imię" type="text" onChange={handleInputChange}/>
+            <input placeholder = "Enter name" type="text" onChange={handleInputChange}/>
             <input type="submit" onClick={handleButtonClick}/>
         </div>
     )

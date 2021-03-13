@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
 
-var GameRoomSchema = new Schema({
+var RoomSchema = new Schema({
     id: Number,
     createDate: Date,
     started: Boolean,
@@ -10,4 +10,4 @@ var GameRoomSchema = new Schema({
     positions: Map
 });
 
-var GameRoomModel = mongoose.model('GameRoomModel', GameRoomSchema );
+var RoomModel = mongoose.model('RoomModel', RoomSchema );
