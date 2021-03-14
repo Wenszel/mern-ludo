@@ -8,7 +8,11 @@ const NameInput = () => {
     }
 
     const handleButtonClick = () => {
-        axios.post('http://localhost:3000/room/add')
+        axios.post('http://localhost:3000/room/add',{
+            name: inputValue
+        },{
+            "Content-Type": "application/json" 
+        })
     }
     return(
         <div>

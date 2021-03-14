@@ -3,9 +3,9 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var RoomSchema = new Schema({
-    id: Number,
     createDate: Date,
     started: Boolean,
+    full: Boolean,
     players: Array,
     positions: Map
 });
