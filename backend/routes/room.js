@@ -5,6 +5,7 @@ var RoomModel = require('../schemas/room');
 
 //creating new room in db
 router.post('/add', async function (req, res) {
+    let id;
     RoomModel.findOne( { full: false, started: false }, function (err, results) {
         if (err) { 
             console.log(err);
@@ -17,10 +18,10 @@ router.post('/add', async function (req, res) {
                 players: [req.body.name],
             });
             newRoom.save()
-                .then(() => res.status(200).json('Added new room'))
-                .catch(err => res.status(400).json('Error: ' + err));
-        }else {
-            
+                .then(()=>{res.send({id: results._id}); })
+                .catch(err => res.status(400).json('Error: ' + err))
+                
+        }else {      
             let players = results.players;
             players.push(req.body.name);
             let updateObj = {
@@ -39,9 +40,11 @@ router.post('/add', async function (req, res) {
                     } 
                 }
             );
-            
+            res.send({id: results._id}); 
         }
+        
     });
+    
 });
 
 //deleting room after game ends

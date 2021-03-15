@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const NameInput = () => {
+const NameInput = ({ idCallback }) => {
     const [inputValue, setInputValue] = useState('');
     const handleInputChange = (e) => {
         setInputValue(e.target.value);
@@ -12,6 +12,9 @@ const NameInput = () => {
             name: inputValue
         },{
             "Content-Type": "application/json" 
+        })
+        .then(response => {
+            idCallback(response.data.id);
         })
     }
     return(
