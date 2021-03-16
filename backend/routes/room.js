@@ -4,8 +4,8 @@ var router = express.Router();
 var RoomModel = require('../schemas/room');
 
 //creating new room in db
-router.post('/add', async function (req, res) {
-    let id;
+router.post('/add', function (req, res) {
+    console.log(req.session);
     RoomModel.findOne( { full: false, started: false }, function (err, results) {
         if (err) { 
             console.log(err);
@@ -18,7 +18,12 @@ router.post('/add', async function (req, res) {
                 players: [req.body.name],
             });
             newRoom.save()
-                .then(()=>{res.send({id: results._id}); })
+                .then( async function(){
+                        req.session.roomId = newRoom._id;
+                        req.session.player = req.body.name;
+                    
+                    res.send({id: newRoom._id}); 
+                })
                 .catch(err => res.status(400).json('Error: ' + err))
                 
         }else {      
@@ -36,11 +41,21 @@ router.post('/add', async function (req, res) {
                         console.log(err) 
                     } 
                     else{ 
+                        req.session.roomId = results._id;
+                req.session.player = req.body.name;
                         console.log("Updated Docs : ", docs); 
                     } 
                 }
-            );
-            res.send({id: results._id}); 
+            ).then(()=>{
+                req.session.roomId = results._id;
+                req.session.player = req.body.name;
+                console.log(req.session);
+                res.send({
+                    id: results._id,
+                    player: req.session.player
+                }); 
+            });
+            
         }
         
     });
