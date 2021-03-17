@@ -11,6 +11,7 @@ const NameInput = ({ idCallback }) => {
         axios.post('http://localhost:3000/room/add',{
             name: inputValue
         },{
+            withCredentials:true,
             "Content-Type": "application/json" 
         })
         .then(response => {

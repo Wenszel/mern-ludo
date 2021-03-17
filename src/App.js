@@ -5,8 +5,8 @@ import NameInput from './components/NameInput';
 
 function App() {
   useEffect(()=>{
-    axios.post('http://localhost:3000', {
-      credentials: 'include',
+    axios.get('http://localhost:3000', {
+      withCredentials:true,
       mode: 'cors'
     })
     .then((response)=> response.id!=null ? setRedirect(true): null);
@@ -16,8 +16,8 @@ function App() {
   const idCallback = (id)=>{
     setId(id);
     
-    axios.post('http://localhost:3000', {
-      credentials: 'include',
+    axios.get('http://localhost:3000', {
+      withCredentials:true,
       mode: 'cors',
       headers: { "Content-Type": "application/json" },
     })

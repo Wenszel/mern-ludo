@@ -21,17 +21,6 @@ app.use(cors({
 }))
 const PORT = 3000|| process.env.PORT;
 
-//SESSION CONFIG
-app.use(session({
-  secret: 'lalala',
-  resave: false,
-  saveUninitialized: true,
-  cookie: { 
-    httpOnly: false,
-    secure: false,},
-}));
-
-
 //DATABASE CONFIG
 const mongoose = require("mongoose");
 const CONNECTION_URI = require("./credentials.js").MONGODB_URL;
@@ -44,13 +33,33 @@ mongoose.connect(CONNECTION_URI, {
     console.log('MongoDB Connected…');
   })
 .catch(err => console.error(err));
+//SESSION CONFIG]
+var MongoDBStore = require('connect-mongodb-session')(session);
+var store = new MongoDBStore({
+  uri: CONNECTION_URI,
+  collection: 'mySessions'
+});
+app.use(session({
+  secret: 'lalala',
+  resave: true,
+  saveUninitialized: false,
+  store: store,
+  cookie: { 
+    httpOnly: false,
+    secure: false,},
+}));
 
 //ROUTES CONFIG
 const roomRoutes = require("./routes/room");
 const playerRoutes = require("./routes/player");
 
-app.post('/', (req,res)=>{
-  res.send("ok");
+app.get('/', (req,res)=>{
+  if(req.session.player){
+    res.json({
+      player: req.session.player,
+      roomId: req.session.roomId,
+    })
+  }
 })
 
 app.use('/player', playerRoutes);
