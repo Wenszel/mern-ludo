@@ -6,7 +6,10 @@ var RoomSchema = new Schema({
     createDate: Date,
     started: Boolean,
     full: Boolean,
-    players: Array,
+    players: [{
+        player: String,
+        color: String,
+    }],
     positions: Map
 });
 

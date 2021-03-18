@@ -3,6 +3,8 @@ var router = express.Router();
 
 var RoomModel = require('../schemas/room');
 
+var colors = ['red','blue','green','yellow'];
+
 //creating new room in db
 router.post('/add', function (req, res) {
     console.log(req.session);
@@ -15,45 +17,48 @@ router.post('/add', function (req, res) {
                 createDate: new Date,
                 full: false,
                 started: false,
-                players: [req.body.name],
+                players: [{
+                    player: req.body.name,
+                    color: colors[0]
+                }],
             });
             newRoom.save()
-                .then( async function(){
+                .then(function(){
                         req.session.roomId = newRoom._id;
                         req.session.player = req.body.name;
                     
-                    res.send({id: newRoom._id}); 
+                    res.status(200).send('Joined!'); 
                 })
                 .catch(err => res.status(400).json('Error: ' + err))
                 
         }else {      
             let players = results.players;
-            players.push(req.body.name);
+            players.push(
+                {
+                    player: req.body.name,
+                    color: colors[players.length]
+                }
+                
+                );
             let updateObj = {
                 players: players,
             }
             players.length === 4 ? updateObj.full = true : updateObj.full = false;
             RoomModel.findOneAndUpdate(
-                { _id: results._id }, 
-                updateObj,
+                { _id: results._id }, //find room by id
+                updateObj,  
                 function (err, docs) { 
                     if (err){ 
                         console.log(err) 
                     } 
                     else{ 
-                        req.session.roomId = results._id;
-                req.session.player = req.body.name;
                         console.log("Updated Docs : ", docs); 
                     } 
                 }
             ).then(()=>{
                 req.session.roomId = results._id;
                 req.session.player = req.body.name;
-                console.log(req.session);
-                res.send({
-                    id: results._id,
-                    player: req.session.player
-                }); 
+                res.status(200).send('Joined!'); 
             });
             
         }
@@ -74,7 +79,18 @@ router.put('/edit', function(req,res){
 
 //get room values
 router.get('/', function(req,res){
-
+    RoomModel.findOne(
+        { _id: req.session.roomId }, //find room by id
+        function (err, docs) { 
+            if (err){ 
+                console.log(err) 
+            } 
+            else{ 
+                console.log(docs)
+                res.send({ players: docs.players}); 
+            } 
+        }
+    )
 });
 
 module.exports = router;

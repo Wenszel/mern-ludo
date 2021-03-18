@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { BrowserRouter as Router , Redirect } from 'react-router-dom';
+import { BrowserRouter as Router , Route , Redirect, Switch } from 'react-router-dom';
+
+import Navbar from './components/Navbar'
 import NameInput from './components/NameInput';
 
 function App() {
@@ -9,7 +11,7 @@ function App() {
       withCredentials:true,
       mode: 'cors'
     })
-    .then((response)=> response.id!=null ? setRedirect(true): null);
+    .then((response)=> response.id!=null ? setRedirect(true) : null);
   })
   const [id, setId] = useState('')
   const [redirect, setRedirect] = useState(false)
@@ -26,6 +28,11 @@ function App() {
   return (
     <Router>
       {redirect ?  <Redirect to="/game"></Redirect> : <NameInput idCallback = {idCallback}/>}
+      <Switch>
+          <Route path="/game">
+            <Navbar></Navbar>
+          </Route>
+        </Switch>
     </Router>
   );
 }

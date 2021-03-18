@@ -55,7 +55,7 @@ const playerRoutes = require("./routes/player");
 
 app.get('/', (req,res)=>{
   if(req.session.player){
-    res.json({
+    res.send({
       player: req.session.player,
       roomId: req.session.roomId,
     })
