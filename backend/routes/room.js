@@ -18,15 +18,15 @@ router.post('/add', function (req, res) {
                 full: false,
                 started: false,
                 players: [{
-                    player: req.body.name,
+                    name: req.body.name,
+                    ready: false,
                     color: colors[0]
                 }],
             });
             newRoom.save()
                 .then(function(){
                         req.session.roomId = newRoom._id;
-                        req.session.player = req.body.name;
-                    
+                        req.session.name = req.body.name;
                     res.status(200).send('Joined!'); 
                 })
                 .catch(err => res.status(400).json('Error: ' + err))
@@ -35,7 +35,8 @@ router.post('/add', function (req, res) {
             let players = results.players;
             players.push(
                 {
-                    player: req.body.name,
+                    name: req.body.name,
+                    ready: false,
                     color: colors[players.length]
                 }
                 
@@ -57,7 +58,7 @@ router.post('/add', function (req, res) {
                 }
             ).then(()=>{
                 req.session.roomId = results._id;
-                req.session.player = req.body.name;
+                req.session.name = req.body.name;
                 res.status(200).send('Joined!'); 
             });
             

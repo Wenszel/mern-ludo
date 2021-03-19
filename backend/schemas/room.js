@@ -7,8 +7,9 @@ var RoomSchema = new Schema({
     started: Boolean,
     full: Boolean,
     players: [{
-        player: String,
+        name: String,
         color: String,
+        ready: Boolean,
     }],
     positions: Map
 });

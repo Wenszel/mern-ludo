@@ -37,7 +37,7 @@ mongoose.connect(CONNECTION_URI, {
 var MongoDBStore = require('connect-mongodb-session')(session);
 var store = new MongoDBStore({
   uri: CONNECTION_URI,
-  collection: 'mySessions'
+  collection: 'sessions'
 });
 app.use(session({
   secret: 'lalala',
@@ -56,9 +56,11 @@ const playerRoutes = require("./routes/player");
 app.get('/', (req,res)=>{
   if(req.session.player){
     res.send({
-      player: req.session.player,
+      name: req.session.name,
       roomId: req.session.roomId,
     })
+  }else{
+    res.end();
   }
 })
 
