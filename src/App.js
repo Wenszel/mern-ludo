@@ -9,19 +9,20 @@ import Navbar from './components/Navbar'
 import NameInput from './components/NameInput';
 
 function App() {
-  useEffect(()=>{
+
+  const [id, setId] = useState('')
+  const [redirect, setRedirect] = useState()
+
+  useEffect(() => {
     axios.get('http://localhost:3000', {
       withCredentials:true,
       mode: 'cors'
     })
     .then( response => {
-      response.data.roomId!=null ? setRedirect(true) : setRedirect(false)
+      response.data.roomId!=null ? setRedirect(true) : setRedirect(false);
     });
   })
 
-  const [id, setId] = useState('')
-  const [redirect, setRedirect] = useState(false)
-  
   const handleExit = e => {
     e.preventDefault();
     window.addEventListener('unload', () => {
@@ -39,11 +40,15 @@ function App() {
     })
     .then(()=> setRedirect(true))
   }
+
   return (
     <Router>
-      {redirect ?  <Redirect to="/game"/> : <Redirect to="/"/>}
+      {redirect ?  <Redirect to="/game"/> : <Redirect to="/login"/>}
       <Switch>
-          <Route exact path="/">
+        <Route exact path = "/">
+          LOADING...
+        </Route>
+          <Route path="/login">
             <NameInput idCallback = {idCallback}/>
           </Route>
           <Route path="/game">

@@ -57,6 +57,7 @@ app.get('/', (req,res)=>{
   if(req.session.name){
     res.send({
       name: req.session.name,
+      playerId: req.session.playerId,
       roomId: req.session.roomId,
     })
   }else{

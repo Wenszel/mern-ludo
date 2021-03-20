@@ -25,26 +25,27 @@ router.post('/add', function (req, res) {
             });
             newRoom.save()
                 .then(function(){
-                        req.session.roomId = newRoom._id;
-                        req.session.name = req.body.name;
+                    req.session.roomId = newRoom._id;
+                    req.session.playerId = newRoom.players[0]._id;
+                    req.session.name = req.body.name;
                     res.status(200).send('Joined!'); 
                 })
                 .catch(err => res.status(400).json('Error: ' + err))
                 
         }else {      
             let players = results.players;
-            players.push(
-                {
+            players.push({
                     name: req.body.name,
                     ready: false,
                     color: colors[players.length]
-                }
-                
-                );
+            });
+
             let updateObj = {
                 players: players,
             }
+
             players.length === 4 ? updateObj.full = true : updateObj.full = false;
+            
             RoomModel.findOneAndUpdate(
                 { _id: results._id }, //find room by id
                 updateObj,  
@@ -58,12 +59,11 @@ router.post('/add', function (req, res) {
                 }
             ).then(()=>{
                 req.session.roomId = results._id;
+                req.session.playerId = results.players[results.players.lenght - 1]._id;
                 req.session.name = req.body.name;
                 res.status(200).send('Joined!'); 
-            });
-            
-        }
-        
+            });    
+        } 
     });
     
 });

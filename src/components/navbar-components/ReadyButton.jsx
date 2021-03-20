@@ -1,18 +1,21 @@
 import React, { useState } from 'react';
+import Switch from '@material-ui/core/Switch';
 import axios from 'axios';
-const ReadyButton = ( {ready} ) => {
-    const [checked, setChecked] = useState(ready);
+
+const ReadyButton = () => {
+
+    const [checked, setChecked] = useState(false)
 
     const handleCheckboxChange = () => {
         axios.post('http://localhost:3000/player/ready',{},{withCredentials: true});
-        setChecked(state => state = !checked);
+        setChecked(!checked);
     }
     
     return(
-    <>
+    <div>
         <label>Ready: </label>
-        <input type="checkbox" onClick={handleCheckboxChange} checked={checked}/>
-    </>
+        <Switch onClick={handleCheckboxChange} checked={checked}/>
+    </div>
     )
 
 }

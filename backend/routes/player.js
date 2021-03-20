@@ -8,8 +8,11 @@ router.post('/ready', function (req, res){
         if (err) {
             res.status(500).send(err)
         } else {
+            //finds player by id and changes ready state
             let updatedPlayers = doc.players;
-            let index = updatedPlayers.findIndex( player => player.name === req.session.name);
+            let index = updatedPlayers.findIndex( 
+                player => (player._id).toString() == (req.session.playerId).toString()
+            );
             updatedPlayers[index].ready = !updatedPlayers[index].ready;
             RoomModel.findOneAndUpdate({
                 _id: req.session.roomId
