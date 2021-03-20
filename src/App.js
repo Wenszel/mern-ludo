@@ -14,7 +14,7 @@ function App() {
   const [redirect, setRedirect] = useState()
 
   useEffect(() => {
-    axios.get('http://localhost:3000', {
+    axios.get('http://localhost:3000/player', {
       withCredentials:true,
       mode: 'cors'
     })
@@ -33,7 +33,7 @@ function App() {
   const idCallback = (id)=>{
     setId(id);
     
-    axios.get('http://localhost:3000', {
+    axios.get('http://localhost:3000/player/', {
       withCredentials:true,
       mode: 'cors',
       headers: { "Content-Type": "application/json" },

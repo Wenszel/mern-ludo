@@ -12,9 +12,9 @@ const ReadyButton = () => {
     }
     
     return(
-    <div>
-        <label>Ready: </label>
+    <div className="ready-container"> 
         <Switch onClick={handleCheckboxChange} checked={checked}/>
+        <label>{checked ? 'I want to play' : 'Im waiting' }</label>
     </div>
     )
 

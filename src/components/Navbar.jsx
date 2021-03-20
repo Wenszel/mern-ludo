@@ -6,9 +6,8 @@ import axios from 'axios';
 const Navbar = () => {
     
     const [players, setPlayers] = useState([]);
-
-    useEffect(()=>{
-        //fetching players data 
+    //fetching players data to display them in navbar
+    const fetchData = () => {
         axios.get('http://localhost:3000/room/',{
             withCredentials:true,
             mode: 'cors',
@@ -16,11 +15,14 @@ const Navbar = () => {
             while(response.data.players.length !== 4){
                 response.data.players.push({
                     name: "...",
-                    color: "grey"
                 })
             }
             setPlayers(response.data.players);
         })
+    }
+    useEffect(()=>{
+        //sending ajax every 3 sec 
+        setInterval(fetchData, 3000);
     },[]);
 
     return(

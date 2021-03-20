@@ -33,6 +33,7 @@ mongoose.connect(CONNECTION_URI, {
     console.log('MongoDB Connected…');
   })
 .catch(err => console.error(err));
+
 //SESSION CONFIG]
 var MongoDBStore = require('connect-mongodb-session')(session);
 var store = new MongoDBStore({
@@ -52,21 +53,11 @@ app.use(session({
 //ROUTES CONFIG
 const roomRoutes = require("./routes/room");
 const playerRoutes = require("./routes/player");
-
-app.get('/', (req,res)=>{
-  if(req.session.name){
-    res.send({
-      name: req.session.name,
-      playerId: req.session.playerId,
-      roomId: req.session.roomId,
-    })
-  }else{
-    res.end();
-  }
-})
+const gameRoutes = require("./routes/game");
 
 app.use('/player', playerRoutes);
 app.use('/room', roomRoutes);
+app.use('/game', gameRoutes)
 
 app.listen(PORT, ()=>{
     console.log("Server runs on port "+PORT);

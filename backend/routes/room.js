@@ -34,48 +34,28 @@ router.post('/add', function (req, res) {
                 
         }else {      
             let players = results.players;
+
             players.push({
                     name: req.body.name,
                     ready: false,
                     color: colors[players.length]
             });
 
-            let updateObj = {
-                players: players,
-            }
-
+            let updateObj = { players: players }
             players.length === 4 ? updateObj.full = true : updateObj.full = false;
-            
+
             RoomModel.findOneAndUpdate(
                 { _id: results._id }, //find room by id
-                updateObj,  
-                function (err, docs) { 
-                    if (err){ 
-                        console.log(err) 
-                    } 
-                    else{ 
-                        console.log("Updated Docs : ", docs); 
-                    } 
-                }
-            ).then(()=>{
-                req.session.roomId = results._id;
-                req.session.playerId = results.players[results.players.lenght - 1]._id;
-                req.session.name = req.body.name;
-                res.status(200).send('Joined!'); 
-            });    
+                updateObj)
+                .then(()=>{
+                    req.session.roomId = results._id;
+                    req.session.playerId = updateObj.players[(updateObj.players).lenght - 1]._id;
+                    req.session.name = req.body.name;
+                    res.status(200).send('Joined!'); 
+                });    
         } 
     });
     
-});
-
-//deleting room after game ends
-router.delete('/delete/{id}', function(req,res){
-    
-});
-
-//editing room every move
-router.put('/edit', function(req,res){
-
 });
 
 //get room values
@@ -87,7 +67,6 @@ router.get('/', function(req,res){
                 console.log(err) 
             } 
             else{ 
-                console.log(docs)
                 res.send({ players: docs.players}); 
             } 
         }
