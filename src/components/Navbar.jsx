@@ -9,18 +9,24 @@ const Navbar = () => {
 
     useEffect(()=>{
         //fetching players data 
-        axios.get('http://localhost:3001/room/',{
+        axios.get('http://localhost:3000/room/',{
             withCredentials:true,
             mode: 'cors',
         }).then((response)=>{
+            while(response.data.players.length !== 4){
+                response.data.players.push({
+                    name: "...",
+                    color: "grey"
+                })
+            }
             setPlayers(response.data.players);
         })
     },[]);
 
     return(
         <div className="navbar-container">
-            {players.map((player)=>
-                <NameContainer key={player.name} player = {player}/>
+            {players.map( (player, index) =>
+                <NameContainer key={index} player = {player}/>
             )}
             <ReadyButton/>
         </div>

@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+
+import { Beforeunload } from 'react-beforeunload';
 import { BrowserRouter as Router , Route , Redirect, Switch } from 'react-router-dom';
 
+import Gameboard  from './components/Gameboard'
 import Navbar from './components/Navbar'
 import NameInput from './components/NameInput';
 
@@ -11,10 +14,21 @@ function App() {
       withCredentials:true,
       mode: 'cors'
     })
-    .then((response)=> response.id!=null ? setRedirect(true) : null);
+    .then( response => {
+      response.data.roomId!=null ? setRedirect(true) : setRedirect(false)
+    });
   })
+
   const [id, setId] = useState('')
   const [redirect, setRedirect] = useState(false)
+  
+  const handleExit = e => {
+    e.preventDefault();
+    window.addEventListener('unload', () => {
+      axios.post('http://localhost:3000/player/exit', {withCredentials:true, mode: 'cors'})
+    });
+    } 
+  
   const idCallback = (id)=>{
     setId(id);
     
@@ -27,10 +41,16 @@ function App() {
   }
   return (
     <Router>
-      {redirect ?  <Redirect to="/game"></Redirect> : <NameInput idCallback = {idCallback}/>}
+      {redirect ?  <Redirect to="/game"/> : <Redirect to="/"/>}
       <Switch>
+          <Route exact path="/">
+            <NameInput idCallback = {idCallback}/>
+          </Route>
           <Route path="/game">
-            <Navbar></Navbar>
+            <Beforeunload onBeforeunload={handleExit}>
+              <Navbar/>
+              <Gameboard/>
+            </Beforeunload>
           </Route>
         </Switch>
     </Router>

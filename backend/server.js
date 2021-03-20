@@ -54,7 +54,7 @@ const roomRoutes = require("./routes/room");
 const playerRoutes = require("./routes/player");
 
 app.get('/', (req,res)=>{
-  if(req.session.player){
+  if(req.session.name){
     res.send({
       name: req.session.name,
       roomId: req.session.roomId,
