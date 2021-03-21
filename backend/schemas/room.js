@@ -11,7 +11,10 @@ var RoomSchema = new Schema({
         color: String,
         ready: Boolean,
     }],
-    positions: Map
+    positions: {
+        type: Map,
+        of: Array,
+    }
 });
 
 var RoomModel = mongoose.model('RoomModel', RoomSchema );
