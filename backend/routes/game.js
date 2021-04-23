@@ -9,9 +9,9 @@ router.post('/start', function (req, res){
     */
     
 });
-//returns positions 
-router.get('/', function (req, res){
-
+router.get('/roll', function (req, res){
+    res.send({number: Math.ceil(Math.random() * 6)});
 });
+
 
 module.exports = router;

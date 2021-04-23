@@ -6,7 +6,9 @@ const Map = () => {
     const mapOfLocations = {
     };
     //obj schema: {color: [pos,pos,pos]}
-    const [pawnPositions, setPawnPositions] = useState({});
+    const [pawnPositions, setPawnPositions] = useState({
+        
+    });
 
     const paintPawn = (context, x, y, color) =>{
         context.fillStyle = color
@@ -22,6 +24,7 @@ const Map = () => {
     const canvasRef = useRef(null)
 
     useEffect(() => {
+        //fetchData();
         const canvas = canvasRef.current
         const context = canvas.getContext('2d')
         var image = new Image();
@@ -29,7 +32,7 @@ const Map = () => {
         image.onload = function() {
             context.drawImage(image, 0 , 0);
             /* pawnPositions.forEach( pawn => {
-                paintPawn(context, pawn.x,pawny,'#ffa1a1')
+                paintPawn(context, pawn.x,pawn.y,'#ffa1a1')
             })
             */ 
         }

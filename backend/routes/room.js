@@ -49,7 +49,7 @@ router.post('/add', function (req, res) {
                 updateObj)
                 .then(()=>{
                     req.session.roomId = results._id;
-                    req.session.playerId = updateObj.players[(updateObj.players).lenght - 1]._id;
+                    req.session.playerId = updateObj.players[updateObj.players.lenght - 1]._id;
                     req.session.name = req.body.name;
                     res.status(200).send('Joined!'); 
                 });    
