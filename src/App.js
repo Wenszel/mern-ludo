@@ -14,14 +14,17 @@ function App() {
   const [redirect, setRedirect] = useState()
 
   useEffect(() => {
+    console.log("id", id);
     axios.get('http://localhost:3000/player', {
       withCredentials:true,
       mode: 'cors'
     })
     .then( response => {
+      console.log(response);
+      setId(response.data.playerId);
       response.data.roomId!=null ? setRedirect(true) : setRedirect(false);
     });
-  })
+  },[id])
 
   const handleExit = e => {
     e.preventDefault();
@@ -31,14 +34,17 @@ function App() {
     } 
   
   const idCallback = (id)=>{
-    setId(id);
+    console.log(id);
     
     axios.get('http://localhost:3000/player/', {
       withCredentials:true,
       mode: 'cors',
       headers: { "Content-Type": "application/json" },
     })
-    .then(()=> setRedirect(true))
+    .then(response => {
+      setId(response.data.playerId);
+      setRedirect(true)
+    })
   }
 
   return (
@@ -53,8 +59,7 @@ function App() {
           </Route>
           <Route path="/game">
             <Beforeunload onBeforeunload={handleExit}>
-              <Navbar/>
-              <Gameboard/>
+              <Gameboard id={id}/>
             </Beforeunload>
           </Route>
         </Switch>

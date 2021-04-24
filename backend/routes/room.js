@@ -28,7 +28,7 @@ router.post('/add', function (req, res) {
                     req.session.roomId = newRoom._id;
                     req.session.playerId = newRoom.players[0]._id;
                     req.session.name = req.body.name;
-                    res.status(200).send('Joined!'); 
+                    res.status(200).send(req.session.playerId); 
                 })
                 .catch(err => res.status(400).json('Error: ' + err))
         }else {      
@@ -54,7 +54,7 @@ router.post('/add', function (req, res) {
                     req.session.roomId = results._id;
                     req.session.playerId = updateObj.players[updateObj.players.length-1]._id;
                     req.session.name = req.body.name;
-                    res.status(200).send('Joined!'); 
+                    res.status(200).send(req.session.playerId); 
                 });  
                  
         } 

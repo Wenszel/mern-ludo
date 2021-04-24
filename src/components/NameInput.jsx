@@ -15,7 +15,8 @@ const NameInput = ({ idCallback }) => {
             "Content-Type": "application/json" 
         })
         .then(response => {
-            idCallback(response.data.id);
+            console.log(response.data);
+            idCallback(response.data);
         })
     }
     return(
