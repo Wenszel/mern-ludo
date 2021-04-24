@@ -23,6 +23,7 @@ const PORT = 3000|| process.env.PORT;
 
 //DATABASE CONFIG
 const mongoose = require("mongoose");
+mongoose.set('useFindAndModify', false);
 const CONNECTION_URI = require("./credentials.js").MONGODB_URL;
 
 mongoose.connect(CONNECTION_URI, {

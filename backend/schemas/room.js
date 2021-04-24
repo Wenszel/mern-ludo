@@ -10,11 +10,12 @@ var RoomSchema = new Schema({
         name: String,
         color: String,
         ready: Boolean,
+        nowMoving: Boolean,
     }],
-    positions: {
-        type: Map,
-        of: Array,
-    }
+    pawns: [{
+        color: String,
+        position: Number,
+    }],
 });
 
 var RoomModel = mongoose.model('RoomModel', RoomSchema );

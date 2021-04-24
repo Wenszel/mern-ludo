@@ -22,7 +22,7 @@ const Navbar = () => {
     }
     useEffect(()=>{
         //sending ajax every 3 sec 
-        setInterval(fetchData, 3000);
+        setInterval(fetchData, 1000);
     },[]);
 
     return(

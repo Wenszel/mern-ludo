@@ -12,12 +12,21 @@ var changeReadyState = (req, res, exit) =>{
             let index = updatedPlayers.findIndex( 
                 player => (player._id).toString() == (req.session.playerId).toString()
             );
-            if(!exit) 
-            {updatedPlayers[index].ready = !updatedPlayers[index].ready;}
-            else {updatedPlayers[index].ready = false;}
+            console.log(doc, updatedPlayers, index);
+            if(!exit) updatedPlayers[index].ready = !updatedPlayers[index].ready;
+            else updatedPlayers[index].ready = false;
+            const updatedDoc = {
+                players: updatedPlayers
+            }
+            console.log(updatedPlayers.filter(player => player.ready).length);
+            if(updatedPlayers.filter(player => player.ready).length >= 2){
+                updatedDoc.started = true;
+                updatedDoc.players[0].nowMoving = true;
+            }
+            
             RoomModel.findOneAndUpdate({
                 _id: req.session.roomId
-            }, {players: updatedPlayers}, function(err, doc){
+            }, updatedDoc, function(err, doc){
                 if (err){ 
                     console.log(err) 
                 } 

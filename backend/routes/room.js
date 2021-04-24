@@ -7,7 +7,6 @@ var colors = ['red','blue','green','yellow'];
 
 //creating new room in db
 router.post('/add', function (req, res) {
-    console.log(req.session);
     RoomModel.findOne( { full: false, started: false }, function (err, results) {
         if (err) { 
             console.log(err);
@@ -19,6 +18,7 @@ router.post('/add', function (req, res) {
                 started: false,
                 players: [{
                     name: req.body.name,
+                    nowMoving: false,
                     ready: false,
                     color: colors[0]
                 }],
@@ -31,7 +31,6 @@ router.post('/add', function (req, res) {
                     res.status(200).send('Joined!'); 
                 })
                 .catch(err => res.status(400).json('Error: ' + err))
-                
         }else {      
             let players = results.players;
 
@@ -42,17 +41,22 @@ router.post('/add', function (req, res) {
             });
 
             let updateObj = { players: players }
-            players.length === 4 ? updateObj.full = true : updateObj.full = false;
-
+            // Checks if room is full => if true start game
+            if (players.length === 4) {
+                updateObj.full = true; // Room is full 
+                updateObj.started = true; // Game started
+                updateObj.players[0].nowMoving = true; //First joined player moving
+            }
             RoomModel.findOneAndUpdate(
                 { _id: results._id }, //find room by id
                 updateObj)
                 .then(()=>{
                     req.session.roomId = results._id;
-                    req.session.playerId = updateObj.players[updateObj.players.lenght - 1]._id;
+                    req.session.playerId = updateObj.players[updateObj.players.length-1]._id;
                     req.session.name = req.body.name;
                     res.status(200).send('Joined!'); 
-                });    
+                });  
+                 
         } 
     });
     
@@ -67,7 +71,7 @@ router.get('/', function(req,res){
                 console.log(err) 
             } 
             else{ 
-                res.send({ players: docs.players}); 
+                res.send(docs); 
             } 
         }
     )
