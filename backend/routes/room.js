@@ -1,16 +1,27 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
+const RoomModel = require('../schemas/room');
 
-var RoomModel = require('../schemas/room');
+const colors = ['red','blue','green','yellow'];
 
-var colors = ['red','blue','green','yellow'];
+function getStartPositions(){
+    const startPositions = [];
+    for( let i = 0; i < 16; i++){
+        let pawn = {};
+        pawn.position = i;
+        if(i < 4) pawn.color = colors[0];
+        else if(i < 8) pawn.color = colors[1];
+        else if(i < 12) pawn.color = colors[2];
+        else if (i < 16) pawn.color = colors[3]
+        startPositions.push(pawn);
+    }
+    return startPositions;
+}
 
 //creating new room in db
 router.post('/add', function (req, res) {
     RoomModel.findOne( { full: false, started: false }, function (err, results) {
-        if (err) { 
-            console.log(err);
-        }
+        if (err) console.log(err);
         if (!results) {
             let newRoom = new RoomModel({
                 createDate: new Date,
@@ -22,6 +33,7 @@ router.post('/add', function (req, res) {
                     ready: false,
                     color: colors[0]
                 }],
+                pawns: getStartPositions(),
             });
             newRoom.save()
                 .then(function(){
@@ -46,6 +58,7 @@ router.post('/add', function (req, res) {
                 updateObj.full = true; // Room is full 
                 updateObj.started = true; // Game started
                 updateObj.players[0].nowMoving = true; //First joined player moving
+                updateObj.pawns = startPositions
             }
             RoomModel.findOneAndUpdate(
                 { _id: results._id }, //find room by id

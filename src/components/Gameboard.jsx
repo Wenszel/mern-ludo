@@ -5,9 +5,10 @@ import Dice from './game-board-components/Dice'
 import Navbar from './Navbar'
 
 const Gameboard = ({id}) => {
-
+    const [pawns, setPawns] = useState([]);
     const [players, setPlayers] = useState([]);
     const [nowMoving, setNowMoving] = useState(false);
+    const [started, setStarted] = useState(false);
     //fetching players data to display them in navbar
     const fetchData = () => {
         axios.get('http://localhost:3000/room/',{
@@ -19,12 +20,14 @@ const Gameboard = ({id}) => {
                     name: "...",
                 })
             }
-            setPlayers(response.data.players);
             if(id===response.data.players.find(player => player.nowMoving === true)?._id){
                 setNowMoving(true);
             }else{
                 setNowMoving(false);
             }
+            setPlayers(response.data.players);
+            setPawns(response.data.pawns);
+            setStarted(response.data.started);
         })
     }
     useEffect(()=>{
@@ -33,9 +36,9 @@ const Gameboard = ({id}) => {
     },[]);
     return (
         <>
-            <Navbar players={players}/>
+            <Navbar players={players} started={started}/>
             {nowMoving ? <Dice nowMoving={nowMoving}/> : null}
-            <Map/>
+            <Map pawns={pawns}/>
         </>
     )
 

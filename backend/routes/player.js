@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
 var RoomModel = require('../schemas/room');
-
 var changeReadyState = (req, res, exit) =>{
     RoomModel.findOne({_id: req.session.roomId}, function (err, doc){    
         if (err) {
@@ -12,13 +11,11 @@ var changeReadyState = (req, res, exit) =>{
             let index = updatedPlayers.findIndex( 
                 player => (player._id).toString() == (req.session.playerId).toString()
             );
-            console.log(doc, updatedPlayers, index);
             if(!exit) updatedPlayers[index].ready = !updatedPlayers[index].ready;
             else updatedPlayers[index].ready = false;
             const updatedDoc = {
                 players: updatedPlayers
             }
-            console.log(updatedPlayers.filter(player => player.ready).length);
             if(updatedPlayers.filter(player => player.ready).length >= 2){
                 updatedDoc.started = true;
                 updatedDoc.players[0].nowMoving = true;
