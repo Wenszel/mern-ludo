@@ -23,5 +23,9 @@ router.get('/roll', function (req, res){
     res.send({number: Math.ceil(Math.random() * 6)});
 });
 
+router.post('/move', function (req, res){
+
+});
+
 
 module.exports = router;

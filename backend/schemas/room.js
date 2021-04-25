@@ -6,7 +6,7 @@ var RoomSchema = new Schema({
     createDate: Date,
     started: Boolean,
     full: Boolean,
-    timer: Number,
+    nextMoveTime: Number,
     players: [{
         name: String,
         color: String,

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, createContext } from 'react';
 import axios from 'axios';
 
 import { Beforeunload } from 'react-beforeunload';
@@ -7,10 +7,10 @@ import { BrowserRouter as Router , Route , Redirect, Switch } from 'react-router
 import Gameboard  from './components/Gameboard'
 import NameInput from './components/NameInput';
 
-function App() {
+export const PlayerDataContext = createContext();
 
-  const [id, setId] = useState('');
-  const [color, setColor] = useState('');
+function App() {
+  const [playerData, setPlayerData] = useState();
   const [redirect, setRedirect] = useState();
 
   useEffect(() => {
@@ -19,11 +19,12 @@ function App() {
       mode: 'cors'
     })
     .then( response => {
-      setId(response.data.playerId);
-      setColor(response.data.color);
+      setPlayerData(response.data)
+      console.log(response.data);
+
       response.data.roomId!=null ? setRedirect(true) : setRedirect(false);
     });
-  },[id])
+  },[]);
 
   const handleExit = e => {
     e.preventDefault();
@@ -32,16 +33,16 @@ function App() {
     });
     } 
   
-  const idCallback = (id)=>{
+  const idCallback = () => {
     axios.get('http://localhost:3000/player/', {
       withCredentials:true,
       mode: 'cors',
       headers: { "Content-Type": "application/json" },
     })
     .then(response => {
-      setId(response.data.playerId);
-      setColor(response.data.color);
-      setRedirect(true)
+      setPlayerData(response.data);
+      console.log(response.data);
+      setRedirect(true);
     })
   }
 
@@ -57,7 +58,9 @@ function App() {
           </Route>
           <Route path="/game">
             <Beforeunload onBeforeunload={handleExit}>
-              <Gameboard id={id} color={color}/>
+              <PlayerDataContext.Provider value={playerData}>
+                <Gameboard/>
+              </PlayerDataContext.Provider>
             </Beforeunload>
           </Route>
         </Switch>

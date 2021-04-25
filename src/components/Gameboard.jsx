@@ -1,26 +1,33 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { PlayerDataContext } from '../App'
 import axios from 'axios';
 import Map from './game-board-components/Map'
 import Dice from './game-board-components/Dice'
 import Navbar from './Navbar'
 
-const Gameboard = ({id, color}) => {
+const Gameboard = () => {
+    // Context data
+    const context = useContext(PlayerDataContext);
+    const [id, setId] = useState();
+    // Render data
     const [pawns, setPawns] = useState([]);
     const [players, setPlayers] = useState([]);
+    // Game logic data
     const [rolledNumber, setRolledNumber] = useState('');
+    const [time, setTime] = useState();
     const [nowMoving, setNowMoving] = useState(false);
     const [started, setStarted] = useState(false);
-    //fetching players data to display them in navbar
+    // Fetching game data
     const fetchData = () => {
         axios.get('http://localhost:3000/room/',{
             withCredentials:true,
             mode: 'cors',
         }).then((response)=>{
+            // Filling navbar with empty player nick container
             while(response.data.players.length !== 4){
-                response.data.players.push({
-                    name: "...",
-                })
-            }
+                response.data.players.push({name: "...",});
+            };
+            // Checks if client is currently moving player by session ID
             if(id===response.data.players.find(player => player.nowMoving === true)?._id){
                 setNowMoving(true);
             }else{
@@ -28,10 +35,12 @@ const Gameboard = ({id, color}) => {
             }
             setPlayers(response.data.players);
             setPawns(response.data.pawns);
+            setTime(response.data.nextMoveTime);
             setStarted(response.data.started);
         })
     }
-    useEffect(()=>{
+    useEffect(() => {
+        setId(context.playerId);
         //sending ajax every 1 sec 
         const interval = setInterval(fetchData, 1000);
         return () => clearInterval(interval);
@@ -43,9 +52,9 @@ const Gameboard = ({id, color}) => {
 
     return (
         <>
-            <Navbar players={players} started={started}/>
+            <Navbar players={players} started={started} time={time}/>
             {nowMoving ? <Dice nowMoving={nowMoving} rolledNumberCallback={rolledNumberCallback}/> : null}
-            <Map pawns={pawns} nowMoving={nowMoving} color={color} rolledNumber={rolledNumber}/>
+            <Map pawns={pawns} nowMoving={nowMoving} rolledNumber={rolledNumber}/>
         </>
     )
 

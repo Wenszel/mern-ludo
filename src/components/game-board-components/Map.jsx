@@ -1,9 +1,14 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useContext } from 'react';
+import { PlayerDataContext } from '../../App';
+import axios from 'axios';
 import positions from './positions';
 import './Map.css';
 
-const Map = ({ pawns, nowMoving, color, rolledNumber }) => {
+const Map = ({ pawns, nowMoving, rolledNumber }) => {
+    const context = useContext(PlayerDataContext);
+    const [color, setColor] = useState();
     const [hintPawn, setHintPawn] = useState();
+
     const paintPawn = (context, x, y, color) =>{
         const circle = new Path2D();
         circle.arc(x, y, 12, 0, 2 * Math.PI);
@@ -26,6 +31,11 @@ const Map = ({ pawns, nowMoving, color, rolledNumber }) => {
             y = event.clientY - rect.top;
             for(const pawn of pawns){
                 if (context.isPointInPath(pawn.circle, x, y)) {
+                    axios.post('http://localhost:3000/game/move', {
+                        withCredentials: true, 
+                        mode: 'cors',
+                        data: {_id: pawn._id}
+                    });
                     setHintPawn(null);
                 }
             }
@@ -65,6 +75,7 @@ const Map = ({ pawns, nowMoving, color, rolledNumber }) => {
         if(nowMoving && rolledNumber){ 
             const canvas = canvasRef.current;
             const context = canvas.getContext('2d');
+            // Gets x and y cords of mouse on canvas
             const rect = canvas.getBoundingClientRect(),
             x = event.clientX - rect.left,
             y = event.clientY - rect.top;
@@ -81,7 +92,7 @@ const Map = ({ pawns, nowMoving, color, rolledNumber }) => {
                     if (context.isPointInPath(pawn.circle, x, y) && pawn.color === color && (pawn.position>15 || rolledNumber === 1 || rolledNumber === 6)) {
                         canvas.style.cursor = "pointer";
                         const pawnPosition = getHintPawnPosition(pawn);
-                        setHintPawn({x: positions[pawnPosition].x, y: positions[pawnPosition].y, color: 'grey'});
+                        setHintPawn({id: pawn._id, x: positions[pawnPosition].x, y: positions[pawnPosition].y, color: 'grey'});
                         break;
                     }else{
                         setHintPawn(null);
@@ -91,10 +102,10 @@ const Map = ({ pawns, nowMoving, color, rolledNumber }) => {
         }
     };
     const rerenderCanvas = () => {
-        const canvas = canvasRef.current
-        const context = canvas.getContext('2d')
+        const canvas = canvasRef.current;
+        const context = canvas.getContext('2d');
         var image = new Image();
-        image.src = 'https://img-9gag-fun.9cache.com/photo/a8GdpYZ_460s.jpg'
+        image.src = 'https://img-9gag-fun.9cache.com/photo/a8GdpYZ_460s.jpg';
         image.onload = function() {
             context.drawImage(image, 0 , 0);
             pawns.forEach( (pawn, index) => {
@@ -107,8 +118,10 @@ const Map = ({ pawns, nowMoving, color, rolledNumber }) => {
     }
     // Rerender canvas when pawns have changed
     useEffect(() => {
+        setColor(context.color);
         rerenderCanvas(); 
     }, [pawns]);
+
     return(
         <canvas 
             className="canvas-container" 
@@ -120,4 +133,4 @@ const Map = ({ pawns, nowMoving, color, rolledNumber }) => {
         />
     )
 }
-export default Map
+export default Map;

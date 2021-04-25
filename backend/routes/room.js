@@ -57,6 +57,7 @@ router.post('/add', function (req, res) {
             if (players.length === 4) {
                 updateObj.full = true; // Room is full 
                 updateObj.started = true; // Game started
+                updateObj.nextMoveTime = Date.now()+15;
                 updateObj.players[0].nowMoving = true; //First joined player moving
                 updateObj.pawns = getStartPositions();
             }
