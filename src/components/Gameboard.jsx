@@ -7,6 +7,7 @@ import Navbar from './Navbar'
 const Gameboard = ({id, color}) => {
     const [pawns, setPawns] = useState([]);
     const [players, setPlayers] = useState([]);
+    const [rolledNumber, setRolledNumber] = useState('');
     const [nowMoving, setNowMoving] = useState(false);
     const [started, setStarted] = useState(false);
     //fetching players data to display them in navbar
@@ -32,13 +33,19 @@ const Gameboard = ({id, color}) => {
     }
     useEffect(()=>{
         //sending ajax every 1 sec 
-        setInterval(fetchData, 1000);
+        const interval = setInterval(fetchData, 1000);
+        return () => clearInterval(interval);
     },[]);
+    // Callback to handle dice rolling between dice and map component
+    const rolledNumberCallback = (number) => {
+        setRolledNumber(number);
+    }
+
     return (
         <>
             <Navbar players={players} started={started}/>
-            {nowMoving ? <Dice nowMoving={nowMoving}/> : null}
-            <Map pawns={pawns} nowMoving={nowMoving} color={color}/>
+            {nowMoving ? <Dice nowMoving={nowMoving} rolledNumberCallback={rolledNumberCallback}/> : null}
+            <Map pawns={pawns} nowMoving={nowMoving} color={color} rolledNumber={rolledNumber}/>
         </>
     )
 

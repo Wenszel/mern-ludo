@@ -7,7 +7,7 @@ import four from '../../images/dice/4.png';
 import five from '../../images/dice/5.png';
 import six from '../../images/dice/6.png';
 
-const Dice = () => {
+const Dice = ({rolledNumberCallback}) => {
     const [rolledNumber, setRolledNumber] = useState()
     const [images] = useState([one, two, three, four, five, six]);
     const handleRoll = () => {
@@ -16,12 +16,14 @@ const Dice = () => {
             const utterance = new SpeechSynthesisUtterance(response.data.number);
             speechSynthesis.speak(utterance);
             setRolledNumber(response.data.number);
+            rolledNumberCallback(response.data.number);
         })
     }
     return(
         <div>
-            {rolledNumber ? <img src={images[rolledNumber - 1]} width="100" height="100"/> : null }
-            <button onClick={handleRoll}>Roll number</button>
+            {rolledNumber ? <img src={images[rolledNumber - 1]} width="100" height="100"/> : 
+            <button onClick={handleRoll}>Roll</button> }
+            
         </div>
     )
 }

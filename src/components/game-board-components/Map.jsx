@@ -1,23 +1,24 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import positions from './positions';
 import './Map.css';
 
-const Map = ({ pawns, nowMoving, color }) => {
-    const paintPawn = (context, x, y, color, id) =>{
+const Map = ({ pawns, nowMoving, color, rolledNumber }) => {
+    const [hintPawn, setHintPawn] = useState();
+    const paintPawn = (context, x, y, color) =>{
         const circle = new Path2D();
         circle.arc(x, y, 12, 0, 2 * Math.PI);
-        context.strokeStyle ='black';
+        context.strokeStyle = 'black';
         context.stroke(circle);
         context.fillStyle = color;
         context.fill(circle);
-        const currentPawnIndex = pawns.findIndex( pawn => pawn._id === id);
-        pawns[currentPawnIndex].circle = circle;
+        return circle;
     }
 
     const canvasRef = useRef(null);
     
     const handleCanvasClick = event => {
-        if(!nowMoving){
+        // If hint pawn exist it means that pawn can move 
+        if(hintPawn){
             const canvas = canvasRef.current
             const context = canvas.getContext('2d')
             const rect = canvas.getBoundingClientRect(),
@@ -25,43 +26,89 @@ const Map = ({ pawns, nowMoving, color }) => {
             y = event.clientY - rect.top;
             for(const pawn of pawns){
                 if (context.isPointInPath(pawn.circle, x, y)) {
-                    alert(pawn._id);
+                    setHintPawn(null);
                 }
             }
         }
     }
+    const getHintPawnPosition = (pawn) => {
+        /* 
+            Based on color (because specific color have specific base positions)
+            first if for each colors handle situation when pawn is in base
+            next if pawn is in the end or will go in there
+            else if pawn is on map 
+        */
+        switch (color){
+            case 'red': 
+                if(pawn.position >= 0 && pawn.position <= 3){
+                    return 16;
+                }
+                break;
+            case 'blue': 
+                if(pawn.position >= 4 && pawn.position <= 7){
+                    return 55;
+                }
+                break;
+            case 'green': 
+                if(pawn.position >= 8 && pawn.position <= 11){
+                    return 42;
+                }
+                break;
+            case 'yellow': 
+                if(pawn.position >= 12 && pawn.position <= 15){
+                    return 29;
+                }
+                break;
+        }
+    };
     const handleMouseMove = event => {
-        if(!nowMoving){ 
-            const canvas = canvasRef.current
-            const context = canvas.getContext('2d')
+        if(nowMoving && rolledNumber){ 
+            const canvas = canvasRef.current;
+            const context = canvas.getContext('2d');
             const rect = canvas.getBoundingClientRect(),
             x = event.clientX - rect.left,
             y = event.clientY - rect.top;
-            document.querySelector("body").style.cursor = "default";
+            canvas.style.cursor = "default";
             for (const pawn of pawns){
                 if(pawn.circle){
-                    // Checks if current mouse location in above canvas pawn and if this pawn is same color as player
-                    if (context.isPointInPath(pawn.circle, x, y) && pawn.color === color) {
-                        document.querySelector("body").style.cursor = "pointer";
+                    /*
+                        This condition checks if mouse location is:
+                        1) on pawn
+                        2) is color of pawn same as player's
+                        3) if pawn is on base is rolledNumber is 1 or 6 which allows pawn to exit base
+                        And then sets cursor to pointer and paints hint pawn - where will be pawn after click
+                    */
+                    if (context.isPointInPath(pawn.circle, x, y) && pawn.color === color && (pawn.position>15 || rolledNumber === 1 || rolledNumber === 6)) {
+                        canvas.style.cursor = "pointer";
+                        const pawnPosition = getHintPawnPosition(pawn);
+                        setHintPawn({x: positions[pawnPosition].x, y: positions[pawnPosition].y, color: 'grey'});
                         break;
+                    }else{
+                        setHintPawn(null);
                     }
                 }   
             }
         }
-    }
-
-    useEffect(() => {
+    };
+    const rerenderCanvas = () => {
         const canvas = canvasRef.current
         const context = canvas.getContext('2d')
         var image = new Image();
         image.src = 'https://img-9gag-fun.9cache.com/photo/a8GdpYZ_460s.jpg'
         image.onload = function() {
             context.drawImage(image, 0 , 0);
-            pawns.forEach( pawn => {
-                paintPawn(context, positions[pawn.position].x, positions[pawn.position].y, pawn.color, pawn._id);
-            })
+            pawns.forEach( (pawn, index) => {
+                pawns[index].circle = paintPawn(context, positions[pawn.position].x, positions[pawn.position].y, pawn.color);
+            });
+            if (hintPawn){
+                paintPawn(context, hintPawn.x, hintPawn.y, hintPawn.color);
+            }
         }
-      }, [pawns]);
+    }
+    // Rerender canvas when pawns have changed
+    useEffect(() => {
+        rerenderCanvas(); 
+    }, [pawns]);
     return(
         <canvas 
             className="canvas-container" 

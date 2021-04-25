@@ -48,9 +48,9 @@ router.post('/exit', function(req,res){
 
 //return session data
 router.get('/', (req,res)=>{
-    if(req.session.name){
+    // If session exist return sessions data to move player to game when he backs to site 
+    if(req.session){
       res.send({
-        name: req.session.name,
         color: req.session.color,
         playerId: req.session.playerId,
         roomId: req.session.roomId,
