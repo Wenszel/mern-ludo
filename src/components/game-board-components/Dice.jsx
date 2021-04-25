@@ -6,6 +6,7 @@ import three from '../../images/dice/3.png';
 import four from '../../images/dice/4.png';
 import five from '../../images/dice/5.png';
 import six from '../../images/dice/6.png';
+
 const Dice = () => {
     const [rolledNumber, setRolledNumber] = useState()
     const [images] = useState([one, two, three, four, five, six]);

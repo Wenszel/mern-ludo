@@ -39,6 +39,7 @@ router.post('/add', function (req, res) {
                 .then(function(){
                     req.session.roomId = newRoom._id;
                     req.session.playerId = newRoom.players[0]._id;
+                    req.session.color = newRoom.players[0].color;
                     req.session.name = req.body.name;
                     res.status(200).send(req.session.playerId); 
                 })
@@ -67,6 +68,7 @@ router.post('/add', function (req, res) {
                     req.session.roomId = results._id;
                     req.session.playerId = updateObj.players[updateObj.players.length-1]._id;
                     req.session.name = req.body.name;
+                    req.sessions.color = colors[players.length - 1];
                     res.status(200).send(req.session.playerId); 
                 });  
                  

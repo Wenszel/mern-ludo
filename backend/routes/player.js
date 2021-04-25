@@ -51,6 +51,7 @@ router.get('/', (req,res)=>{
     if(req.session.name){
       res.send({
         name: req.session.name,
+        color: req.session.color,
         playerId: req.session.playerId,
         roomId: req.session.roomId,
       })

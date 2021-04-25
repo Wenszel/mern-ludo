@@ -4,7 +4,7 @@ import Map from './game-board-components/Map'
 import Dice from './game-board-components/Dice'
 import Navbar from './Navbar'
 
-const Gameboard = ({id}) => {
+const Gameboard = ({id, color}) => {
     const [pawns, setPawns] = useState([]);
     const [players, setPlayers] = useState([]);
     const [nowMoving, setNowMoving] = useState(false);
@@ -38,7 +38,7 @@ const Gameboard = ({id}) => {
         <>
             <Navbar players={players} started={started}/>
             {nowMoving ? <Dice nowMoving={nowMoving}/> : null}
-            <Map pawns={pawns}/>
+            <Map pawns={pawns} nowMoving={nowMoving} color={color}/>
         </>
     )
 

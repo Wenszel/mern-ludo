@@ -9,8 +9,9 @@ import NameInput from './components/NameInput';
 
 function App() {
 
-  const [id, setId] = useState('')
-  const [redirect, setRedirect] = useState()
+  const [id, setId] = useState('');
+  const [color, setColor] = useState('');
+  const [redirect, setRedirect] = useState();
 
   useEffect(() => {
     axios.get('http://localhost:3000/player', {
@@ -19,6 +20,7 @@ function App() {
     })
     .then( response => {
       setId(response.data.playerId);
+      setColor(response.data.color);
       response.data.roomId!=null ? setRedirect(true) : setRedirect(false);
     });
   },[id])
@@ -38,6 +40,7 @@ function App() {
     })
     .then(response => {
       setId(response.data.playerId);
+      setColor(response.data.color);
       setRedirect(true)
     })
   }
@@ -54,7 +57,7 @@ function App() {
           </Route>
           <Route path="/game">
             <Beforeunload onBeforeunload={handleExit}>
-              <Gameboard id={id}/>
+              <Gameboard id={id} color={color}/>
             </Beforeunload>
           </Route>
         </Switch>
