@@ -13,7 +13,7 @@ const Gameboard = () => {
     const [pawns, setPawns] = useState([]);
     const [players, setPlayers] = useState([]);
     // Game logic data
-    const [rolledNumber, setRolledNumber] = useState('');
+    const [rolledNumber, setRolledNumber] = useState(null);
     const [time, setTime] = useState();
     const [nowMoving, setNowMoving] = useState(false);
     const [started, setStarted] = useState(false);
@@ -28,10 +28,14 @@ const Gameboard = () => {
                 response.data.players.push({name: "...",});
             };
             // Checks if client is currently moving player by session ID
-            if(id===response.data.players.find(player => player.nowMoving === true)?._id){
-                setNowMoving(true);
-            }else{
-                setNowMoving(false);
+            const nowMovingPlayer = response.data.players.find(player => player.nowMoving === true)
+            if(nowMovingPlayer){
+                if(nowMovingPlayer._id === id){
+                    setNowMoving(true);
+                }else{
+                    setRolledNumber(null);
+                    setNowMoving(false);
+                }
             }
             setPlayers(response.data.players);
             setPawns(response.data.pawns);

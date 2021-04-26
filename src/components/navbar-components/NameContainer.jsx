@@ -2,7 +2,7 @@ import React from 'react';
 import './NameContainer.css';
 const NameContainer = ( {player, time} ) => {
     const getRemainingTime = () => {
-        return Math.floor((time - Date.now())/1000);
+        return Math.round((time - Date.now())/1000)+1;
     }
     return (
         <div className="name-container" 

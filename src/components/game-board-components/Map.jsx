@@ -71,7 +71,7 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
                 break;
         }
     };
-    const handleMouseMove = event => {
+    const handleMouseMove = event => {   
         if(nowMoving && rolledNumber){ 
             const canvas = canvasRef.current;
             const context = canvas.getContext('2d');

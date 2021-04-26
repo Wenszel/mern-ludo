@@ -57,7 +57,7 @@ router.post('/add', function (req, res) {
             if (players.length === 4) {
                 updateObj.full = true; // Room is full 
                 updateObj.started = true; // Game started
-                updateObj.nextMoveTime = Date.now()+15;
+                updateObj.nextMoveTime = Date.now()+30000;
                 updateObj.players[0].nowMoving = true; //First joined player moving
                 updateObj.pawns = getStartPositions();
             }
@@ -85,7 +85,37 @@ router.get('/', function(req,res){
                 console.log(err) 
             } 
             else{ 
-                res.send(docs); 
+                if(docs){
+                    if(docs.nextMoveTime <= Date.now()){ 
+                        RoomModel.findOne({_id: req.session.roomId}, function (err, doc){    
+                            if (err) {
+                                res.status(500).send(err)
+                            } else {
+                                const index = doc.players.findIndex( player => player.nowMoving === true);
+                                const roomSize = doc.players.length;
+                                doc.players[index].nowMoving = false;
+                                if(index + 1 === roomSize){
+                                    doc.players[0].nowMoving = true;
+                                }else{
+                                    doc.players[index + 1].nowMoving = true;
+                                }
+                                doc.nextMoveTime = Date.now()+30000;
+                                RoomModel.findOneAndUpdate({_id: req.session.roomId}, doc, function(err, docs){
+                                    if(err){
+                                        res.status(500).send(err)
+                                    }else{
+                                        console.log(docs.nextMoveTime);
+                                        res.send(docs); 
+                                    }
+                                });
+
+                            }
+                        });  
+                    }else{
+                        res.send(docs); 
+                    }
+                    
+                }
             } 
         }
     )
