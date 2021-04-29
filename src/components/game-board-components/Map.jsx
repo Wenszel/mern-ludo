@@ -7,7 +7,7 @@ import './Map.css';
 const Map = ({ pawns, nowMoving, rolledNumber }) => {
     const context = useContext(PlayerDataContext);
     const [hintPawn, setHintPawn] = useState();
-
+    const [blinking, setBlinking] = useState(false);
     const paintPawn = (context, x, y, color) =>{
         const circle = new Path2D();
         circle.arc(x, y, 12, 0, 2 * Math.PI);
@@ -101,13 +101,14 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
                         3) if pawn is on base is rolledNumber is 1 or 6 which allows pawn to exit base
                         And then sets cursor to pointer and paints hint pawn - where will be pawn after click
                     */
-                   //&& (pawn.position>15 || rolledNumber === 1 || rolledNumber === 6)
-                   console.log(context, pawn.color)
-                    if (ctx.isPointInPath(pawn.circle, x, y)  && context.color == pawn.color) {
-                        canvas.style.cursor = "pointer";
+                    if (ctx.isPointInPath(pawn.circle, x, y)  && context.color == pawn.color && (pawn.position>15 || rolledNumber === 1 || rolledNumber === 6)) {
                         const pawnPosition = getHintPawnPosition(pawn);
-                        setHintPawn({id: pawn._id, position: pawnPosition, color: 'grey'});
-                        break;
+                        // Checks if pawn can make a move
+                        if(pawnPosition){
+                            canvas.style.cursor = "pointer";
+                            setHintPawn({id: pawn._id, position: pawnPosition, color: 'grey'});
+                            break;
+                        }
                     }else{
                         setHintPawn(null);
                     }
@@ -117,22 +118,26 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
     };
     const rerenderCanvas = () => {
         const canvas = canvasRef.current;
-        const context = canvas.getContext('2d');
+        const ctx = canvas.getContext('2d');
         var image = new Image();
         image.src = 'https://img-9gag-fun.9cache.com/photo/a8GdpYZ_460s.jpg';
         image.onload = function() {
-            context.drawImage(image, 0 , 0);
+            ctx.drawImage(image, 0 , 0);
             pawns.forEach( (pawn, index) => {
-                pawns[index].circle = paintPawn(context, positions[pawn.position].x, positions[pawn.position].y, pawn.color);
+                if(nowMoving && rolledNumber && blinking && pawn.color === context.color){
+                    pawns[index].circle = paintPawn(ctx, positions[pawn.position].x, positions[pawn.position].y, 'white');
+                }else{
+                    pawns[index].circle = paintPawn(ctx, positions[pawn.position].x, positions[pawn.position].y, pawn.color);
+                }
+                setBlinking(!blinking);
             });
             if (hintPawn){
-                paintPawn(context, positions[hintPawn.position].x, positions[hintPawn.position].y, hintPawn.color);
+                paintPawn(ctx, positions[hintPawn.position].x, positions[hintPawn.position].y, hintPawn.color);
             }
         }
     }
     // Rerender canvas when pawns have changed
     useEffect(() => {
-        console.log(context.color);
         rerenderCanvas(); 
     }, [hintPawn, pawns]);
 

@@ -21,6 +21,7 @@ router.post('/move', function (req, res){
             }else{
                 doc.players[index+1].nowMoving = true;
             }
+            doc.nextMoveTime = Date.now()+30000;
             RoomModel.findOneAndUpdate({_id: req.session.roomId}, doc, function(err, doc){
                 res.send("Correctly Moved!");
             });
