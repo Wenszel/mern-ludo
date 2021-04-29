@@ -110,6 +110,7 @@ const positions = [
     {x: 230, y: 107},
     {x: 230, y: 138},
     {x: 230, y: 169}, //87
+    {x: -50, y: -50} // 88
 ];
 
 export default positions;

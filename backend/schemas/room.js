@@ -15,6 +15,7 @@ var RoomSchema = new Schema({
     }],
     pawns: [{
         color: String,
+        basePos: Number,
         position: Number,
     }],
 });

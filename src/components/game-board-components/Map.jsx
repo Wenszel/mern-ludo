@@ -19,7 +19,31 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
     }
 
     const canvasRef = useRef(null);
-    
+    const checkIfPawnCanMove = pawn => {
+        // If is in base
+        if((rolledNumber === 1 || rolledNumber === 6) && pawn.position === pawn.basePos){
+            return true;
+        // Other situations: pawn is on map or pawn is in end positions
+        }else if(pawn.position !== pawn.basePos){
+            switch (pawn.color){
+                case 'red':
+                    if(pawn.position + rolledNumber <= 72) return true;
+                    break;
+                case 'blue':
+                    if(pawn.position + rolledNumber <= 77) return true;
+                    break;
+                case 'green':
+                    if(pawn.position + rolledNumber <= 82) return true;
+                    break;
+                case 'yellow':
+                    if(pawn.position + rolledNumber <= 87) return true;
+                    break;
+            }
+        }else{
+            return false;
+        }
+        
+    }
     const handleCanvasClick = event => {
         // If hint pawn exist it means that pawn can move 
         if(hintPawn){
@@ -40,34 +64,38 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
         }
     }
     const getHintPawnPosition = (pawn) => {
-        /* 
-            Based on color (because specific color have specific base positions)
-            first if for each colors handle situation when pawn is in base
-            next if pawn is in the end or will go in there
-            else if pawn is on map 
-        */
+        // Based on color (because specific color have specific base and end positions)
         let { position } = pawn;
         switch (context.color){
             case 'red': 
+                // When in base
                 if(position >= 0 && position <= 3){
                     return 16;
-                }else if(position > 15 && position + rolledNumber <= 66){
-                    return position + rolledNumber;
+                // Ending move
+                }else if(position + rolledNumber === 72){
+                    return 88;
+                // Normal move 
                 }else{
-                    return  67 + (position + rolledNumber - 66);
+                    return  position + rolledNumber;
                 }
             case 'blue': 
                 if(position >= 4 && position <= 7){
+                    console.log("1")
                     return 55;
-                }else if(position+rolledNumber>55 || position+rolledNumber <= 53){
-                    return position + rolledNumber;
+                }else if(position < 67 && position + rolledNumber > 67){
+                    console.log("2")
+                    return position + rolledNumber - 67 + 16 
+                }else if(position <= 53 &&  position + rolledNumber >= 54){
+                    console.log(71 + position + rolledNumber - 54)
+                    return 71 + position + rolledNumber - 54;
                 }else{
-                    return  71 + (position + rolledNumber - 53);
+                    console.log("4")
+                    return position + rolledNumber;
                 }
             case 'green': 
                 if(position >= 8 && position <= 11){
                     return 42;
-                }else if(position + rolledNumber > 42 || position+rolledNumber <= 40){
+                }else if(position+rolledNumber < 66 && (position + rolledNumber > 42 || position+rolledNumber <= 40)){
                     return position + rolledNumber;
                 }else{
                     return 76 - (position + rolledNumber - 40)
@@ -75,7 +103,7 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
             case 'yellow': 
                 if(position >= 12 && position <= 15){
                     return 29;
-                }else if(position + rolledNumber > 29 || position+rolledNumber <= 27){
+                }else if(position+rolledNumber < 66 && (position + rolledNumber > 29 || position+rolledNumber <= 27)){
                     return position + rolledNumber;
                 }else{
                     return 82 + (position + rolledNumber - 27)
@@ -103,6 +131,7 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
                     */
                     if (ctx.isPointInPath(pawn.circle, x, y)  && context.color == pawn.color && (pawn.position>15 || rolledNumber === 1 || rolledNumber === 6)) {
                         const pawnPosition = getHintPawnPosition(pawn);
+                        setBlinking(false);
                         // Checks if pawn can make a move
                         if(pawnPosition){
                             canvas.style.cursor = "pointer";
@@ -124,7 +153,7 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
         image.onload = function() {
             ctx.drawImage(image, 0 , 0);
             pawns.forEach( (pawn, index) => {
-                if(nowMoving && rolledNumber && blinking && pawn.color === context.color){
+                if(nowMoving && rolledNumber && blinking && pawn.color === context.color && checkIfPawnCanMove(pawn)){
                     pawns[index].circle = paintPawn(ctx, positions[pawn.position].x, positions[pawn.position].y, 'white');
                 }else{
                     pawns[index].circle = paintPawn(ctx, positions[pawn.position].x, positions[pawn.position].y, pawn.color);

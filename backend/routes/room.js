@@ -8,6 +8,7 @@ function getStartPositions(){
     const startPositions = [];
     for( let i = 0; i < 16; i++){
         let pawn = {};
+        pawn.basePos = i;
         pawn.position = i;
         if(i < 4) pawn.color = colors[0];
         else if(i < 8) pawn.color = colors[1];
@@ -104,7 +105,6 @@ router.get('/', function(req,res){
                                     if(err){
                                         res.status(500).send(err)
                                     }else{
-                                        console.log(docs.nextMoveTime);
                                         res.send(docs); 
                                     }
                                 });
