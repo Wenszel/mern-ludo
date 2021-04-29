@@ -19,6 +19,8 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
     }
 
     const canvasRef = useRef(null);
+
+    // Return true when pawn can move
     const checkIfPawnCanMove = pawn => {
         // If is in base
         if((rolledNumber === 1 || rolledNumber === 6) && pawn.position === pawn.basePos){
@@ -57,8 +59,10 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
                     axios.post('http://localhost:3000/game/move', {pawnId: pawn._id, position: hintPawn.position},
                     {
                         withCredentials: true, 
+                    }).then(() => {
+                        setHintPawn(null);
                     });
-                    setHintPawn(null);
+                    
                 }
             }
         }
@@ -80,16 +84,13 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
                 }
             case 'blue': 
                 if(position >= 4 && position <= 7){
-                    console.log("1")
                     return 55;
                 }else if(position < 67 && position + rolledNumber > 67){
-                    console.log("2")
                     return position + rolledNumber - 67 + 16 
                 }else if(position <= 53 &&  position + rolledNumber >= 54){
                     console.log(71 + position + rolledNumber - 54)
                     return 71 + position + rolledNumber - 54;
                 }else{
-                    console.log("4")
                     return position + rolledNumber;
                 }
             case 'green': 
@@ -126,10 +127,10 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
                         This condition checks if mouse location is:
                         1) on pawn
                         2) is color of pawn same as player's
-                        3) if pawn is on base is rolledNumber is 1 or 6 which allows pawn to exit base
+                        3) if pawn can move
                         And then sets cursor to pointer and paints hint pawn - where will be pawn after click
                     */
-                    if (ctx.isPointInPath(pawn.circle, x, y)  && context.color == pawn.color && (pawn.position>15 || rolledNumber === 1 || rolledNumber === 6)) {
+                    if (ctx.isPointInPath(pawn.circle, x, y)  && context.color == pawn.color && checkIfPawnCanMove(pawn)) {
                         const pawnPosition = getHintPawnPosition(pawn);
                         setBlinking(false);
                         // Checks if pawn can make a move

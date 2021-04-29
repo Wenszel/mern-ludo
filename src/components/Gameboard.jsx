@@ -42,6 +42,17 @@ const Gameboard = () => {
             setStarted(response.data.started);
         })
     }
+    const checkWin = () => {
+        if(pawns.filter(pawn => pawn.color === 'red' && pawn.position === 88).length === 4){
+            alert("Red Won")
+        }else if(pawns.filter(pawn => pawn.color === 'blue' && pawn.position === 88).length === 4){
+            alert("Blue Won")
+        }else if(pawns.filter(pawn => pawn.color === 'green' && pawn.position === 88).length === 4){
+            alert("Green Won")
+        }else if(pawns.filter(pawn => pawn.color === 'yellow' && pawn.position === 88).length === 4){
+            alert("Yellow Won")
+        }
+    }
     useEffect(() => {    
         //sending ajax every 1 sec 
         const interval = setInterval(fetchData, 1000);
