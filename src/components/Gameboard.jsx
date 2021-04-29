@@ -8,7 +8,6 @@ import Navbar from './Navbar'
 const Gameboard = () => {
     // Context data
     const context = useContext(PlayerDataContext);
-    const [id, setId] = useState();
     // Render data
     const [pawns, setPawns] = useState([]);
     const [players, setPlayers] = useState([]);
@@ -28,24 +27,22 @@ const Gameboard = () => {
                 response.data.players.push({name: "...",});
             };
             // Checks if client is currently moving player by session ID
-            const nowMovingPlayer = response.data.players.find(player => player.nowMoving === true)
+            const nowMovingPlayer = response.data.players.find(player => player.nowMoving === true);
             if(nowMovingPlayer){
-                if(nowMovingPlayer._id === id){
+                if(nowMovingPlayer._id === context.playerId){
                     setNowMoving(true);
                 }else{
                     setRolledNumber(null);
                     setNowMoving(false);
                 }
             }
-            console.log(nowMoving);
             setPlayers(response.data.players);
             setPawns(response.data.pawns);
             setTime(response.data.nextMoveTime);
             setStarted(response.data.started);
         })
     }
-    useEffect(() => {
-        setId(context.playerId);
+    useEffect(() => {    
         //sending ajax every 1 sec 
         const interval = setInterval(fetchData, 1000);
         return () => clearInterval(interval);

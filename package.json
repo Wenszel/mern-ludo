@@ -18,7 +18,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "heroku-postbuild": "cd backend && npm install && cd .. && npm install && npm run build",
+    "heroku-postbuild": "cd backend && npm install && node server.js && cd .. && npm install && npm run build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -40,5 +40,10 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:5000"
+  "buildpacks": [
+    {
+      "url": "https://github.com/mars/create-react-app-buildpack"
+    }
+  ],
+  "proxy": "http://localhost:3000"
 }
