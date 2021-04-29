@@ -57,11 +57,12 @@ function App() {
             <NameInput idCallback = {idCallback}/>
           </Route>
           <Route path="/game">
+            {playerData ? 
             <Beforeunload onBeforeunload={handleExit}>
               <PlayerDataContext.Provider value={playerData}>
                 <Gameboard/>
               </PlayerDataContext.Provider>
-            </Beforeunload>
+            </Beforeunload> : null}
           </Route>
         </Switch>
     </Router>

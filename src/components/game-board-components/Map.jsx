@@ -34,7 +34,7 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
                     axios.post('http://localhost:3000/game/move', {
                         withCredentials: true, 
                         mode: 'cors',
-                        data: {_id: pawn._id}
+                        data: {pawnId: pawn._id}
                     });
                     setHintPawn(null);
                 }
@@ -52,6 +52,8 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
             case 'red': 
                 if(pawn.position >= 0 && pawn.position <= 3){
                     return 16;
+                }else if(pawn.position>15 && pawn.position<67){
+                    return pawn.position + rolledNumber
                 }
                 break;
             case 'blue': 
@@ -80,6 +82,7 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
             x = event.clientX - rect.left,
             y = event.clientY - rect.top;
             canvas.style.cursor = "default";
+            console.log("Ruszam się")
             for (const pawn of pawns){
                 if(pawn.circle){
                     /*

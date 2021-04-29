@@ -37,6 +37,7 @@ const Gameboard = () => {
                     setNowMoving(false);
                 }
             }
+            console.log(nowMoving);
             setPlayers(response.data.players);
             setPawns(response.data.pawns);
             setTime(response.data.nextMoveTime);

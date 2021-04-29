@@ -44,7 +44,7 @@ router.post('/ready', function (req, res){
 
 //deleting user in case he left before game started
 router.post('/exit', function(req,res){
-    changeReadyState(req,res, true)
+   // changeReadyState(req,res, true)
 });
 
 //return session data

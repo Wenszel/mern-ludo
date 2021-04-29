@@ -26,7 +26,7 @@ const mongoose = require("mongoose");
 mongoose.set('useFindAndModify', false);
 const CONNECTION_URI = require("./credentials.js").MONGODB_URL;
 
-mongoose.connect(CONNECTION_URI, {
+mongoose.connect(process.env.MONGODB_URL || CONNECTION_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
   })
@@ -50,6 +50,10 @@ app.use(session({
     httpOnly: false,
     secure: false,},
 }));
+
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static('../build'))
+}
 
 //ROUTES CONFIG
 const roomRoutes = require("./routes/room");
