@@ -11,7 +11,7 @@ const Dice = ({ rolledNumberCallback, nowMoving }) => {
     const [rolledNumber, setRolledNumber] = useState();
     const [images] = useState([one, two, three, four, five, six]);
     const handleRoll = () => {
-        axios.get('http://localhost:3000/game/roll').then(response => {
+        axios.get('http://localhost:3000/game/roll', {withCredentials: true}).then(response => {
             const utterance = new SpeechSynthesisUtterance(response.data.number);
             speechSynthesis.speak(utterance);
             setRolledNumber(response.data.number);

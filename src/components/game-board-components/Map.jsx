@@ -55,7 +55,7 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
             y = event.clientY - rect.top;
             for(const pawn of pawns){
                 if (ctx.isPointInPath(pawn.circle, x, y)) {
-                    axios.post('http://localhost:3000/game/move', {pawnId: pawn._id, position: hintPawn.position}, {withCredentials: true})
+                    axios.post('http://localhost:3000/game/move', {pawnId: pawn._id}, {withCredentials: true, mode: 'cors'})
                     .then(() => {
                         setHintPawn(null);
                     });

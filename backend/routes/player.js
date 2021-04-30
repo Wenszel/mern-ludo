@@ -18,7 +18,7 @@ var changeReadyState = (req, res, exit) =>{
             }
             if(updatedPlayers.filter(player => player.ready).length >= 2){
                 updatedDoc.started = true;
-                updatedDoc.players = updatedDoc.players.map(player => player.ready === true);
+                updatedDoc.players.forEach(player => player.ready = true);
                 updatedDoc.nextMoveTime = Date.now() + 15000;
                 updatedDoc.players[0].nowMoving = true;
             }

@@ -59,7 +59,7 @@ router.post('/add', function (req, res) {
                 updateObj.full = true; // Room is full 
                 updateObj.started = true; // Game started
                 updateObj.nextMoveTime = Date.now() + 15000;
-                updateObj.players = updateObj.players.map(player => player.ready === true);
+                updateObj.players.forEach(player => player.ready = true);
                 updateObj.players[0].nowMoving = true; //First joined player moving
                 updateObj.pawns = getStartPositions();
             }

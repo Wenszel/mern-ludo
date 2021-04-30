@@ -13,9 +13,10 @@ router.post('/move', function (req, res){
         if(doc){
             // Updating position
             const updatedPawn = doc.pawns.findIndex(pawn => pawn._id == req.body.pawnId);
-            doc.pawns[updatedPawn].position = req.body.position;
+            doc.pawns[updatedPawn].position = getPosition(req.session.rolledNumber, doc.pawns[updatedPawn]);
+            console.log(getPosition(req.session.rolledNumber, doc.pawns[updatedPawn]));
             // Capturing a pawn
-            const pawnsOnPos = doc.pawns.filter( pawn => pawn.position == req.body.position);
+            const pawnsOnPos = doc.pawns.filter( pawn => pawn.position == doc.pawns[updatedPawn].position);
             pawnsOnPos.forEach( pawn => {
                 if(pawn.color !== req.session.color){
                     const index = doc.pawns.findIndex(i => i._id === pawn._id);
@@ -33,6 +34,7 @@ router.post('/move', function (req, res){
             }
             // Updating timer
             doc.nextMoveTime = Date.now()+15000;
+            // Pushing above data to database
             RoomModel.findOneAndUpdate({_id: req.session.roomId}, doc, function(err, doc){
                 res.send("Correctly Moved!");
             });
@@ -40,5 +42,64 @@ router.post('/move', function (req, res){
     });
 });
 
+function getPosition(rolledNumber, pawn){
+    const { position, color } = pawn;
+    switch (color){
+        case 'red': 
+            if(pawn.position + rolledNumber <= 73){
+                if(position >= 0 && position <= 3) {
+                    return 16;
+                }else if(position <= 66 && position + rolledNumber >= 67){
+                    return position + rolledNumber + 1;
+                }else{
+                    return position + rolledNumber;
+                }
+            }else{
+                return position;
+            }
+        case 'blue': 
+            if(pawn.position + rolledNumber <= 79){
+                if(position >= 4 && position <= 7){
+                    return 55;
+                }else if(position <= 67 && position + rolledNumber > 67){
+                    return position + rolledNumber - 52; 
+                }else if(position <= 53 && position + rolledNumber >= 54){
+                    return position + rolledNumber + 20;
+                }else{
+                    return position + rolledNumber;
+                }
+            }else{
+                return position;
+            }
+        case 'green': 
+            if(pawn.position + rolledNumber <= 85){
+                if(position >= 8 && position <= 11){
+                    return 42;
+                }else if(position <= 67 && position + rolledNumber > 67){
+                    return position + rolledNumber - 52; 
+                }else if(position <= 40 && position + rolledNumber >= 41){
+                    return position + rolledNumber + 39;
+                }else{
+                    return position + rolledNumber;
+                }
+            }else{
+                return position;
+            }
+        case 'yellow': 
+            if(pawn.position + rolledNumber <= 85){
+                if(position >= 12 && position <= 15){
+                    return 29;
+                }else if(position <= 67 && position + rolledNumber > 67){
+                    return position + rolledNumber - 52; 
+                }else if(position <= 27 && position + rolledNumber >= 28){
+                    return position + rolledNumber + 58;
+                }else{
+                    return position + rolledNumber;
+                }
+            }else{
+                return position;
+            }
+    }
+};
 
 module.exports = router;
