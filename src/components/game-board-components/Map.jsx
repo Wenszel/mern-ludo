@@ -29,16 +29,16 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
         }else if(pawn.position !== pawn.basePos){
             switch (pawn.color){
                 case 'red':
-                    if(pawn.position + rolledNumber <= 72) return true;
+                    if(pawn.position + rolledNumber <= 73) return true;
                     break;
                 case 'blue':
-                    if(pawn.position + rolledNumber <= 77) return true;
+                    if(pawn.position + rolledNumber <= 79) return true;
                     break;
                 case 'green':
-                    if(pawn.position + rolledNumber <= 82) return true;
+                    if(pawn.position + rolledNumber <= 85) return true;
                     break;
                 case 'yellow':
-                    if(pawn.position + rolledNumber <= 87) return true;
+                    if(pawn.position + rolledNumber <= 91) return true;
                     break;
             }
         }else{
@@ -67,47 +67,62 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
             }
         }
     }
-    const getHintPawnPosition = (pawn) => {
+    const getHintPawnPosition = pawn => {
         // Based on color (because specific color have specific base and end positions)
         let { position } = pawn;
         switch (context.color){
             case 'red': 
                 // When in base
-                if(position >= 0 && position <= 3){
+                if(position >= 0 && position <= 3) {
                     return 16;
-                // Ending move
-                }else if(position + rolledNumber === 72){
-                    return 88;
+                // Next to end
+                }else if(position <= 66 && position + rolledNumber >= 67){
+                    return position + rolledNumber + 1; // 1 is difference between last position on map and first on end
                 // Normal move 
                 }else{
                     return  position + rolledNumber;
                 }
             case 'blue': 
+                // When in base
                 if(position >= 4 && position <= 7){
                     return 55;
-                }else if(position < 67 && position + rolledNumber > 67){
-                    return position + rolledNumber - 67 + 16 
-                }else if(position <= 53 &&  position + rolledNumber >= 54){
-                    console.log(71 + position + rolledNumber - 54)
-                    return 71 + position + rolledNumber - 54;
+                // Next to red base
+                }else if(position <= 67 && position + rolledNumber > 67){
+                    return position + rolledNumber - 52; 
+                // Next to base
+                }else if(position <= 53 && position + rolledNumber >= 54){
+                    return position + rolledNumber + 20;
+                // Normal move 
                 }else{
                     return position + rolledNumber;
                 }
             case 'green': 
+                // When in base
                 if(position >= 8 && position <= 11){
                     return 42;
-                }else if(position+rolledNumber < 66 && (position + rolledNumber > 42 || position+rolledNumber <= 40)){
-                    return position + rolledNumber;
+                // Next to red base
+                }else if(position <= 67 && position + rolledNumber > 67){
+                    return position + rolledNumber - 52; 
+                // Next to base
+                }else if(position <= 40 && position + rolledNumber >= 41){
+                    return position + rolledNumber + 39;
+                // Normal move
                 }else{
-                    return 76 - (position + rolledNumber - 40)
+                    return position + rolledNumber;
                 }
             case 'yellow': 
+                // When in base
                 if(position >= 12 && position <= 15){
                     return 29;
-                }else if(position+rolledNumber < 66 && (position + rolledNumber > 29 || position+rolledNumber <= 27)){
-                    return position + rolledNumber;
+                // Next to red base
+                }else if(position <= 67 && position + rolledNumber > 67){
+                    return position + rolledNumber - 52; 
+                // Next to base
+                }else if(position <= 27 && position + rolledNumber >= 28){
+                    return position + rolledNumber + 58;
+                // Normal move
                 }else{
-                    return 82 + (position + rolledNumber - 27)
+                    return position + rolledNumber;
                 }
         }
         
@@ -149,10 +164,10 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
     const rerenderCanvas = () => {
         const canvas = canvasRef.current;
         const ctx = canvas.getContext('2d');
-        var image = new Image();
+        const image = new Image();
         image.src = 'https://img-9gag-fun.9cache.com/photo/a8GdpYZ_460s.jpg';
         image.onload = function() {
-            ctx.drawImage(image, 0 , 0);
+            ctx.drawImage(image, 0, 0);
             pawns.forEach( (pawn, index) => {
                 if(nowMoving && rolledNumber && blinking && pawn.color === context.color && checkIfPawnCanMove(pawn)){
                     pawns[index].circle = paintPawn(ctx, positions[pawn.position].x, positions[pawn.position].y, 'white');

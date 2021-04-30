@@ -43,13 +43,13 @@ const Gameboard = () => {
         })
     }
     const checkWin = () => {
-        if(pawns.filter(pawn => pawn.color === 'red' && pawn.position === 88).length === 4){
+        if(pawns.filter(pawn => pawn.color === 'red' && pawn.position === 73).length === 4){
             alert("Red Won")
-        }else if(pawns.filter(pawn => pawn.color === 'blue' && pawn.position === 88).length === 4){
+        }else if(pawns.filter(pawn => pawn.color === 'blue' && pawn.position === 79).length === 4){
             alert("Blue Won")
-        }else if(pawns.filter(pawn => pawn.color === 'green' && pawn.position === 88).length === 4){
+        }else if(pawns.filter(pawn => pawn.color === 'green' && pawn.position === 85).length === 4){
             alert("Green Won")
-        }else if(pawns.filter(pawn => pawn.color === 'yellow' && pawn.position === 88).length === 4){
+        }else if(pawns.filter(pawn => pawn.color === 'yellow' && pawn.position === 91).length === 4){
             alert("Yellow Won")
         }
     }
