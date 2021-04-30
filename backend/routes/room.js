@@ -58,7 +58,8 @@ router.post('/add', function (req, res) {
             if (players.length === 4) {
                 updateObj.full = true; // Room is full 
                 updateObj.started = true; // Game started
-                updateObj.nextMoveTime = Date.now()+30000;
+                updateObj.nextMoveTime = Date.now() + 15000;
+                updateObj.players = updateObj.players.map(player => player.ready === true);
                 updateObj.players[0].nowMoving = true; //First joined player moving
                 updateObj.pawns = getStartPositions();
             }
@@ -100,7 +101,7 @@ router.get('/', function(req,res){
                                 }else{
                                     doc.players[index + 1].nowMoving = true;
                                 }
-                                doc.nextMoveTime = Date.now()+30000;
+                                doc.nextMoveTime = Date.now()+15000;
                                 RoomModel.findOneAndUpdate({_id: req.session.roomId}, doc, function(err, docs){
                                     if(err){
                                         res.status(500).send(err)

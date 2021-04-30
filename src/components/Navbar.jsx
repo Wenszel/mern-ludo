@@ -1,7 +1,7 @@
 import React from 'react';
 import NameContainer from './navbar-components/NameContainer'
 import ReadyButton from './navbar-components/ReadyButton'
-import './Navbar.css';
+
 const Navbar = ({ players, started, time }) => {
     return(
         <div className = "navbar-container">

@@ -2,20 +2,17 @@ const express = require("express");
 const cors = require('cors');
 const cookieParser = require('cookie-parser')
 const session = require('express-session')
-const bodyParser = require('body-parser');
 
 const app = express();
 app.use(cookieParser());
-app.use(bodyParser.urlencoded({
+app.use(express.urlencoded({
   extended: true
 }));
-app.use(bodyParser.json());
+app.use(express.json());
 app.set('trust proxy', 1)
 app.use(cors({
   origin: [
-    'localhost:3001',
     'http://localhost:3001',
-    'https://localhost:3001'
   ],
   credentials: true,
 }))

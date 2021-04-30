@@ -8,7 +8,7 @@ import five from '../../images/dice/5.png';
 import six from '../../images/dice/6.png';
 
 const Dice = ({ rolledNumberCallback, nowMoving }) => {
-    const [rolledNumber, setRolledNumber] = useState()
+    const [rolledNumber, setRolledNumber] = useState();
     const [images] = useState([one, two, three, four, five, six]);
     const handleRoll = () => {
         axios.get('http://localhost:3000/game/roll').then(response => {
@@ -19,8 +19,8 @@ const Dice = ({ rolledNumberCallback, nowMoving }) => {
         })
     }
     return(
-        <div>
-            {rolledNumber ? <img src={images[rolledNumber - 1]} width="100" height="100"/> : nowMoving ? <button onClick={handleRoll}>Roll</button> : null  }
+        <div className="dice-container">
+            {rolledNumber ? <img src={images[rolledNumber - 1]} width="100" height="100"/> : nowMoving ? <button onClick={handleRoll}> Roll </button> : null}
         </div>
     )
 }

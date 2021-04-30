@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState, useContext } from 'react';
 import { PlayerDataContext } from '../../App';
 import axios from 'axios';
 import positions from './positions';
-import './Map.css';
 
 const Map = ({ pawns, nowMoving, rolledNumber }) => {
     const context = useContext(PlayerDataContext);
@@ -44,8 +43,8 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
         }else{
             return false;
         }
-        
     }
+
     const handleCanvasClick = event => {
         // If hint pawn exist it means that pawn can move 
         if(hintPawn){
@@ -56,10 +55,8 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
             y = event.clientY - rect.top;
             for(const pawn of pawns){
                 if (ctx.isPointInPath(pawn.circle, x, y)) {
-                    axios.post('http://localhost:3000/game/move', {pawnId: pawn._id, position: hintPawn.position},
-                    {
-                        withCredentials: true, 
-                    }).then(() => {
+                    axios.post('http://localhost:3000/game/move', {pawnId: pawn._id, position: hintPawn.position}, {withCredentials: true})
+                    .then(() => {
                         setHintPawn(null);
                     });
                     
@@ -125,7 +122,6 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
                     return position + rolledNumber;
                 }
         }
-        
     };
     const handleMouseMove = event => {   
         if(nowMoving && rolledNumber){ 

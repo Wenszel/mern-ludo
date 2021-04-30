@@ -16,12 +16,9 @@ function App() {
   useEffect(() => {
     axios.get('http://localhost:3000/player', {
       withCredentials:true,
-      mode: 'cors'
     })
-    .then( response => {
+    .then(response => {
       setPlayerData(response.data)
-      console.log(response.data);
-
       response.data.roomId!=null ? setRedirect(true) : setRedirect(false);
     });
   },[]);
@@ -29,15 +26,13 @@ function App() {
   const handleExit = e => {
     e.preventDefault();
     window.addEventListener('unload', () => {
-      axios.post('http://localhost:3000/player/exit', {withCredentials:true, mode: 'cors'})
+      axios.post('http://localhost:3000/player/exit', {withCredentials:true, })
     });
     } 
   
   const idCallback = () => {
     axios.get('http://localhost:3000/player/', {
       withCredentials:true,
-      mode: 'cors',
-      headers: { "Content-Type": "application/json" },
     })
     .then(response => {
       setPlayerData(response.data);

@@ -4,3 +4,39 @@ body{
     flex-direction: column;
     align-items: center;
 }
+.canvas-container{
+    margin: 10px;
+}
+.dice-container{
+    position: absolute;
+    top: 30%;
+    left: 20%;
+}
+.navbar-container{
+    display: flex;
+    flex-direction: row;
+}
+.navbar-container>div{
+    margin-right: 10px;
+}
+.name-container{
+    width: 100px;
+    height: 50px;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+.timer{
+    background-color: darkblue;
+    color: white;
+    position: relative;
+    top: -20px;
+    left: 15px;
+    width: 30px;
+    height: 20px;
+    border-radius: 5px;
+}

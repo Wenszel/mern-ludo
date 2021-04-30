@@ -20,7 +20,6 @@ const Gameboard = () => {
     const fetchData = () => {
         axios.get('http://localhost:3000/room/',{
             withCredentials:true,
-            mode: 'cors',
         }).then((response)=>{
             // Filling navbar with empty player nick container
             while(response.data.players.length !== 4){
@@ -36,6 +35,7 @@ const Gameboard = () => {
                     setNowMoving(false);
                 }
             }
+            checkWin();
             setPlayers(response.data.players);
             setPawns(response.data.pawns);
             setTime(response.data.nextMoveTime);
@@ -43,6 +43,7 @@ const Gameboard = () => {
         })
     }
     const checkWin = () => {
+        // Player wins when all pawns with same color are inside end base
         if(pawns.filter(pawn => pawn.color === 'red' && pawn.position === 73).length === 4){
             alert("Red Won")
         }else if(pawns.filter(pawn => pawn.color === 'blue' && pawn.position === 79).length === 4){

@@ -32,7 +32,7 @@ router.post('/move', function (req, res){
                 doc.players[index+1].nowMoving = true;
             }
             // Updating timer
-            doc.nextMoveTime = Date.now()+30000;
+            doc.nextMoveTime = Date.now()+15000;
             RoomModel.findOneAndUpdate({_id: req.session.roomId}, doc, function(err, doc){
                 res.send("Correctly Moved!");
             });
