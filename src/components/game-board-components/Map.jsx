@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useContext } from 'react';
+import React, { useEffect, useRef, useState, useContext, useCallback } from 'react';
 import { PlayerDataContext } from '../../App';
 import axios from 'axios';
 import positions from './positions';
@@ -20,7 +20,7 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
     const canvasRef = useRef(null);
 
     // Return true when pawn can move
-    const checkIfPawnCanMove = pawn => {
+    const checkIfPawnCanMove = useCallback(pawn => {
         // If is in base
         if((rolledNumber === 1 || rolledNumber === 6) && pawn.position === pawn.basePos){
             return true;
@@ -39,11 +39,13 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
                 case 'yellow':
                     if(pawn.position + rolledNumber <= 91) return true;
                     break;
+                default:
+                    return false;
             }
         }else{
             return false;
         }
-    }
+    },[rolledNumber]);
 
     const handleCanvasClick = event => {
         // If hint pawn exist it means that pawn can move 
@@ -121,6 +123,8 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
                 }else{
                     return position + rolledNumber;
                 }
+            default: 
+                return position;
         }
     };
     const handleMouseMove = event => {   
@@ -141,7 +145,7 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
                         3) if pawn can move
                         And then sets cursor to pointer and paints hint pawn - where will be pawn after click
                     */
-                    if (ctx.isPointInPath(pawn.circle, x, y)  && context.color == pawn.color && checkIfPawnCanMove(pawn)) {
+                    if (ctx.isPointInPath(pawn.circle, x, y)  && context.color === pawn.color && checkIfPawnCanMove(pawn)) {
                         const pawnPosition = getHintPawnPosition(pawn);
                         setBlinking(false);
                         // Checks if pawn can make a move
@@ -157,7 +161,7 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
             }
         }
     };
-    const rerenderCanvas = () => {
+    const rerenderCanvas = useCallback(() => {
         const canvas = canvasRef.current;
         const ctx = canvas.getContext('2d');
         const image = new Image();
@@ -176,11 +180,11 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
                 paintPawn(ctx, positions[hintPawn.position].x, positions[hintPawn.position].y, hintPawn.color);
             }
         }
-    }
+    },[blinking, checkIfPawnCanMove, context.color, hintPawn, nowMoving, pawns, rolledNumber]);
     // Rerender canvas when pawns have changed
     useEffect(() => {
         rerenderCanvas(); 
-    }, [hintPawn, pawns]);
+    }, [hintPawn, pawns, rerenderCanvas]);
 
     return(
         <canvas 

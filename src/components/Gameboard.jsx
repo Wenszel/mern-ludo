@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { PlayerDataContext } from '../App'
 import axios from 'axios';
 import Map from './game-board-components/Map'
@@ -16,8 +16,21 @@ const Gameboard = () => {
     const [time, setTime] = useState();
     const [nowMoving, setNowMoving] = useState(false);
     const [started, setStarted] = useState(false);
+
+    const checkWin = useCallback(() => {
+        // Player wins when all pawns with same color are inside end base
+        if(pawns.filter(pawn => pawn.color === 'red' && pawn.position === 73).length === 4){
+            alert("Red Won")
+        }else if(pawns.filter(pawn => pawn.color === 'blue' && pawn.position === 79).length === 4){
+            alert("Blue Won")
+        }else if(pawns.filter(pawn => pawn.color === 'green' && pawn.position === 85).length === 4){
+            alert("Green Won")
+        }else if(pawns.filter(pawn => pawn.color === 'yellow' && pawn.position === 91).length === 4){
+            alert("Yellow Won")
+        }
+    },[pawns]);
     // Fetching game data
-    const fetchData = () => {
+    const fetchData = useCallback(() => {
         axios.get('http://localhost:3000/room/',{
             withCredentials:true,
         }).then((response)=>{
@@ -41,24 +54,13 @@ const Gameboard = () => {
             setTime(response.data.nextMoveTime);
             setStarted(response.data.started);
         })
-    }
-    const checkWin = () => {
-        // Player wins when all pawns with same color are inside end base
-        if(pawns.filter(pawn => pawn.color === 'red' && pawn.position === 73).length === 4){
-            alert("Red Won")
-        }else if(pawns.filter(pawn => pawn.color === 'blue' && pawn.position === 79).length === 4){
-            alert("Blue Won")
-        }else if(pawns.filter(pawn => pawn.color === 'green' && pawn.position === 85).length === 4){
-            alert("Green Won")
-        }else if(pawns.filter(pawn => pawn.color === 'yellow' && pawn.position === 91).length === 4){
-            alert("Yellow Won")
-        }
-    }
+    },[checkWin, context.playerId]);
+    
     useEffect(() => {    
         //sending ajax every 1 sec 
         const interval = setInterval(fetchData, 1000);
         return () => clearInterval(interval);
-    },[]);
+    },[fetchData]);
     // Callback to handle dice rolling between dice and map component
     const rolledNumberCallback = (number) => {
         setRolledNumber(number);

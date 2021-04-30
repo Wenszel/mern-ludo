@@ -20,7 +20,7 @@ const Dice = ({ rolledNumberCallback, nowMoving }) => {
     }
     return(
         <div className="dice-container">
-            {rolledNumber ? <img src={images[rolledNumber - 1]} width="100" height="100"/> : nowMoving ? <button onClick={handleRoll}> Roll </button> : null}
+            {rolledNumber ? <img src={images[rolledNumber - 1]} alt={rolledNumber} width="100" height="100"/> : nowMoving ? <button onClick={handleRoll}> Roll </button> : null}
         </div>
     )
 }
