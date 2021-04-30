@@ -14,7 +14,7 @@ function App() {
   const [redirect, setRedirect] = useState();
 
   useEffect(() => {
-    axios.get('http://localhost:3000/player', {
+    axios.get('/player', {
       withCredentials:true,
     })
     .then(response => {
@@ -26,12 +26,12 @@ function App() {
   const handleExit = e => {
     e.preventDefault();
     window.addEventListener('unload', () => {
-      axios.post('http://localhost:3000/player/exit', {withCredentials:true, })
+      axios.post('/player/exit', {withCredentials:true, })
     });
     } 
   
   const idCallback = () => {
-    axios.get('http://localhost:3000/player/', {
+    axios.get('/player/', {
       withCredentials:true,
     })
     .then(response => {

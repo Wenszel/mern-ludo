@@ -8,7 +8,7 @@ const NameInput = ({ idCallback }) => {
     }
 
     const handleButtonClick = () => {
-        axios.post('http://localhost:3000/room/add',{
+        axios.post('/room/add',{
             name: inputValue
         },{
             withCredentials:true,

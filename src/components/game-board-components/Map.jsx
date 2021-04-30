@@ -57,7 +57,7 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
             y = event.clientY - rect.top;
             for(const pawn of pawns){
                 if (ctx.isPointInPath(pawn.circle, x, y)) {
-                    axios.post('http://localhost:3000/game/move', {pawnId: pawn._id}, {withCredentials: true, mode: 'cors'})
+                    axios.post('/game/move', {pawnId: pawn._id}, {withCredentials: true, mode: 'cors'})
                     .then(() => {
                         setHintPawn(null);
                     });
@@ -180,7 +180,7 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
                 paintPawn(ctx, positions[hintPawn.position].x, positions[hintPawn.position].y, hintPawn.color);
             }
         }
-    },[blinking, checkIfPawnCanMove, context.color, hintPawn, nowMoving, pawns, rolledNumber]);
+    },[ checkIfPawnCanMove, context.color, hintPawn, nowMoving, pawns, rolledNumber]);
     // Rerender canvas when pawns have changed
     useEffect(() => {
         rerenderCanvas(); 

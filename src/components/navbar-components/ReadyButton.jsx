@@ -7,7 +7,7 @@ const ReadyButton = () => {
     const [checked, setChecked] = useState(false)
 
     const handleCheckboxChange = () => {
-        axios.post('http://localhost:3000/player/ready',{},{withCredentials: true});
+        axios.post('/player/ready',{},{withCredentials: true});
         setChecked(!checked);
     }
     

@@ -31,7 +31,7 @@ const Gameboard = () => {
     },[pawns]);
     // Fetching game data
     const fetchData = useCallback(() => {
-        axios.get('http://localhost:3000/room/',{
+        axios.get('/room/',{
             withCredentials:true,
         }).then((response)=>{
             // Filling navbar with empty player nick container
