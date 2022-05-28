@@ -19,16 +19,12 @@ function App() {
   const [redirect, setRedirect] = useState();
 
   useEffect(() => {
-    const socket = io("http://localhost:5000");
-    socket.on("connect", () => console.log(socket.id));
-    axios
-      .get("/player", {
-        withCredentials: true,
-      })
-      .then((response) => {
-        setPlayerData(response.data);
-        response.data.roomId != null ? setRedirect(true) : setRedirect(false);
-      });
+    const socket = io("http://localhost:5000", { withCredentials: true });
+    socket.on("client data", (data) => {
+      data = JSON.parse(data);
+      setPlayerData(data);
+      data.roomId != null ? setRedirect(true) : setRedirect(false);
+    });
   }, []);
 
   const handleExit = (e) => {

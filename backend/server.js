@@ -1,8 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
-const session = require("express-session");
-
+const { sessionMiddleware, wrap } = require("./controllers/serverController");
 const app = express();
 app.use(cookieParser());
 app.use(
@@ -14,17 +13,12 @@ app.use(express.json());
 app.set("trust proxy", 1);
 app.use(
   cors({
-    origin: [
-      "http://localhost:5000",
-      "https://localhost:5000",
-      "http://localhost:3001",
-      "http://localhost:3000",
-    ],
+    origin: "http://localhost:3000",
     credentials: true,
   })
 );
 const PORT = 5000;
-
+app.use(sessionMiddleware);
 //DATABASE CONFIG
 const mongoose = require("mongoose");
 mongoose.set("useFindAndModify", false);
@@ -40,24 +34,7 @@ mongoose
   })
   .catch((err) => console.error(err));
 
-//SESSION CONFIG]
-var MongoDBStore = require("connect-mongodb-session")(session);
-var store = new MongoDBStore({
-  uri: CONNECTION_URI,
-  collection: "sessions",
-});
-app.use(
-  session({
-    secret: "lalala",
-    resave: true,
-    saveUninitialized: false,
-    store: store,
-    cookie: {
-      httpOnly: false,
-      secure: false,
-    },
-  })
-);
+//SESSION CONFIG
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static("/app/build"));
@@ -65,6 +42,19 @@ if (process.env.NODE_ENV === "production") {
     res.sendFile("/app/build/index.html");
   });
 }
+const server = app.listen(PORT, () => {
+  console.log("Server runs on port " + PORT);
+});
+const io = require("socket.io")(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    credentials: true,
+  },
+});
+io.use(wrap(sessionMiddleware));
+io.on("connection", (socket) => {
+  socket.emit("client data", JSON.stringify(socket.request.session));
+});
 
 //ROUTES CONFIG
 const roomRoutes = require("./routes/room");
@@ -74,16 +64,3 @@ const gameRoutes = require("./routes/game");
 app.use("/player", playerRoutes);
 app.use("/room", roomRoutes);
 app.use("/game", gameRoutes);
-
-const server = app.listen(PORT, () => {
-  console.log("Server runs on port " + PORT);
-});
-const socket = require("socket.io");
-const io = socket(server, {
-  cors: {
-    origin: "http://localhost:3000",
-  },
-});
-io.on("connection", () => {
-  console.log("a user connected");
-});
