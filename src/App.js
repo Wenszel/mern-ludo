@@ -1,11 +1,16 @@
-import React, { useEffect, useState, createContext } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState, createContext } from "react";
+import axios from "axios";
+import { io } from "socket.io-client";
+import { Beforeunload } from "react-beforeunload";
+import {
+  BrowserRouter as Router,
+  Route,
+  Redirect,
+  Switch,
+} from "react-router-dom";
 
-import { Beforeunload } from 'react-beforeunload';
-import { BrowserRouter as Router , Route , Redirect, Switch } from 'react-router-dom';
-
-import Gameboard  from './components/Gameboard'
-import NameInput from './components/NameInput';
+import Gameboard from "./components/Gameboard";
+import NameInput from "./components/NameInput";
 
 export const PlayerDataContext = createContext();
 
@@ -14,52 +19,57 @@ function App() {
   const [redirect, setRedirect] = useState();
 
   useEffect(() => {
-    axios.get('/player', {
-      withCredentials:true,
-    })
-    .then(response => {
-      setPlayerData(response.data)
-      response.data.roomId!=null ? setRedirect(true) : setRedirect(false);
-    });
-  },[]);
+    const socket = io("http://localhost:5000");
+    socket.on("connect", () => console.log(socket.id));
+    axios
+      .get("/player", {
+        withCredentials: true,
+      })
+      .then((response) => {
+        setPlayerData(response.data);
+        response.data.roomId != null ? setRedirect(true) : setRedirect(false);
+      });
+  }, []);
 
-  const handleExit = e => {
+  const handleExit = (e) => {
     e.preventDefault();
-    window.addEventListener('unload', () => {
-      axios.post('/player/exit', {withCredentials:true, })
+    window.addEventListener("unload", () => {
+      axios.post("/player/exit", { withCredentials: true });
     });
-    } 
-  
+  };
+
   const idCallback = () => {
-    axios.get('/player/', {
-      withCredentials:true,
-    })
-    .then(response => {
-      setPlayerData(response.data);
-      console.log(response.data);
-      setRedirect(true);
-    })
-  }
+    axios
+      .get("/player/", {
+        withCredentials: true,
+      })
+      .then((response) => {
+        setPlayerData(response.data);
+        console.log(response.data);
+        setRedirect(true);
+      });
+  };
 
   return (
     <Router>
-      {redirect ?  <Redirect to="/game"/> : <Redirect to="/login"/>}
+      {redirect ? <Redirect to="/game" /> : <Redirect to="/login" />}
       <Switch>
-        <Route exact path = "/">
+        <Route exact path="/">
           LOADING...
         </Route>
-          <Route path="/login">
-            <NameInput idCallback = {idCallback}/>
-          </Route>
-          <Route path="/game">
-            {playerData ? 
+        <Route path="/login">
+          <NameInput idCallback={idCallback} />
+        </Route>
+        <Route path="/game">
+          {playerData ? (
             <Beforeunload onBeforeunload={handleExit}>
               <PlayerDataContext.Provider value={playerData}>
-                <Gameboard/>
+                <Gameboard />
               </PlayerDataContext.Provider>
-            </Beforeunload> : null}
-          </Route>
-        </Switch>
+            </Beforeunload>
+          ) : null}
+        </Route>
+      </Switch>
     </Router>
   );
 }

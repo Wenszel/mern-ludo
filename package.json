@@ -13,10 +13,12 @@
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
+    "socket.io": "^4.5.1",
+    "socket.io-client": "^4.5.1",
     "web-vitals": "^1.1.0"
   },
   "scripts": {
-    "start": "node backend/server.js",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "heroku-postbuild": "cd backend && npm install && cd .. && npm install && npm run build",
     "test": "react-scripts test",
@@ -30,7 +32,7 @@
   },
   "engines": {
     "node": "10.16.0"
-},
+  },
   "browserslist": {
     "production": [
       ">0.2%",
