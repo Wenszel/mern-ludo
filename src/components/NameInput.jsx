@@ -1,30 +1,25 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useState, useContext } from "react";
+import { SocketContext } from "../App";
 
-const NameInput = ({ idCallback }) => {
-    const [inputValue, setInputValue] = useState('');
-    const handleInputChange = (e) => {
-        setInputValue(e.target.value);
-    }
-
-    const handleButtonClick = () => {
-        axios.post('/room/add',{
-            name: inputValue
-        },{
-            withCredentials:true,
-            "Content-Type": "application/json" 
-        })
-        .then(response => {
-            console.log(response.data);
-            idCallback(response.data);
-        })
-    }
-    return(
-        <div>
-            <input placeholder = "Enter name" type="text" onChange={handleInputChange}/>
-            <input type="submit" onClick={handleButtonClick}/>
-        </div>
-    )
-}
+const NameInput = () => {
+  const socket = useContext(SocketContext);
+  const [inputValue, setInputValue] = useState("");
+  const handleInputChange = (e) => {
+    setInputValue(e.target.value);
+  };
+  const handleButtonClick = () => {
+    socket.emit("player:login", { name: inputValue });
+  };
+  return (
+    <div>
+      <input
+        placeholder="Enter name"
+        type="text"
+        onChange={handleInputChange}
+      />
+      <input type="submit" onClick={handleButtonClick} />
+    </div>
+  );
+};
 
 export default NameInput;
