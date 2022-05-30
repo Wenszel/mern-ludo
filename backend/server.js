@@ -3,6 +3,7 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const { sessionMiddleware, wrap } = require('./controllers/serverController');
 const registerPlayerHandlers = require('./handlers/playerHandler');
+const registerRoomHandlers = require('./handlers/roomHandler');
 const PORT = 8080;
 const mongoose = require('mongoose');
 const CONNECTION_URI = require('./credentials.js');
@@ -73,20 +74,19 @@ io.use(wrap(sessionMiddleware));
 
 io.on('connection', socket => {
     registerPlayerHandlers(io, socket);
+    registerRoomHandlers(io, socket);
     if (socket.request.session.roomId) {
         socket.join(socket.request.session.roomId);
-        socket.emit('player:data', JSON.stringify(session));
+        socket.emit('player:data', JSON.stringify(socket.request.session));
         io.to(socket.request.session.roomId).emit('player joined');
     }
 });
 
 //ROUTES CONFIG
-const roomRoutes = require('./routes/room');
 const playerRoutes = require('./routes/player');
 const gameRoutes = require('./routes/game');
 
 app.use('/player', playerRoutes);
-app.use('/room', roomRoutes);
 app.use('/game', gameRoutes);
 
 if (process.env.NODE_ENV === 'production') {

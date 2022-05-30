@@ -53,7 +53,7 @@ module.exports = (io, socket) => {
             ready: false,
             color: colors[room.players.length],
         });
-        const updatedRoom = { players: room.players };
+        let updatedRoom = { players: room.players };
         // Checking if the room is full
         if (room.players.length === 4) {
             // Changes the properties of the room to the state to start the game
