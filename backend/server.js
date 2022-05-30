@@ -4,6 +4,7 @@ const cookieParser = require('cookie-parser');
 const { sessionMiddleware, wrap } = require('./controllers/serverController');
 const registerPlayerHandlers = require('./handlers/playerHandler');
 const registerRoomHandlers = require('./handlers/roomHandler');
+const registerGameHandlers = require('./handlers/gameHandler');
 const PORT = 8080;
 const mongoose = require('mongoose');
 const CONNECTION_URI = require('./credentials.js');
@@ -75,19 +76,13 @@ io.use(wrap(sessionMiddleware));
 io.on('connection', socket => {
     registerPlayerHandlers(io, socket);
     registerRoomHandlers(io, socket);
+    registerGameHandlers(io, socket);
     if (socket.request.session.roomId) {
         socket.join(socket.request.session.roomId);
         socket.emit('player:data', JSON.stringify(socket.request.session));
         io.to(socket.request.session.roomId).emit('player joined');
     }
 });
-
-//ROUTES CONFIG
-const playerRoutes = require('./routes/player');
-const gameRoutes = require('./routes/game');
-
-app.use('/player', playerRoutes);
-app.use('/game', gameRoutes);
 
 if (process.env.NODE_ENV === 'production') {
     app.use(express.static('/app/build'));

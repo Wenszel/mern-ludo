@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState, useContext, useCallback } from 'react';
-import { PlayerDataContext } from '../../App';
-import axios from 'axios';
+import { PlayerDataContext, SocketContext } from '../../App';
 import positions from './positions';
 
 const Map = ({ pawns, nowMoving, rolledNumber }) => {
     const context = useContext(PlayerDataContext);
+    const socket = useContext(SocketContext);
     const [hintPawn, setHintPawn] = useState();
     const [blinking, setBlinking] = useState(false);
-    const paintPawn = (context, x, y, color) =>{
+    const paintPawn = (context, x, y, color) => {
         const circle = new Path2D();
         circle.arc(x, y, 12, 0, 2 * Math.PI);
         context.strokeStyle = 'black';
@@ -15,129 +15,128 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
         context.fillStyle = color;
         context.fill(circle);
         return circle;
-    }
+    };
 
     const canvasRef = useRef(null);
 
     // Return true when pawn can move
-    const checkIfPawnCanMove = useCallback(pawn => {
-        // If is in base
-        if((rolledNumber === 1 || rolledNumber === 6) && pawn.position === pawn.basePos){
-            return true;
-        // Other situations: pawn is on map or pawn is in end positions
-        }else if(pawn.position !== pawn.basePos){
-            switch (pawn.color){
-                case 'red':
-                    if(pawn.position + rolledNumber <= 73) return true;
-                    break;
-                case 'blue':
-                    if(pawn.position + rolledNumber <= 79) return true;
-                    break;
-                case 'green':
-                    if(pawn.position + rolledNumber <= 85) return true;
-                    break;
-                case 'yellow':
-                    if(pawn.position + rolledNumber <= 91) return true;
-                    break;
-                default:
-                    return false;
+    const checkIfPawnCanMove = useCallback(
+        pawn => {
+            // If is in base
+            if ((rolledNumber === 1 || rolledNumber === 6) && pawn.position === pawn.basePos) {
+                return true;
+                // Other situations: pawn is on map or pawn is in end positions
+            } else if (pawn.position !== pawn.basePos) {
+                switch (pawn.color) {
+                    case 'red':
+                        if (pawn.position + rolledNumber <= 73) return true;
+                        break;
+                    case 'blue':
+                        if (pawn.position + rolledNumber <= 79) return true;
+                        break;
+                    case 'green':
+                        if (pawn.position + rolledNumber <= 85) return true;
+                        break;
+                    case 'yellow':
+                        if (pawn.position + rolledNumber <= 91) return true;
+                        break;
+                    default:
+                        return false;
+                }
+            } else {
+                return false;
             }
-        }else{
-            return false;
-        }
-    },[rolledNumber]);
+        },
+        [rolledNumber]
+    );
 
     const handleCanvasClick = event => {
-        // If hint pawn exist it means that pawn can move 
-        if(hintPawn){
-            const canvas = canvasRef.current
-            const ctx = canvas.getContext('2d')
+        // If hint pawn exist it means that pawn can move
+        if (hintPawn) {
+            const canvas = canvasRef.current;
+            const ctx = canvas.getContext('2d');
             const rect = canvas.getBoundingClientRect(),
-            x = event.clientX - rect.left,
-            y = event.clientY - rect.top;
-            for(const pawn of pawns){
+                x = event.clientX - rect.left,
+                y = event.clientY - rect.top;
+            for (const pawn of pawns) {
                 if (ctx.isPointInPath(pawn.circle, x, y)) {
-                    axios.post('/game/move', {pawnId: pawn._id}, {withCredentials: true, mode: 'cors'})
-                    .then(() => {
-                        setHintPawn(null);
-                    });
-                    
+                    socket.emit('game:move', { pawnId: pawn._id });
                 }
             }
         }
-    }
+    };
     const getHintPawnPosition = pawn => {
         // Based on color (because specific color have specific base and end positions)
         let { position } = pawn;
-        switch (context.color){
-            case 'red': 
+        switch (context.color) {
+            case 'red':
                 // When in base
-                if(position >= 0 && position <= 3) {
+                if (position >= 0 && position <= 3) {
                     return 16;
-                // Next to end
-                }else if(position <= 66 && position + rolledNumber >= 67){
+                    // Next to end
+                } else if (position <= 66 && position + rolledNumber >= 67) {
                     return position + rolledNumber + 1; // 1 is difference between last position on map and first on end
-                // Normal move 
-                }else{
-                    return  position + rolledNumber;
+                    // Normal move
+                } else {
+                    return position + rolledNumber;
                 }
-            case 'blue': 
+            case 'blue':
                 // When in base
-                if(position >= 4 && position <= 7){
+                if (position >= 4 && position <= 7) {
                     return 55;
-                // Next to red base
-                }else if(position <= 67 && position + rolledNumber > 67){
-                    return position + rolledNumber - 52; 
-                // Next to base
-                }else if(position <= 53 && position + rolledNumber >= 54){
+                    // Next to red base
+                } else if (position <= 67 && position + rolledNumber > 67) {
+                    return position + rolledNumber - 52;
+                    // Next to base
+                } else if (position <= 53 && position + rolledNumber >= 54) {
                     return position + rolledNumber + 20;
-                // Normal move 
-                }else{
+                    // Normal move
+                } else {
                     return position + rolledNumber;
                 }
-            case 'green': 
+            case 'green':
                 // When in base
-                if(position >= 8 && position <= 11){
+                if (position >= 8 && position <= 11) {
                     return 42;
-                // Next to red base
-                }else if(position <= 67 && position + rolledNumber > 67){
-                    return position + rolledNumber - 52; 
-                // Next to base
-                }else if(position <= 40 && position + rolledNumber >= 41){
+                    // Next to red base
+                } else if (position <= 67 && position + rolledNumber > 67) {
+                    return position + rolledNumber - 52;
+                    // Next to base
+                } else if (position <= 40 && position + rolledNumber >= 41) {
                     return position + rolledNumber + 39;
-                // Normal move
-                }else{
+                    // Normal move
+                } else {
                     return position + rolledNumber;
                 }
-            case 'yellow': 
+            case 'yellow':
                 // When in base
-                if(position >= 12 && position <= 15){
+                if (position >= 12 && position <= 15) {
                     return 29;
-                // Next to red base
-                }else if(position <= 67 && position + rolledNumber > 67){
-                    return position + rolledNumber - 52; 
-                // Next to base
-                }else if(position <= 27 && position + rolledNumber >= 28){
+                    // Next to red base
+                } else if (position <= 67 && position + rolledNumber > 67) {
+                    return position + rolledNumber - 52;
+                    // Next to base
+                } else if (position <= 27 && position + rolledNumber >= 28) {
                     return position + rolledNumber + 58;
-                // Normal move
-                }else{
+                    // Normal move
+                } else {
                     return position + rolledNumber;
                 }
-            default: 
+            default:
                 return position;
         }
     };
-    const handleMouseMove = event => {   
-        if(nowMoving && rolledNumber){ 
+    const handleMouseMove = event => {
+        if (nowMoving && rolledNumber) {
             const canvas = canvasRef.current;
             const ctx = canvas.getContext('2d');
             // Gets x and y cords of mouse on canvas
             const rect = canvas.getBoundingClientRect(),
-            x = event.clientX - rect.left,
-            y = event.clientY - rect.top;
-            canvas.style.cursor = "default";
-            for (const pawn of pawns){
-                if(pawn.circle){
+                x = event.clientX - rect.left,
+                y = event.clientY - rect.top;
+            canvas.style.cursor = 'default';
+            for (const pawn of pawns) {
+                if (pawn.circle) {
                     /*
                         This condition checks if mouse location is:
                         1) on pawn
@@ -145,19 +144,23 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
                         3) if pawn can move
                         And then sets cursor to pointer and paints hint pawn - where will be pawn after click
                     */
-                    if (ctx.isPointInPath(pawn.circle, x, y)  && context.color === pawn.color && checkIfPawnCanMove(pawn)) {
+                    if (
+                        ctx.isPointInPath(pawn.circle, x, y) &&
+                        context.color === pawn.color &&
+                        checkIfPawnCanMove(pawn)
+                    ) {
                         const pawnPosition = getHintPawnPosition(pawn);
                         setBlinking(false);
                         // Checks if pawn can make a move
-                        if(pawnPosition){
-                            canvas.style.cursor = "pointer";
-                            setHintPawn({id: pawn._id, position: pawnPosition, color: 'grey'});
+                        if (pawnPosition) {
+                            canvas.style.cursor = 'pointer';
+                            setHintPawn({ id: pawn._id, position: pawnPosition, color: 'grey' });
                             break;
                         }
-                    }else{
+                    } else {
                         setHintPawn(null);
                     }
-                }   
+                }
             }
         }
     };
@@ -166,35 +169,51 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
         const ctx = canvas.getContext('2d');
         const image = new Image();
         image.src = 'https://img-9gag-fun.9cache.com/photo/a8GdpYZ_460s.jpg';
-        image.onload = function() {
+        image.onload = function () {
             ctx.drawImage(image, 0, 0);
-            pawns.forEach( (pawn, index) => {
-                if(nowMoving && rolledNumber && blinking && pawn.color === context.color && checkIfPawnCanMove(pawn)){
-                    pawns[index].circle = paintPawn(ctx, positions[pawn.position].x, positions[pawn.position].y, 'white');
-                }else{
-                    pawns[index].circle = paintPawn(ctx, positions[pawn.position].x, positions[pawn.position].y, pawn.color);
+            pawns.forEach((pawn, index) => {
+                if (nowMoving && rolledNumber && blinking && pawn.color === context.color && checkIfPawnCanMove(pawn)) {
+                    pawns[index].circle = paintPawn(
+                        ctx,
+                        positions[pawn.position].x,
+                        positions[pawn.position].y,
+                        'white'
+                    );
+                } else {
+                    pawns[index].circle = paintPawn(
+                        ctx,
+                        positions[pawn.position].x,
+                        positions[pawn.position].y,
+                        pawn.color
+                    );
                 }
                 setBlinking(!blinking);
             });
-            if (hintPawn){
+            if (hintPawn) {
                 paintPawn(ctx, positions[hintPawn.position].x, positions[hintPawn.position].y, hintPawn.color);
             }
-        }
-    },[ checkIfPawnCanMove, context.color, hintPawn, nowMoving, pawns, rolledNumber]);
+        };
+    }, [checkIfPawnCanMove, context.color, hintPawn, nowMoving, pawns, rolledNumber]);
+
     // Rerender canvas when pawns have changed
     useEffect(() => {
-        rerenderCanvas(); 
+        rerenderCanvas();
     }, [hintPawn, pawns, rerenderCanvas]);
 
-    return(
-        <canvas 
-            className="canvas-container" 
-            width={480} 
-            height={480} 
-            ref={canvasRef} 
-            onClick={handleCanvasClick} 
+    useEffect(() => {
+        socket.on('game:move', () => {
+            setHintPawn(null);
+        });
+    }, [socket]);
+    return (
+        <canvas
+            className='canvas-container'
+            width={480}
+            height={480}
+            ref={canvasRef}
+            onClick={handleCanvasClick}
             onMouseMove={handleMouseMove}
         />
-    )
-}
+    );
+};
 export default Map;

@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { PlayerDataContext, SocketContext } from '../App';
-import axios from 'axios';
 import Map from './game-board-components/Map';
 import Dice from './game-board-components/Dice';
 import Navbar from './Navbar';

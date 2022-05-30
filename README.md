@@ -23,12 +23,9 @@ node server.js
 - Express-session
 - MongoDB, Mongoose
 - MongoDB sessions store
+- SocketIO
 ### Frontend
 - React 
 - Axios
 - Material UI
 - Canvas
-## ToDo
-- Redis
-- SocketIO
-- Add more game logic
