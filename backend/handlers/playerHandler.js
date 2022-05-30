@@ -1,9 +1,19 @@
 const RoomModel = require('../schemas/room');
 const { colors } = require('../utils/constants');
 const { getStartPositions } = require('../utils/functions');
-
+/* 
+    Function handle all player's requests to server 
+    file constains functions:
+    1. login
+        with helper functions:
+        - addPlayerToExistingRoom
+        - createNewRoom
+    2. ready
+*/
 module.exports = (io, socket) => {
     const req = socket.request;
+
+    // Function responsible for adding a player to an existing room or creating a new one
     const login = data => {
         // When new player login to game we are looking for not full and not started room to put player there
         RoomModel.findOne({ full: false, started: false }, function (err, room) {
@@ -17,7 +27,39 @@ module.exports = (io, socket) => {
         });
     };
 
+    // Function responsible for changing the player's readiness
+    const ready = () => {
+        const { roomId, playerId } = req.session;
+        // Finds player room
+        RoomModel.findOne({ _id: roomId }, function (err, room) {
+            if (err) return err;
+            // Finds index of player in players array
+            const index = room.players.findIndex(player => player._id.toString() == playerId.toString());
+            // Changes player's readiness to the opposite
+            room.players[index].ready = !room.players[index].ready;
+            // If two players are ready starts game by setting the room properties
+            if (room.players.filter(player => player.ready).length >= 2) {
+                room.started = true;
+                room.nextMoveTime = Date.now() + 15000;
+                room.players.forEach(player => (player.ready = true));
+                room.players[0].nowMoving = true;
+            }
+            RoomModel.findOneAndUpdate(
+                {
+                    _id: roomId,
+                },
+                room,
+                (err, updatedRoom) => {
+                    if (err) return err;
+                    // Sends to all players in room game data
+                    io.to(roomId).emit('room:data', JSON.stringify(updatedRoom));
+                }
+            );
+        });
+    };
+
     socket.on('player:login', login);
+    socket.on('player:ready', ready);
 
     function createNewRoom(data) {
         const room = new RoomModel({

@@ -38,6 +38,7 @@ const Gameboard = () => {
     useEffect(() => {
         socket.on('room:data', data => {
             data = JSON.parse(data);
+            //console.log(data);
             // Filling navbar with empty player nick container
             while (data.players.length !== 4) {
                 data.players.push({ name: '...' });
