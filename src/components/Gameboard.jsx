@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react';
+import ReactLoading from 'react-loading';
 import { PlayerDataContext, SocketContext } from '../App';
 import Map from './game-board-components/Map';
 import Dice from './game-board-components/Dice';
@@ -65,9 +66,15 @@ const Gameboard = () => {
 
     return (
         <>
-            <Navbar players={players} started={started} time={time} isReady={isReady} />
-            {nowMoving ? <Dice nowMoving={nowMoving} rolledNumberCallback={rolledNumberCallback} /> : null}
-            <Map pawns={pawns} nowMoving={nowMoving} rolledNumber={rolledNumber} />
+            {players ? (
+                <>
+                    <Navbar players={players} started={started} time={time} isReady={isReady} />
+                    {nowMoving ? <Dice nowMoving={nowMoving} rolledNumberCallback={rolledNumberCallback} /> : null}
+                    <Map pawns={pawns} nowMoving={nowMoving} rolledNumber={rolledNumber} />
+                </>
+            ) : (
+                <ReactLoading type='spinningBubbles' color='white' height={667} width={375} />
+            )}
         </>
     );
 };
