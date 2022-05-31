@@ -49,10 +49,10 @@ module.exports = (io, socket) => {
                     _id: roomId,
                 },
                 room,
-                (err, updatedRoom) => {
+                err => {
                     if (err) return err;
                     // Sends to all players in room game data
-                    io.to(roomId).emit('room:data', JSON.stringify(updatedRoom));
+                    io.to(roomId).emit('room:data', JSON.stringify(room));
                 }
             );
         });

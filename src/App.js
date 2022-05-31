@@ -16,7 +16,6 @@ function App() {
     useEffect(() => {
         const socket = io('http://localhost:8080', { withCredentials: true });
         socket.on('player:data', data => {
-            console.log(data);
             data = JSON.parse(data);
             setPlayerData(data);
             data.roomId != null ? setRedirect(true) : setRedirect(false);
