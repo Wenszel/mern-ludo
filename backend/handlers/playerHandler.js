@@ -83,6 +83,7 @@ module.exports = (io, socket) => {
                 req.session.color = room.players[0].color;
                 req.session.save();
                 // Sending data to the user, after which player will be redirected to the game
+                socket.join(room._id);
                 socket.emit('player:data', JSON.stringify(req.session));
             });
         });
@@ -119,6 +120,7 @@ module.exports = (io, socket) => {
                 req.session.playerId = updatedRoom.players[updatedRoom.players.length - 1]._id;
                 req.session.color = colors[updatedRoom.players.length - 1];
                 req.session.save();
+                socket.join(room._id);
                 // Sending data to the user, after which player will be redirected to the game
                 socket.emit('player:data', JSON.stringify(req.session));
             });

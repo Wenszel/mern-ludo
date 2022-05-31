@@ -29,12 +29,8 @@ const Gameboard = () => {
             alert('Yellow Won');
         }
     }, [pawns]);
-    // Fetching game data
-    const fetchData = useCallback(() => {
-        socket.emit('room:data');
-    }, []);
-
     useEffect(() => {
+        socket.emit('room:data', context.roomId);
         socket.on('room:data', data => {
             data = JSON.parse(data);
             //console.log(data);
@@ -58,10 +54,8 @@ const Gameboard = () => {
             setTime(data.nextMoveTime);
             setStarted(data.started);
         });
-        //sending ajax every 1 sec
-        const interval = setInterval(fetchData, 1000);
-        return () => clearInterval(interval);
-    }, [fetchData]);
+    }, []);
+
     // Callback to handle dice rolling between dice and map component
     const rolledNumberCallback = number => {
         setRolledNumber(number);
