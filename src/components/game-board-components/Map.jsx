@@ -208,8 +208,8 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
     return (
         <canvas
             className='canvas-container'
-            width={480}
-            height={480}
+            width={460}
+            height={460}
             ref={canvasRef}
             onClick={handleCanvasClick}
             onMouseMove={handleMouseMove}
