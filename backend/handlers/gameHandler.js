@@ -45,7 +45,7 @@ module.exports = (io, socket) => {
             // Pushing above data to database
             RoomModel.findOneAndUpdate({ _id: req.session.roomId }, room, (err, updatedRoom) => {
                 if (!updatedRoom) return err;
-                io.to(req.session.roomId).emit('room:data', JSON.stringify(updatedRoom));
+                io.to(req.session.roomId.toString()).emit('room:data', JSON.stringify(updatedRoom));
                 socket.emit('room:move');
             });
         });

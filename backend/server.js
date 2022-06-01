@@ -78,9 +78,10 @@ io.on('connection', socket => {
     registerRoomHandlers(io, socket);
     registerGameHandlers(io, socket);
     if (socket.request.session.roomId) {
-        socket.join(socket.request.session.roomId);
+        const roomId = socket.request.session.roomId.toString();
+        socket.join(roomId);
         socket.emit('player:data', JSON.stringify(socket.request.session));
-        io.to(socket.request.session.roomId).emit('player joined');
+        io.to(roomId).emit('player joined');
     }
 });
 

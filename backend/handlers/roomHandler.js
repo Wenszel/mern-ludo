@@ -8,7 +8,7 @@ module.exports = (io, socket) => {
             if (room.nextMoveTime <= Date.now()) {
                 changeCurrentMovingPlayer();
             } else {
-                io.to(req.session.roomId).emit('room:data', JSON.stringify(room));
+                io.to(req.session.roomId.toString()).emit('room:data', JSON.stringify(room));
             }
         });
     };
@@ -28,7 +28,7 @@ module.exports = (io, socket) => {
             }
             room.nextMoveTime = Date.now() + 15000;
             RoomModel.findOneAndUpdate({ _id: req.session.roomId }, room, function (err, updatedRoom) {
-                io.to(req.session.roomId).emit('room:data', JSON.stringify(updatedRoom));
+                io.to(req.session.roomId.toString()).emit('room:data', JSON.stringify(updatedRoom));
             });
         });
     }

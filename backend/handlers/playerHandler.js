@@ -52,7 +52,7 @@ module.exports = (io, socket) => {
                 err => {
                     if (err) return err;
                     // Sends to all players in room game data
-                    io.to(roomId).emit('room:data', JSON.stringify(room));
+                    io.to(roomId.toString()).emit('room:data', JSON.stringify(room));
                 }
             );
         });
@@ -83,7 +83,7 @@ module.exports = (io, socket) => {
                 req.session.color = room.players[0].color;
                 req.session.save();
                 // Sending data to the user, after which player will be redirected to the game
-                socket.join(room._id);
+                socket.join(room._id.toString());
                 socket.emit('player:data', JSON.stringify(req.session));
             });
         });
@@ -120,7 +120,7 @@ module.exports = (io, socket) => {
                 req.session.playerId = updatedRoom.players[updatedRoom.players.length - 1]._id;
                 req.session.color = colors[updatedRoom.players.length - 1];
                 req.session.save();
-                socket.join(room._id);
+                socket.join(room._id.toString());
                 // Sending data to the user, after which player will be redirected to the game
                 socket.emit('player:data', JSON.stringify(req.session));
             });
