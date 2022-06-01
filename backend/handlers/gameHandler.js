@@ -18,7 +18,29 @@ module.exports = (io, socket) => {
             socket.emit('game:roll', rolledNumber);
         });
     };
-
+    const skip = () => {
+        RoomModel.findOne({ _id: req.session.roomId }, function (err, room) {
+            if (room.nextMoveTime >= Date.now()) return err;
+            // Updating moving player
+            const playerIndex = room.players.findIndex(player => player.nowMoving === true);
+            const roomSize = room.players.length;
+            room.players[playerIndex].nowMoving = false;
+            if (playerIndex + 1 === roomSize) {
+                room.players[0].nowMoving = true;
+            } else {
+                room.players[playerIndex + 1].nowMoving = true;
+            }
+            // Updating timer
+            room.nextMoveTime = Date.now() + 15000;
+            // Pushing above data to database
+            RoomModel.findOneAndUpdate({ _id: req.session.roomId }, room, err => {
+                if (err) return err;
+                io.to(req.session.roomId.toString()).emit('room:data', JSON.stringify(room));
+                socket.emit('game:move');
+                socket.emit('game:skip');
+            });
+        });
+    };
     const move = ({ pawnId }) => {
         RoomModel.findOne({ _id: req.session.roomId }, function (err, room) {
             if (!room) return err;
@@ -45,12 +67,13 @@ module.exports = (io, socket) => {
             // Pushing above data to database
             RoomModel.findOneAndUpdate({ _id: req.session.roomId }, room, (err, updatedRoom) => {
                 if (!updatedRoom) return err;
-                io.to(req.session.roomId.toString()).emit('room:data', JSON.stringify(updatedRoom));
-                socket.emit('room:move');
+                io.to(req.session.roomId.toString()).emit('room:data', JSON.stringify(room));
+                socket.emit('game:move');
             });
         });
     };
 
     socket.on('game:roll', roll);
     socket.on('game:move', move);
+    socket.on('game:skip', skip);
 };

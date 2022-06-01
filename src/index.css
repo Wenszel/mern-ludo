@@ -36,17 +36,14 @@ canvas {
     border-radius: 5px;
     color: white;
     font-weight: bold;
-    display: flex;
     text-align: center;
-    justify-content: center;
-    align-items: center;
 }
 .timer {
     background-color: darkblue;
     color: white;
     position: relative;
-    top: -24px;
-    left: 32px;
+    bottom: 60px;
+    left: 82px;
     border: 1px solid white;
     padding: 1px;
     width: 30px;
