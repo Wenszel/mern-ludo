@@ -8,18 +8,68 @@ const { getPositionAfterMove } = require('../utils/functions');
 */
 module.exports = (io, socket) => {
     const req = socket.request;
-    const roll = () => {
+    const roll = async () => {
         const rolledNumber = Math.ceil(Math.random() * 6);
-        req.session.reload(err => {
+        req.session.reload(async err => {
             if (err) return socket.disconnect();
             // Saving session data
             req.session.rolledNumber = rolledNumber;
             req.session.save();
             socket.emit('game:roll', rolledNumber);
+            const isPossible = await isMovePossible(req.session.roomId, req.session.color, rolledNumber);
+            if (!isPossible) {
+                RoomModel.findOne({ _id: req.session.roomId }, (err, room) => {
+                    // Updating moving player
+                    const playerIndex = room.players.findIndex(player => player.nowMoving === true);
+                    const roomSize = room.players.length;
+                    room.players[playerIndex].nowMoving = false;
+                    if (playerIndex + 1 === roomSize) {
+                        room.players[0].nowMoving = true;
+                    } else {
+                        room.players[playerIndex + 1].nowMoving = true;
+                    }
+                    // Updating timer
+                    room.nextMoveTime = Date.now() + 15000;
+                    // Pushing above data to database
+                    RoomModel.findOneAndUpdate({ _id: req.session.roomId }, room, err => {
+                        if (err) return err;
+                        io.to(req.session.roomId.toString()).emit('room:data', JSON.stringify(room));
+                        socket.emit('game:move');
+                        socket.emit('game:skip');
+                    });
+                });
+            }
         });
     };
-    const skip = () => {
-        RoomModel.findOne({ _id: req.session.roomId }, function (err, room) {
+    /* 
+    Function responsible for check if any pawn of the player can move
+    if he cannot move, his turn will be skipped
+    Player's pawn can move if:
+        1) (if player's pawn is in base) if the rolled number is 1,6
+        2) (if player's pawn is near finish line) if the move does not go beyond the win line
+    */
+    const isMovePossible = async (roomId, playerColor, rolledNumber) => {
+        let isMovePossible = false;
+        await RoomModel.findOne({ _id: roomId.toString() }, (err, room) => {
+            if (err) return err;
+            const playerPawns = room.pawns.filter(pawn => pawn.color === playerColor);
+            // Checking each player's pawn
+            for (const pawn of playerPawns) {
+                // Checking the first condition
+                if (pawn.position === pawn.basePos && (rolledNumber === 6 || rolledNumber === 1)) {
+                    isMovePossible = true;
+                }
+                // Checking the second condition
+                if (pawn.position !== getPositionAfterMove(rolledNumber, pawn) && pawn.position !== pawn.basePos) {
+                    isMovePossible = true;
+                }
+            }
+        });
+        return isMovePossible;
+    };
+    
+    const skip = async () => {
+        await RoomModel.findOne({ _id: req.session.roomId }, (err, room) => {
             if (room.nextMoveTime >= Date.now()) return err;
             // Updating moving player
             const playerIndex = room.players.findIndex(player => player.nowMoving === true);
