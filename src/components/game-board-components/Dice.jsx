@@ -6,25 +6,20 @@ import three from '../../images/dice/3.png';
 import four from '../../images/dice/4.png';
 import five from '../../images/dice/5.png';
 import six from '../../images/dice/6.png';
-
-const Dice = ({ rolledNumberCallback, nowMoving }) => {
+const Dice = ({ rolledNumberCallback, rolledNumber, nowMoving, color }) => {
     const socket = useContext(SocketContext);
-    const [rolledNumber, setRolledNumber] = useState();
     const [images] = useState([one, two, three, four, five, six]);
     const handleRoll = () => {
         socket.emit('game:roll');
     };
     useEffect(() => {
         socket.on('game:roll', number => {
-            const utterance = new SpeechSynthesisUtterance(number);
-            speechSynthesis.speak(utterance);
-            setRolledNumber(number);
             rolledNumberCallback(number);
         });
     }, []);
     return (
-        <div className='dice-container'>
-            {rolledNumber ? (
+        <div className={`dice-container dice-${color}`}>
+            {true ? (
                 <img src={images[rolledNumber - 1]} alt={rolledNumber} width='100' height='100' />
             ) : nowMoving ? (
                 <button onClick={handleRoll}> Roll </button>

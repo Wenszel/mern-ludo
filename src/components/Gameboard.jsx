@@ -19,6 +19,7 @@ const Gameboard = () => {
     const [nowMoving, setNowMoving] = useState(false);
     const [started, setStarted] = useState(false);
 
+    const [movingPlayer, setMovingPlayer] = useState('red');
     const checkWin = useCallback(() => {
         // Player wins when all pawns with same color are inside end base
         if (pawns.filter(pawn => pawn.color === 'red' && pawn.position === 73).length === 4) {
@@ -33,6 +34,12 @@ const Gameboard = () => {
     }, [pawns]);
     useEffect(() => {
         socket.emit('room:data', context.roomId);
+        socket.on('game:skip', () => {
+            setRolledNumber(null);
+        });
+        socket.on('game:move', () => {
+            setRolledNumber(null);
+        });
         socket.on('room:data', data => {
             data = JSON.parse(data);
             // Filling navbar with empty player nick container
@@ -51,6 +58,7 @@ const Gameboard = () => {
             }
             const currentPlayer = data.players.find(player => player._id === context.playerId);
             checkWin();
+            setMovingPlayer(nowMovingPlayer.color);
             setIsReady(currentPlayer.ready);
             setPlayers(data.players);
             setPawns(data.pawns);
@@ -69,7 +77,12 @@ const Gameboard = () => {
             {players ? (
                 <>
                     <Navbar players={players} started={started} time={time} isReady={isReady} />
-                    {nowMoving ? <Dice nowMoving={nowMoving} rolledNumberCallback={rolledNumberCallback} /> : null}
+                    <Dice
+                        rolledNumber={rolledNumber}
+                        nowMoving={nowMoving}
+                        color={movingPlayer}
+                        rolledNumberCallback={rolledNumberCallback}
+                    />
                     <Map pawns={pawns} nowMoving={nowMoving} rolledNumber={rolledNumber} />
                 </>
             ) : (

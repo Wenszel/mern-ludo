@@ -17,10 +17,9 @@ canvas {
     border-radius: 15px;
     border: 2px solid black;
 }
-.dice-container {
-    position: absolute;
-    top: 30%;
-    left: 20%;
+.dice-container > img {
+    width: 50px;
+    height: 50px;
 }
 .navbar-container {
     display: flex;

@@ -15,7 +15,7 @@ module.exports = (io, socket) => {
             // Saving session data
             req.session.rolledNumber = rolledNumber;
             req.session.save();
-            socket.emit('game:roll', rolledNumber);
+            io.to(req.session.roomId.toString()).emit('game:roll', rolledNumber);
             const isPossible = await isMovePossible(req.session.roomId, req.session.color, rolledNumber);
             if (!isPossible) {
                 RoomModel.findOne({ _id: req.session.roomId }, (err, room) => {
@@ -34,8 +34,7 @@ module.exports = (io, socket) => {
                     RoomModel.findOneAndUpdate({ _id: req.session.roomId }, room, err => {
                         if (err) return err;
                         io.to(req.session.roomId.toString()).emit('room:data', JSON.stringify(room));
-                        socket.emit('game:move');
-                        socket.emit('game:skip');
+                        io.to(req.session.roomId.toString()).emit('game:skip');
                     });
                 });
             }
@@ -51,7 +50,6 @@ module.exports = (io, socket) => {
     const isMovePossible = async (roomId, playerColor, rolledNumber) => {
         let isMovePossible = false;
         await RoomModel.findOne({ _id: roomId.toString() }, (err, room) => {
-            if (err) return err;
             const playerPawns = room.pawns.filter(pawn => pawn.color === playerColor);
             // Checking each player's pawn
             for (const pawn of playerPawns) {
@@ -67,7 +65,7 @@ module.exports = (io, socket) => {
         });
         return isMovePossible;
     };
-    
+
     const skip = async () => {
         await RoomModel.findOne({ _id: req.session.roomId }, (err, room) => {
             if (room.nextMoveTime >= Date.now()) return err;
@@ -86,8 +84,7 @@ module.exports = (io, socket) => {
             RoomModel.findOneAndUpdate({ _id: req.session.roomId }, room, err => {
                 if (err) return err;
                 io.to(req.session.roomId.toString()).emit('room:data', JSON.stringify(room));
-                socket.emit('game:move');
-                socket.emit('game:skip');
+                io.to(req.session.roomId.toString()).emit('game:skip');
             });
         });
     };
@@ -118,7 +115,7 @@ module.exports = (io, socket) => {
             RoomModel.findOneAndUpdate({ _id: req.session.roomId }, room, (err, updatedRoom) => {
                 if (!updatedRoom) return err;
                 io.to(req.session.roomId.toString()).emit('room:data', JSON.stringify(room));
-                socket.emit('game:move');
+                io.to(req.session.roomId.toString()).emit('game:move');
             });
         });
     };
