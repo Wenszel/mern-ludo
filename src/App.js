@@ -40,6 +40,9 @@ function App() {
                                 <Gameboard />
                             </PlayerDataContext.Provider>
                         ) : null}
+                        <a href='https://www.flaticon.com/free-icons/hand' title='hand icons'>
+                            Hand icons created by berkahicon - Flaticon
+                        </a>
                     </Route>
                 </Switch>
             </Router>
