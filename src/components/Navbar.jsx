@@ -1,14 +1,24 @@
 import React from 'react';
+import Dice from './game-board-components/Dice';
 import NameContainer from './navbar-components/NameContainer';
 import ReadyButton from './navbar-components/ReadyButton';
 import './Navbar.css';
 
-const Navbar = ({ players, started, time, isReady }) => {
+const Navbar = ({ players, started, time, isReady, rolledNumber, nowMoving, rolledNumberCallback, movingPlayer }) => {
     const colors = ['red', 'blue', 'green', 'yellow'];
     return (
         <div className='navbar-container'>
             {players.map((player, index) => (
-                <NameContainer key={index} player={player} color={colors[index]} time={time} />
+                <div className={`player-container ${colors[index]}`} key={index}>
+                    <NameContainer player={player} color={colors[index]} time={time} />
+                    <Dice
+                        movingPlayer={movingPlayer}
+                        rolledNumber={rolledNumber}
+                        nowMoving={nowMoving}
+                        color={colors[index]}
+                        rolledNumberCallback={rolledNumberCallback}
+                    />
+                </div>
             ))}
             {started ? null : <ReadyButton isReady={isReady} />}
         </div>

@@ -20,7 +20,7 @@ const NameContainer = ({ player, time, color }) => {
     }, [countdown]);
     return (
         <div
-            className={`name-container ${color}`}
+            className={`name-container`}
             style={player.ready ? { backgroundColor: color } : { backgroundColor: 'lightgrey' }}
         >
             <p>{player.name}</p>

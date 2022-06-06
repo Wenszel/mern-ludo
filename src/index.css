@@ -49,3 +49,9 @@ canvas {
     height: 20px;
     border-radius: 5px;
 }
+#root {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}

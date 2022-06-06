@@ -20,9 +20,6 @@ function App() {
             setPlayerData(data);
             data.roomId != null ? setRedirect(true) : setRedirect(false);
         });
-        socket.on('uwaga', data => {
-            console.log(data);
-        });
         setPlayerSocket(socket);
     }, []);
 

@@ -6,7 +6,8 @@ import three from '../../images/dice/3.png';
 import four from '../../images/dice/4.png';
 import five from '../../images/dice/5.png';
 import six from '../../images/dice/6.png';
-const Dice = ({ rolledNumberCallback, rolledNumber, nowMoving, color }) => {
+
+const Dice = ({ rolledNumberCallback, rolledNumber, nowMoving, color, movingPlayer }) => {
     const socket = useContext(SocketContext);
     const [images] = useState([one, two, three, four, five, six]);
     const handleRoll = () => {
@@ -19,10 +20,12 @@ const Dice = ({ rolledNumberCallback, rolledNumber, nowMoving, color }) => {
     }, []);
     return (
         <div className={`dice-container dice-${color}`}>
-            {true ? (
-                <img src={images[rolledNumber - 1]} alt={rolledNumber} width='100' height='100' />
-            ) : nowMoving ? (
-                <button onClick={handleRoll}> Roll </button>
+            {movingPlayer === color ? (
+                rolledNumber ? (
+                    <img src={images[rolledNumber - 1]} alt={rolledNumber} width='100' height='100' />
+                ) : nowMoving ? (
+                    <button onClick={handleRoll}> Roll </button>
+                ) : null
             ) : null}
         </div>
     );

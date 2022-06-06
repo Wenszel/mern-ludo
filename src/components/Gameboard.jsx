@@ -55,10 +55,10 @@ const Gameboard = () => {
                     setRolledNumber(null);
                     setNowMoving(false);
                 }
+                setMovingPlayer(nowMovingPlayer.color);
             }
             const currentPlayer = data.players.find(player => player._id === context.playerId);
             checkWin();
-            setMovingPlayer(nowMovingPlayer.color);
             setIsReady(currentPlayer.ready);
             setPlayers(data.players);
             setPawns(data.pawns);
@@ -76,11 +76,14 @@ const Gameboard = () => {
         <>
             {players ? (
                 <>
-                    <Navbar players={players} started={started} time={time} isReady={isReady} />
-                    <Dice
+                    <Navbar
+                        players={players}
+                        started={started}
+                        time={time}
+                        isReady={isReady}
+                        movingPlayer={movingPlayer}
                         rolledNumber={rolledNumber}
                         nowMoving={nowMoving}
-                        color={movingPlayer}
                         rolledNumberCallback={rolledNumberCallback}
                     />
                     <Map pawns={pawns} nowMoving={nowMoving} rolledNumber={rolledNumber} />
@@ -93,3 +96,10 @@ const Gameboard = () => {
 };
 
 export default Gameboard;
+/* 
+<Dice
+                        rolledNumber={rolledNumber}
+                        nowMoving={nowMoving}
+                        color={movingPlayer}
+                        rolledNumberCallback={rolledNumberCallback}
+                    />*/
