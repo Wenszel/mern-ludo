@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useLayoutEffect } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { SocketContext } from '../../App';
 import Switch from '@material-ui/core/Switch';
 

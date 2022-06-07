@@ -10,7 +10,7 @@ const Navbar = ({ players, started, time, isReady, rolledNumber, nowMoving, roll
         <div className='navbar-container'>
             {players.map((player, index) => (
                 <div className={`player-container ${colors[index]}`} key={index}>
-                    <NameContainer player={player} color={colors[index]} time={time} />
+                    <NameContainer player={player} time={time} containerColor={colors[index]} />
                     <Dice
                         movingPlayer={movingPlayer}
                         rolledNumber={rolledNumber}
