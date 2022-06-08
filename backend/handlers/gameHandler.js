@@ -49,20 +49,19 @@ module.exports = (io, socket) => {
     */
     const isMovePossible = async (roomId, playerColor, rolledNumber) => {
         let isMovePossible = false;
-        await RoomModel.findOne({ _id: roomId.toString() }, (err, room) => {
-            const playerPawns = room.pawns.filter(pawn => pawn.color === playerColor);
-            // Checking each player's pawn
-            for (const pawn of playerPawns) {
-                // Checking the first condition
-                if (pawn.position === pawn.basePos && (rolledNumber === 6 || rolledNumber === 1)) {
-                    isMovePossible = true;
-                }
-                // Checking the second condition
-                if (pawn.position !== getPositionAfterMove(rolledNumber, pawn) && pawn.position !== pawn.basePos) {
-                    isMovePossible = true;
-                }
+        const room = await RoomModel.findOne({ _id: roomId.toString() }).exec();
+        const playerPawns = room.pawns.filter(pawn => pawn.color === playerColor);
+        // Checking each player's pawn
+        for (const pawn of playerPawns) {
+            // Checking the first condition
+            if (pawn.position === pawn.basePos && (rolledNumber === 6 || rolledNumber === 1)) {
+                isMovePossible = true;
             }
-        });
+            // Checking the second condition
+            if (pawn.position !== getPositionAfterMove(rolledNumber, pawn) && pawn.position !== pawn.basePos) {
+                isMovePossible = true;
+            }
+        }
         return isMovePossible;
     };
 
