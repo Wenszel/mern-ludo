@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext, useCallback } from 'react';
 import ReactLoading from 'react-loading';
 import { PlayerDataContext, SocketContext } from '../App';
 import Map from './game-board-components/Map';
-import Dice from './game-board-components/Dice';
 import Navbar from './Navbar';
 
 const Gameboard = () => {
@@ -96,10 +95,3 @@ const Gameboard = () => {
 };
 
 export default Gameboard;
-/* 
-<Dice
-                        rolledNumber={rolledNumber}
-                        nowMoving={nowMoving}
-                        color={movingPlayer}
-                        rolledNumberCallback={rolledNumberCallback}
-                    />*/

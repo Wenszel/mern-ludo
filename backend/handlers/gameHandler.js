@@ -79,6 +79,7 @@ module.exports = (io, socket) => {
             }
             // Updating timer
             room.nextMoveTime = Date.now() + 15000;
+            setTimeout(skip, 15000);
             // Pushing above data to database
             RoomModel.findOneAndUpdate({ _id: req.session.roomId }, room, err => {
                 if (err) return err;
@@ -110,6 +111,7 @@ module.exports = (io, socket) => {
             }
             // Updating timer
             room.nextMoveTime = Date.now() + 15000;
+            setTimeout(skip, 15000);
             // Pushing above data to database
             RoomModel.findOneAndUpdate({ _id: req.session.roomId }, room, (err, updatedRoom) => {
                 if (!updatedRoom) return err;

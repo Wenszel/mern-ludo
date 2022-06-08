@@ -26,10 +26,6 @@ const NameContainer = ({ player, time }) => {
 
     // Function responsible for counting down to the end of time every second
     const countdown = () => {
-        // If the time if over emit information to server
-        if (remainingTime <= 0) {
-            return socket.emit('game:skip');
-        }
         setRemainingTime(Math.ceil((time - Date.now()) / 1000));
     };
 
