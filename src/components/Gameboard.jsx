@@ -7,7 +7,7 @@ import Navbar from './Navbar';
 const Gameboard = () => {
     // Context data
     const socket = useContext(SocketContext);
-    const context = useContext(PlayerDataContext);
+    const player = useContext(PlayerDataContext);
     // Render data
     const [pawns, setPawns] = useState([]);
     const [players, setPlayers] = useState([]);
@@ -32,13 +32,7 @@ const Gameboard = () => {
         }
     }, [pawns]);
     useEffect(() => {
-        socket.emit('room:data', context.roomId);
-        socket.on('game:skip', () => {
-            setRolledNumber(null);
-        });
-        socket.on('game:move', () => {
-            setRolledNumber(null);
-        });
+        socket.emit('room:data', player.roomId);
         socket.on('room:data', data => {
             data = JSON.parse(data);
             // Filling navbar with empty player nick container
@@ -48,17 +42,18 @@ const Gameboard = () => {
             // Checks if client is currently moving player by session ID
             const nowMovingPlayer = data.players.find(player => player.nowMoving === true);
             if (nowMovingPlayer) {
-                if (nowMovingPlayer._id === context.playerId) {
+                if (nowMovingPlayer._id === player.playerId) {
                     setNowMoving(true);
                 } else {
-                    setRolledNumber(null);
                     setNowMoving(false);
                 }
                 setMovingPlayer(nowMovingPlayer.color);
             }
-            const currentPlayer = data.players.find(player => player._id === context.playerId);
+            const currentPlayer = data.players.find(player => player._id === player.playerId);
+
             checkWin();
             setIsReady(currentPlayer.ready);
+            setRolledNumber(data.rolledNumber);
             setPlayers(data.players);
             setPawns(data.pawns);
             setTime(data.nextMoveTime);

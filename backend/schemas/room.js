@@ -7,6 +7,7 @@ var RoomSchema = new Schema({
     started: { type: Boolean, default: false },
     full: { type: Boolean, default: false },
     nextMoveTime: Number,
+    rolledNumber: Number,
     players: [
         {
             name: String,

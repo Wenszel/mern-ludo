@@ -8,37 +8,34 @@ const { getPositionAfterMove } = require('../utils/functions');
 */
 module.exports = (io, socket) => {
     const req = socket.request;
+
     const roll = async () => {
         const rolledNumber = Math.ceil(Math.random() * 6);
-        req.session.reload(async err => {
-            if (err) return socket.disconnect();
-            // Saving session data
-            req.session.rolledNumber = rolledNumber;
-            req.session.save();
-            io.to(req.session.roomId.toString()).emit('game:roll', rolledNumber);
-            const isPossible = await isMovePossible(req.session.roomId, req.session.color, rolledNumber);
-            if (!isPossible) {
-                RoomModel.findOne({ _id: req.session.roomId }, (err, room) => {
-                    // Updating moving player
-                    const playerIndex = room.players.findIndex(player => player.nowMoving === true);
-                    const roomSize = room.players.length;
-                    room.players[playerIndex].nowMoving = false;
-                    if (playerIndex + 1 === roomSize) {
-                        room.players[0].nowMoving = true;
-                    } else {
-                        room.players[playerIndex + 1].nowMoving = true;
-                    }
-                    // Updating timer
-                    room.nextMoveTime = Date.now() + 15000;
-                    // Pushing above data to database
-                    RoomModel.findOneAndUpdate({ _id: req.session.roomId }, room, err => {
-                        if (err) return err;
-                        io.to(req.session.roomId.toString()).emit('room:data', JSON.stringify(room));
-                        io.to(req.session.roomId.toString()).emit('game:skip');
-                    });
-                });
+        const room = await RoomModel.findOne({ _id: req.session.roomId }).exec();
+        room.rolledNumber = rolledNumber;
+        await RoomModel.findOneAndUpdate({ _id: req.session.roomId }, room).exec();
+        io.to(req.session.roomId.toString()).emit('game:roll', rolledNumber);
+
+        const isPossible = await isMovePossible(req.session.roomId, req.session.color, rolledNumber);
+        if (!isPossible) {
+            const room = await RoomModel.findOne({ _id: req.session.roomId }).exec();
+            const playerIndex = room.players.findIndex(player => player.nowMoving === true);
+            const roomSize = room.players.length;
+            room.players[playerIndex].nowMoving = false;
+            if (playerIndex + 1 === roomSize) {
+                room.players[0].nowMoving = true;
+            } else {
+                room.players[playerIndex + 1].nowMoving = true;
             }
-        });
+            // Updating timer
+            room.nextMoveTime = Date.now() + 15000;
+            room.rolledNumber = null;
+            // Pushing above data to database
+            RoomModel.findOneAndUpdate({ _id: req.session.roomId }, room, err => {
+                if (err) return err;
+                io.to(req.session.roomId.toString()).emit('room:data', JSON.stringify(room));
+            });
+        }
     };
     /* 
     Function responsible for check if any pawn of the player can move
@@ -46,6 +43,7 @@ module.exports = (io, socket) => {
     Player's pawn can move if:
         1) (if player's pawn is in base) if the rolled number is 1,6
         2) (if player's pawn is near finish line) if the move does not go beyond the win line
+    Returns boolean
     */
     const isMovePossible = async (roomId, playerColor, rolledNumber) => {
         let isMovePossible = false;
@@ -66,61 +64,57 @@ module.exports = (io, socket) => {
     };
 
     const skip = async () => {
-        await RoomModel.findOne({ _id: req.session.roomId }, (err, room) => {
-            if (room.nextMoveTime >= Date.now()) return err;
-            // Updating moving player
-            const playerIndex = room.players.findIndex(player => player.nowMoving === true);
-            const roomSize = room.players.length;
-            room.players[playerIndex].nowMoving = false;
-            if (playerIndex + 1 === roomSize) {
-                room.players[0].nowMoving = true;
-            } else {
-                room.players[playerIndex + 1].nowMoving = true;
-            }
-            // Updating timer
-            room.nextMoveTime = Date.now() + 15000;
-            setTimeout(skip, 15000);
-            // Pushing above data to database
-            RoomModel.findOneAndUpdate({ _id: req.session.roomId }, room, err => {
-                if (err) return err;
-                io.to(req.session.roomId.toString()).emit('room:data', JSON.stringify(room));
-                io.to(req.session.roomId.toString()).emit('game:skip');
-            });
+        const room = await RoomModel.findOne({ _id: req.session.roomId }).exec();
+        if (room.nextMoveTime >= Date.now()) return;
+        // Updating moving player
+        const playerIndex = room.players.findIndex(player => player.nowMoving === true);
+        const roomSize = room.players.length;
+        room.players[playerIndex].nowMoving = false;
+        if (playerIndex + 1 === roomSize) {
+            room.players[0].nowMoving = true;
+        } else {
+            room.players[playerIndex + 1].nowMoving = true;
+        }
+        // Updating timer
+        room.nextMoveTime = Date.now() + 15000;
+        room.rolledNumber = null;
+        setTimeout(skip, 15000);
+        // Pushing above data to database
+        RoomModel.findOneAndUpdate({ _id: req.session.roomId }, room, err => {
+            if (err) return err;
+            io.to(req.session.roomId.toString()).emit('room:data', JSON.stringify(room));
         });
     };
-    const move = ({ pawnId }) => {
-        RoomModel.findOne({ _id: req.session.roomId }, function (err, room) {
-            if (!room) return err;
-            const pawnIndex = room.pawns.findIndex(pawn => pawn._id == pawnId);
-            room.pawns[pawnIndex].position = getPositionAfterMove(req.session.rolledNumber, room.pawns[pawnIndex]);
-            const pawnsOnPos = room.pawns.filter(pawn => pawn.position == room.pawns[pawnIndex].position);
-            pawnsOnPos.forEach(pawn => {
-                if (pawn.color !== req.session.color) {
-                    const index = room.pawns.findIndex(i => i._id === pawn._id);
-                    room.pawns[index].position = room.pawns[index].basePos;
-                }
-            });
-            // Updating moving player
-            const playerIndex = room.players.findIndex(player => player.nowMoving === true);
-            const roomSize = room.players.length;
-            room.players[playerIndex].nowMoving = false;
-            if (playerIndex + 1 === roomSize) {
-                room.players[0].nowMoving = true;
-            } else {
-                room.players[playerIndex + 1].nowMoving = true;
+    const move = async ({ pawnId }) => {
+        const room = await RoomModel.findOne({ _id: req.session.roomId }).exec();
+        const pawnIndex = room.pawns.findIndex(pawn => pawn._id == pawnId);
+        room.pawns[pawnIndex].position = getPositionAfterMove(room.rolledNumber, room.pawns[pawnIndex]);
+        const pawnsOnPos = room.pawns.filter(pawn => pawn.position == room.pawns[pawnIndex].position);
+        pawnsOnPos.forEach(pawn => {
+            if (pawn.color !== req.session.color) {
+                const index = room.pawns.findIndex(i => i._id === pawn._id);
+                room.pawns[index].position = room.pawns[index].basePos;
             }
-            // Updating timer
-            room.nextMoveTime = Date.now() + 15000;
-            setTimeout(skip, 15000);
-            // Pushing above data to database
-            RoomModel.findOneAndUpdate({ _id: req.session.roomId }, room, (err, updatedRoom) => {
-                if (!updatedRoom) return err;
-                io.to(req.session.roomId.toString()).emit('room:data', JSON.stringify(room));
-                io.to(req.session.roomId.toString()).emit('game:move');
-            });
+        });
+        // Updating moving player
+        const playerIndex = room.players.findIndex(player => player.nowMoving === true);
+        const roomSize = room.players.length;
+        room.players[playerIndex].nowMoving = false;
+        if (playerIndex + 1 === roomSize) {
+            room.players[0].nowMoving = true;
+        } else {
+            room.players[playerIndex + 1].nowMoving = true;
+        }
+        // Updating timer
+        room.nextMoveTime = Date.now() + 15000;
+        room.rolledNumber = null;
+        setTimeout(skip, 15000);
+        // Pushing above data to database
+        RoomModel.findOneAndUpdate({ _id: req.session.roomId }, room, (err, updatedRoom) => {
+            if (!updatedRoom) return err;
+            io.to(req.session.roomId.toString()).emit('room:data', JSON.stringify(room));
         });
     };
-
     socket.on('game:roll', roll);
     socket.on('game:move', move);
     socket.on('game:skip', skip);
