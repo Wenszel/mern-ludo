@@ -1,15 +1,7 @@
 const RoomModel = require('../schemas/room');
 const { colors } = require('../utils/constants');
 const { getStartPositions } = require('../utils/functions');
-/* 
-    Function handle all player's requests to server 
-    file constains functions:
-    1. login
-        with helper functions:
-        - addPlayerToExistingRoom
-        - createNewRoom
-    2. ready
-*/
+
 module.exports = (io, socket) => {
     const req = socket.request;
 

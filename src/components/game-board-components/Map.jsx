@@ -6,7 +6,6 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
     const context = useContext(PlayerDataContext);
     const socket = useContext(SocketContext);
     const [hintPawn, setHintPawn] = useState();
-    const [blinking, setBlinking] = useState(false);
     const paintPawn = (context, x, y, color) => {
         const circle = new Path2D();
         circle.arc(x, y, 12, 0, 2 * Math.PI);
@@ -150,7 +149,6 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
                         checkIfPawnCanMove(pawn)
                     ) {
                         const pawnPosition = getHintPawnPosition(pawn);
-                        setBlinking(false);
                         // Checks if pawn can make a move
                         if (pawnPosition) {
                             canvas.style.cursor = 'pointer';
@@ -172,7 +170,7 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
         image.onload = function () {
             ctx.drawImage(image, 0, 0);
             pawns.forEach((pawn, index) => {
-                if (nowMoving && rolledNumber && blinking && pawn.color === context.color && checkIfPawnCanMove(pawn)) {
+                if (nowMoving && rolledNumber && pawn.color === context.color && checkIfPawnCanMove(pawn)) {
                     pawns[index].circle = paintPawn(
                         ctx,
                         positions[pawn.position].x,
@@ -187,7 +185,6 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
                         pawn.color
                     );
                 }
-                setBlinking(!blinking);
             });
             if (hintPawn) {
                 paintPawn(ctx, positions[hintPawn.position].x, positions[hintPawn.position].y, hintPawn.color);

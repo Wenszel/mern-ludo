@@ -7,7 +7,7 @@ import Navbar from './Navbar';
 const Gameboard = () => {
     // Context data
     const socket = useContext(SocketContext);
-    const player = useContext(PlayerDataContext);
+    const context = useContext(PlayerDataContext);
     // Render data
     const [pawns, setPawns] = useState([]);
     const [players, setPlayers] = useState([]);
@@ -32,7 +32,7 @@ const Gameboard = () => {
         }
     }, [pawns]);
     useEffect(() => {
-        socket.emit('room:data', player.roomId);
+        socket.emit('room:data', context.roomId);
         socket.on('room:data', data => {
             data = JSON.parse(data);
             // Filling navbar with empty player nick container
@@ -42,15 +42,14 @@ const Gameboard = () => {
             // Checks if client is currently moving player by session ID
             const nowMovingPlayer = data.players.find(player => player.nowMoving === true);
             if (nowMovingPlayer) {
-                if (nowMovingPlayer._id === player.playerId) {
+                if (nowMovingPlayer._id === context.playerId) {
                     setNowMoving(true);
                 } else {
                     setNowMoving(false);
                 }
                 setMovingPlayer(nowMovingPlayer.color);
             }
-            const currentPlayer = data.players.find(player => player._id === player.playerId);
-
+            const currentPlayer = data.players.find(player => player._id === context.playerId);
             checkWin();
             setIsReady(currentPlayer.ready);
             setRolledNumber(data.rolledNumber);

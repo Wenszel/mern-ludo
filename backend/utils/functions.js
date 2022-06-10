@@ -13,7 +13,7 @@ function getStartPositions() {
     }
     return startPositions;
 }
-function getPositionAfterMove(rolledNumber, pawn) {
+function getPawnPositionAfterMove(rolledNumber, pawn) {
     const { position, color } = pawn;
     switch (color) {
         case 'red':
@@ -72,4 +72,4 @@ function getPositionAfterMove(rolledNumber, pawn) {
             }
     }
 }
-module.exports = { getStartPositions, getPositionAfterMove };
+module.exports = { getStartPositions, getPawnPositionAfterMove };
