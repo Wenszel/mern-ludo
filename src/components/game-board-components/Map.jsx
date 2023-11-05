@@ -1,7 +1,11 @@
 import React, { useEffect, useRef, useState, useContext, useCallback } from 'react';
 import { PlayerDataContext, SocketContext } from '../../App';
 import positions from './positions';
-
+import bluePawn from '../../images/pawns/blue-pawn.png';
+import greenPawn from '../../images/pawns/green-pawn.png';
+import yellowPawn from '../../images/pawns/yellow-pawn.png';
+import redPawn from '../../images/pawns/red-pawn.png';
+import greyPawn from '../../images/pawns/grey-pawn.png';
 const Map = ({ pawns, nowMoving, rolledNumber }) => {
     const context = useContext(PlayerDataContext);
     const socket = useContext(SocketContext);
@@ -9,10 +13,25 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
     const paintPawn = (context, x, y, color) => {
         const circle = new Path2D();
         circle.arc(x, y, 12, 0, 2 * Math.PI);
-        context.strokeStyle = 'black';
-        context.stroke(circle);
-        context.fillStyle = color;
-        context.fill(circle);
+        const image = new Image();
+        switch (color) {
+            case 'green':
+                image.src = greenPawn;
+                break;
+            case 'blue':
+                image.src = bluePawn;
+                break;
+            case 'red':
+                image.src = redPawn;
+                break;
+            case 'yellow':
+                image.src = yellowPawn;
+                break;
+            case 'grey':
+                image.src = greyPawn;
+                break;
+        }
+        context.drawImage(image, x - 17, y - 14, 35, 30);
         return circle;
     };
 
@@ -62,6 +81,7 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
                     socket.emit('game:move', { pawnId: pawn._id });
                 }
             }
+            setHintPawn(null);
         }
     };
     const getHintPawnPosition = pawn => {
@@ -170,21 +190,12 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
         image.onload = function () {
             ctx.drawImage(image, 0, 0);
             pawns.forEach((pawn, index) => {
-                if (nowMoving && rolledNumber && pawn.color === context.color && checkIfPawnCanMove(pawn)) {
-                    pawns[index].circle = paintPawn(
-                        ctx,
-                        positions[pawn.position].x,
-                        positions[pawn.position].y,
-                        'white'
-                    );
-                } else {
-                    pawns[index].circle = paintPawn(
-                        ctx,
-                        positions[pawn.position].x,
-                        positions[pawn.position].y,
-                        pawn.color
-                    );
-                }
+                pawns[index].circle = paintPawn(
+                    ctx,
+                    positions[pawn.position].x,
+                    positions[pawn.position].y,
+                    pawn.color
+                );
             });
             if (hintPawn) {
                 paintPawn(ctx, positions[hintPawn.position].x, positions[hintPawn.position].y, hintPawn.color);
@@ -199,6 +210,12 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
 
     useEffect(() => {
         socket.on('game:move', () => {
+            setHintPawn(null);
+        });
+        socket.on('game:skip', () => {
+            setHintPawn(null);
+        });
+        socket.on('game:roll', () => {
             setHintPawn(null);
         });
     }, [socket]);
