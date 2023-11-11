@@ -78,7 +78,7 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
                 y = event.clientY - rect.top;
             for (const pawn of pawns) {
                 if (ctx.isPointInPath(pawn.circle, x, y)) {
-                    socket.emit('game:move', { pawnId: pawn._id });
+                    socket.emit('game:move', pawn._id);
                 }
             }
             setHintPawn(null);
@@ -210,9 +210,6 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
 
     useEffect(() => {
         socket.on('game:move', () => {
-            setHintPawn(null);
-        });
-        socket.on('game:skip', () => {
             setHintPawn(null);
         });
         socket.on('game:roll', () => {
