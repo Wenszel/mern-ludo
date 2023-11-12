@@ -14,7 +14,7 @@
     "react-dom": "^17.0.1",
     "react-loading": "^2.0.3",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "4.0.3",
+    "react-scripts": "^5.0.1",
     "socket.io": "^4.5.1",
     "socket.io-client": "^4.5.1",
     "web-vitals": "^1.1.0"

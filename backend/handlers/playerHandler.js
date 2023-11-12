@@ -70,8 +70,8 @@ module.exports = (io, socket) => {
             req.session.reload(err => {
                 if (err) return socket.disconnect();
                 // Saving session data
-                req.session.roomId = room._id;
-                req.session.playerId = room.players[0]._id;
+                req.session.roomId = room._id.toString();
+                req.session.playerId = room.players[0]._id.toString();
                 req.session.color = room.players[0].color;
                 req.session.save();
                 // Sending data to the user, after which player will be redirected to the game
@@ -108,8 +108,8 @@ module.exports = (io, socket) => {
             req.session.reload(err => {
                 if (err) return socket.disconnect();
                 // Saving session data
-                req.session.roomId = room._id;
-                req.session.playerId = updatedRoom.players[updatedRoom.players.length - 1]._id;
+                req.session.roomId = room._id.toString();
+                req.session.playerId = updatedRoom.players[updatedRoom.players.length - 1]._id.toString();
                 req.session.color = colors[updatedRoom.players.length - 1];
                 req.session.save();
                 socket.join(room._id.toString());
