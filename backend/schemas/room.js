@@ -1,18 +1,19 @@
 const mongoose = require('mongoose');
-const { getPawnPositionAfterMove } = require('../utils/functions');
+const { colors } = require('../utils/constants');
+const { getPawnPositionAfterMove, getStartPositions } = require('../utils/functions');
 const Schema = mongoose.Schema;
 const PawnSchema = require('./pawn');
 const PlayerSchema = require('./player');
 
 const RoomSchema = new Schema({
-    createDate: Date,
+    createDate: { type: Date, default: Date.now },
     started: { type: Boolean, default: false },
     full: { type: Boolean, default: false },
     nextMoveTime: Number,
     timeoutID: Number,
     rolledNumber: Number,
     players: [PlayerSchema],
-    pawns: [PawnSchema],
+    pawns: { type: [PawnSchema], default: getStartPositions() },
 });
 
 RoomSchema.methods.beatPawns = function (position, attackingPawnColor) {
@@ -48,11 +49,42 @@ RoomSchema.methods.getPawnsThatCanMove = function () {
     const movingPlayer = this.getCurrentlyMovingPlayer();
     const playerPawns = this.getPlayerPawns(movingPlayer.color);
     return playerPawns.filter(pawn => pawn.canMove(this.rolledNumber));
-}
+};
 
 RoomSchema.methods.changePositionOfPawn = function (pawn, newPosition) {
     const pawnIndex = this.getPawnIndex(pawn._id);
     this.pawns[pawnIndex].position = newPosition;
+};
+
+RoomSchema.methods.canStartGame = function () {
+    return this.players.filter(player => player.ready).length >= 2;
+};
+
+RoomSchema.methods.startGame = function () {
+    this.started = true;
+    this.pawns = getStartPositions();
+    this.nextMoveTime = Date.now() + 15000;
+    this.players.forEach(player => (player.ready = true));
+    this.players[0].nowMoving = true;
+};
+
+RoomSchema.methods.isFull = function () {
+    if (this.players.length === 4) {
+        this.full = true;
+    }
+    return this.full;
+};
+
+RoomSchema.methods.getPlayer = function (playerId) {
+    return this.players.find(player => player._id.toString() === playerId.toString());
+};
+
+RoomSchema.methods.addPlayer = function (name) {
+    this.players.push({
+        name: name,
+        ready: false,
+        color: colors[this.players.length],
+    });
 };
 
 RoomSchema.methods.getPawnIndex = function (pawnId) {

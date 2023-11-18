@@ -9,4 +9,8 @@ const PlayerSchema = new Schema({
     nowMoving: { type: Boolean, default: false },
 });
 
+PlayerSchema.methods.changeReadyStatus = function () {
+    this.ready = !this.ready;
+};
+
 module.exports = PlayerSchema;
