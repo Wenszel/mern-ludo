@@ -62,7 +62,6 @@ RoomSchema.methods.canStartGame = function () {
 
 RoomSchema.methods.startGame = function () {
     this.started = true;
-    this.pawns = getStartPositions();
     this.nextMoveTime = Date.now() + 15000;
     this.players.forEach(player => (player.ready = true));
     this.players[0].nowMoving = true;
@@ -80,6 +79,7 @@ RoomSchema.methods.getPlayer = function (playerId) {
 };
 
 RoomSchema.methods.addPlayer = function (name) {
+    if (this.full) return;
     this.players.push({
         name: name,
         ready: false,
