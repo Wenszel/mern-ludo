@@ -36,6 +36,7 @@ RoomSchema.methods.changeMovingPlayer = function () {
     this.nextMoveTime = Date.now() + 15000;
     this.rolledNumber = null;
     if (this.timeoutID) clearTimeout(this.timeoutID);
+    this.timeoutID = null;
 };
 
 RoomSchema.methods.movePawn = function (pawn) {

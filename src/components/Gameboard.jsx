@@ -67,8 +67,8 @@ const Gameboard = () => {
 
     return (
         <>
-            {players ? (
-                <>
+            {(players[0] && !started) || (time && started) ? (
+                <div className='container'>
                     <Navbar
                         players={players}
                         started={started}
@@ -80,7 +80,7 @@ const Gameboard = () => {
                         rolledNumberCallback={rolledNumberCallback}
                     />
                     <Map pawns={pawns} nowMoving={nowMoving} rolledNumber={rolledNumber} />
-                </>
+                </div>
             ) : (
                 <ReactLoading type='spinningBubbles' color='white' height={667} width={375} />
             )}

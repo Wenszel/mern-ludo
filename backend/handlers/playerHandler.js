@@ -115,6 +115,7 @@ module.exports = (io, socket) => {
                 socket.join(room._id.toString());
                 // Sending data to the user, after which player will be redirected to the game
                 socket.emit('player:data', JSON.stringify(req.session));
+                socket.emit('room:data', JSON.stringify(updatedRoom));
             });
         });
     }

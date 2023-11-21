@@ -27,6 +27,8 @@ module.exports = (io, socket) => {
                 room.players[index + 1].nowMoving = true;
             }
             room.nextMoveTime = Date.now() + 15000;
+            if (this.timeoutID) clearTimeout(this.timeoutID);
+            this.timeoutID = null;
             RoomModel.findOneAndUpdate({ _id: req.session.roomId }, room, function (err, updatedRoom) {
                 io.to(req.session.roomId).emit('room:data', JSON.stringify(updatedRoom));
             });

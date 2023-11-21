@@ -6,13 +6,16 @@ body {
         rgba(0, 138, 255, 1) 16%,
         rgba(9, 9, 121, 1) 81%
     );
+    overflow: hidden;
+}
+#root {
     display: flex;
+    justify-content: center;
     flex-direction: column;
-    align-items: center;
+    height: 100vh;
+    width: 100vw;
 }
-.canvas-container {
-    margin: 10px;
-}
+
 canvas {
     border-radius: 15px;
     border: 2px solid black;
@@ -25,12 +28,14 @@ canvas {
     display: flex;
     flex-direction: row;
 }
-.navbar-container > div {
-    margin-right: 10px;
-}
+
 .name-container {
-    width: 100px;
-    height: 50px;
+    position: relative;
+    min-width: 100px;
+    min-height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     border: 2px solid white;
     border-radius: 5px;
     color: white;
@@ -49,9 +54,33 @@ canvas {
     height: 20px;
     border-radius: 5px;
 }
+.overlay {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0.9;
+    animation: timerAnimation 15s linear infinite;
+    transition-duration: 15s;
+}
 #root {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+}
+
+.container {
+    display: grid;
+    align-items: center;
+    justify-items: center;
+    grid-template-columns: 230px 230px;
+    grid-template-rows: 50px 250px 250px 50px;
+}
+
+.canvas-container {
+    place-self: center;
+    grid-column: 1 / span 2;
+    grid-row: 2 / span 2;
 }

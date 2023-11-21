@@ -1,6 +1,8 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { SocketContext } from '../../App';
 import Switch from '@material-ui/core/Switch';
+import '../Navbar.css';
+import './TimerAnimation';
 
 const ReadyButton = ({ isReady }) => {
     const socket = useContext(SocketContext);
