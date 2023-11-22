@@ -91,3 +91,5 @@ if (process.env.NODE_ENV === 'production') {
         res.sendFile('/app/build/index.html');
     });
 }
+
+module.exports = { server };
