@@ -10,9 +10,10 @@ module.exports = (io, socket) => {
         if (room.nextMoveTime <= Date.now()) {
             room.changeMovingPlayer();
             await RoomModel.findOneAndUpdate({ _id: req.session.roomId }, room);
+            io.to(req.session.roomId).emit('room:data', JSON.stringify(room));
+        } else {
+            io.to(socket.id).emit('room:data', JSON.stringify(room));
         }
-        io.to(req.session.roomId).emit('room:data', JSON.stringify(room));
     };
-
     socket.on('room:data', getData);
 };

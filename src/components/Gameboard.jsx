@@ -35,6 +35,7 @@ const Gameboard = () => {
         socket.emit('room:data', context.roomId);
         socket.on('room:data', data => {
             data = JSON.parse(data);
+            if (data.players == null) return;
             // Filling navbar with empty player nick container
             while (data.players.length !== 4) {
                 data.players.push({ name: '...' });

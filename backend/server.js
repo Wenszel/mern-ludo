@@ -81,7 +81,6 @@ io.on('connection', socket => {
         const roomId = socket.request.session.roomId.toString();
         socket.join(roomId);
         socket.emit('player:data', JSON.stringify(socket.request.session));
-        io.to(roomId).emit('player joined');
     }
 });
 
