@@ -1,0 +1,76 @@
+.login-page-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 50vh;
+    width: 400px;
+    position: relative;
+    padding: 20px;
+    border-radius: 5%;
+    border: 5px solid white;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+h1 {
+    margin-right: 10px;
+    align-self: flex-start;
+    top: 0;
+    position: absolute;
+    color: white;
+}
+.rooms {
+    width: 98%;
+    height: 80%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+.room {
+    cursor: pointer;
+    justify-content: space-between;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    color: white;
+    width: 90%;
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid black;
+}
+.room-selected {
+    border: 1px solid white;
+}
+.room-selected,
+.room:hover {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+.number-of-players {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.number-of-players > img {
+    margin-right: 5px;
+    width: 20px;
+    height: 20px;
+}
+
+/* Firefox */
+* {
+    scrollbar-width: auto;
+    scrollbar-color: #ffffff rgba(0, 0, 0, 0.1);
+}
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+    width: 8px;
+}
+
+*::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0);
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: #ffffff;
+    border-radius: 10px;
+    border: 3px none #ffffff;
+}

@@ -6,6 +6,7 @@ const PawnSchema = require('./pawn');
 const PlayerSchema = require('./player');
 
 const RoomSchema = new Schema({
+    name: String,
     createDate: { type: Date, default: Date.now },
     started: { type: Boolean, default: false },
     full: { type: Boolean, default: false },
@@ -66,6 +67,7 @@ RoomSchema.methods.startGame = function () {
     this.nextMoveTime = Date.now() + 15000;
     this.players.forEach(player => (player.ready = true));
     this.players[0].nowMoving = true;
+    this.timeoutID = setTimeout(makeRandomMove, 15000, this);
 };
 
 RoomSchema.methods.isFull = function () {

@@ -1,9 +1,9 @@
 import React, { useEffect, useState, createContext } from 'react';
 import { io } from 'socket.io-client';
 import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom';
-
+import ReactLoading from 'react-loading';
 import Gameboard from './components/Gameboard';
-import NameInput from './components/NameInput';
+import LoginPage from './components/LoginPage/LoginPage';
 
 export const PlayerDataContext = createContext();
 export const SocketContext = createContext();
@@ -32,7 +32,11 @@ function App() {
                         LOADING...
                     </Route>
                     <Route path='/login'>
-                        <NameInput />
+                        {playerSocket ? (
+                            <LoginPage />
+                        ) : (
+                            <ReactLoading type='spinningBubbles' color='white' height={667} width={375} />
+                        )}
                     </Route>
                     <Route path='/game'>
                         {playerData ? (

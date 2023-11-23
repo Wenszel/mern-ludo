@@ -15,5 +15,25 @@ module.exports = (io, socket) => {
             io.to(socket.id).emit('room:data', JSON.stringify(room));
         }
     };
+
+    const getRooms = async () => {
+        let rooms = await RoomModel.find({});
+        const response = [];
+        rooms.forEach(room => {
+            if (!room.isStarted && !room.isFull()) {
+                response.push({
+                    _id: room._id,
+                    name: room.name,
+                    players: room.players,
+                    isStarted: room.isStarted,
+                });
+            }
+        });
+        io.to(socket.id).emit('room:rooms', JSON.stringify(response));
+    };
+
+    
+
     socket.on('room:data', getData);
+    socket.on('room:rooms', getRooms);
 };
