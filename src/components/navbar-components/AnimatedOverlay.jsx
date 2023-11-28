@@ -14,7 +14,7 @@ const AnimatedOverlay = ({ time }) => {
             in={true}
             timeout={0}
             classNames='overlay'
-            style={{ 'animation-delay': `-${animationDelay}s` }}
+            style={{ animationDelay: `-${animationDelay}s` }}
             unmountOnExit
         >
             <div className='overlay'></div>

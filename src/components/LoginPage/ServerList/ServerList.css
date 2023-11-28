@@ -1,0 +1,51 @@
+th {
+    text-align: left;
+}
+img {
+    margin-right: 5px;
+    width: 20px;
+    height: 20px;
+}
+th,
+td {
+    padding: 8px;
+    text-align: left;
+    height: 50px;
+}
+tr {
+    max-height: 50px;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+.server-container {
+    display: flex;
+    height: 500px;
+    overflow: scroll;
+}
+.room-name {
+    max-width: 150px;
+    overflow: hidden;
+}
+/* Firefox */
+* {
+    scrollbar-width: auto;
+    scrollbar-color: #ffffff rgba(0, 0, 0, 0.1);
+}
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+    background: rgba(0, 0, 0, 0);
+    width: 10px;
+}
+
+*::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0);
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: #ffffff;
+    border-radius: 10px;
+}

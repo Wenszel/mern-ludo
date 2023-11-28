@@ -17,8 +17,9 @@ const getJoinableRoom = async () => {
     return await Room.findOne({ full: false, started: false }).exec();
 };
 
-const createNewRoom = () => {
-    const room = new Room();
+const createNewRoom = data => {
+    const room = new Room(data);
+    room.save();
     return room;
 };
 

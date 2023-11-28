@@ -1,17 +1,15 @@
-const { getRoom, updateRoom, getJoinableRoom, createNewRoom, findPlayer } = require('../controllers/roomController');
+const { getRoom, updateRoom } = require('../controllers/roomController');
 const { colors } = require('../utils/constants');
 
 module.exports = socket => {
     const req = socket.request;
 
     const handleLogin = async data => {
-        if (await findPlayer(req.sessionID)) return;
-        const room = await getJoinableRoom();
-        if (room) {
-            addPlayerToExistingRoom(room, data);
-        } else {
-            addNewRoom(data);
-        }
+        const room = await getRoom(data.roomId);
+        if (room.isFull()) return socket.emit('error:changeRoom');
+        if (room.started) return socket.emit('error:changeRoom');
+        if (room.private && room.password !== data.password) return socket.emit('error:wrongPassword');
+        addPlayerToExistingRoom(room, data);
     };
 
     const handleReady = async () => {
@@ -21,13 +19,6 @@ module.exports = socket => {
             room.startGame();
         }
         await updateRoom(room);
-    };
-
-    const addNewRoom = async data => {
-        const room = createNewRoom();
-        room.addPlayer(data.name, req.sessionID);
-        await room.save();
-        reloadSession(room);
     };
 
     const addPlayerToExistingRoom = async (room, data) => {

@@ -7,7 +7,7 @@ const PlayerSchema = require('./player');
 
 const RoomSchema = new mongoose.Schema({
     name: String,
-    private: { type: Boolean, default: true },
+    private: { type: Boolean, default: false },
     password: String,
     createDate: { type: Date, default: Date.now },
     started: { type: Boolean, default: false },
