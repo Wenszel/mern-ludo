@@ -1,6 +1,5 @@
 const { getRoom, updateRoom } = require('../controllers/roomController');
 const { sendToPlayersRolledNumber } = require('../socket/emits');
-const { getPawnPositionAfterMove } = require('../utils/functions');
 const { rollDice, isMoveValid } = require('./handlersFunctions');
 
 module.exports = socket => {
@@ -10,7 +9,7 @@ module.exports = socket => {
         const room = await getRoom(req.session.roomId);
         const pawn = room.getPawn(pawnId);
         if (isMoveValid(req.session, pawn, room)) {
-            const newPositionOfMovedPawn = getPawnPositionAfterMove(room.rolledNumber, pawn);
+            const newPositionOfMovedPawn = pawn.getPositionAfterMove(room.rolledNumber);
             room.changePositionOfPawn(pawn, newPositionOfMovedPawn);
             room.beatPawns(newPositionOfMovedPawn, req.session.color);
             room.changeMovingPlayer();

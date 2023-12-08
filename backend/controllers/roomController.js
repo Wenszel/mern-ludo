@@ -23,14 +23,8 @@ const createNewRoom = data => {
     return room;
 };
 
-const findPlayer = async sessionID => {
-    const player = await Room.findOne({ 'players.sessionID': sessionID }).exec();
-    console.log(player);
-    return await Room.findOne({ 'players.sessionID': sessionID }).exec();
-};
-
 Room.watch().on('change', async data => {
     sendToPlayersData(await getRoom(data.documentKey._id));
 });
 
-module.exports = { getRoom, getRooms, updateRoom, getJoinableRoom, createNewRoom, findPlayer };
+module.exports = { getRoom, getRooms, updateRoom, getJoinableRoom, createNewRoom };

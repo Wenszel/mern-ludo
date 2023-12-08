@@ -1,5 +1,5 @@
 const { getRooms, getRoom, updateRoom, createNewRoom } = require('../controllers/roomController');
-const { sendToOnePlayerRooms, sendToOnePlayerData, sendToPlayersData } = require('../socket/emits');
+const { sendToOnePlayerRooms, sendToOnePlayerData } = require('../socket/emits');
 
 module.exports = socket => {
     const req = socket.request;

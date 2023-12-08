@@ -1,13 +1,14 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { SocketContext } from '../../../App';
+import useInput from '../../../hooks/useInput';
 import './NameInput.css';
 const NameInput = ({ isRoomPrivate, roomId }) => {
     const socket = useContext(SocketContext);
-    const [nickname, setNickname] = useState('');
-    const [password, setPassword] = useState('');
+    const nickname = useInput('');
+    const password = useInput('');
     const [isPasswordWrong, setIsPasswordWrong] = useState(false);
     const handleButtonClick = () => {
-        socket.emit('player:login', { name: nickname, password: password, roomId: roomId });
+        socket.emit('player:login', { name: nickname.value, password: password.value, roomId: roomId });
     };
     useEffect(() => {
         socket.on('error:wrongPassword', () => {
@@ -28,12 +29,12 @@ const NameInput = ({ isRoomPrivate, roomId }) => {
     return (
         <div className='name-overlay'>
             <div className='name-input-container' style={{ height: isRoomPrivate ? '100px' : '50px' }}>
-                <input placeholder='Nickname' type='text' onChange={e => setNickname(e.target.value)} />
+                <input placeholder='Nickname' type='text' onChange={nickname.onChange} />
                 {isRoomPrivate ? (
                     <input
                         placeholder='Room password'
                         type='text'
-                        onChange={e => setPassword(e.target.value)}
+                        onChange={password.onChange}
                         style={{ backgroundColor: isPasswordWrong ? 'red' : null }}
                     />
                 ) : null}

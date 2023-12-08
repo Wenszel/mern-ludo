@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const { colors } = require('../utils/constants');
-const { getPawnPositionAfterMove, getStartPositions } = require('../utils/functions');
 const { makeRandomMove } = require('../handlers/handlersFunctions');
 const PawnSchema = require('./pawn');
 const PlayerSchema = require('./player');
@@ -16,7 +15,23 @@ const RoomSchema = new mongoose.Schema({
     timeoutID: Number,
     rolledNumber: Number,
     players: [PlayerSchema],
-    pawns: { type: [PawnSchema], default: getStartPositions() },
+    pawns: {
+        type: [PawnSchema],
+        default: () => {
+            const startPositions = [];
+            for (let i = 0; i < 16; i++) {
+                let pawn = {};
+                pawn.basePos = i;
+                pawn.position = i;
+                if (i < 4) pawn.color = colors[0];
+                else if (i < 8) pawn.color = colors[1];
+                else if (i < 12) pawn.color = colors[2];
+                else if (i < 16) pawn.color = colors[3];
+                startPositions.push(pawn);
+            }
+            return startPositions;
+        },
+    },
 });
 
 RoomSchema.methods.beatPawns = function (position, attackingPawnColor) {
@@ -44,7 +59,7 @@ RoomSchema.methods.changeMovingPlayer = function () {
 };
 
 RoomSchema.methods.movePawn = function (pawn) {
-    const newPositionOfMovedPawn = getPawnPositionAfterMove(this.rolledNumber, pawn);
+    const newPositionOfMovedPawn = pawn.getPositionAfterMove(this.rolledNumber);
     this.changePositionOfPawn(pawn, newPositionOfMovedPawn);
     this.beatPawns(newPositionOfMovedPawn, pawn.color);
 };

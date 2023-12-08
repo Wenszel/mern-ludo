@@ -2,7 +2,7 @@ import React, { useEffect, useState, createContext } from 'react';
 import { io } from 'socket.io-client';
 import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom';
 import ReactLoading from 'react-loading';
-import Gameboard from './components/Gameboard';
+import Gameboard from './components/Gameboard/Gameboard';
 import LoginPage from './components/LoginPage/LoginPage';
 
 export const PlayerDataContext = createContext();

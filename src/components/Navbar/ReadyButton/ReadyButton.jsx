@@ -1,19 +1,17 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { SocketContext } from '../../App';
+import { SocketContext } from '../../../App';
 import Switch from '@material-ui/core/Switch';
 import '../Navbar.css';
-import './TimerAnimation';
+import '../NameContainer/AnimatedOverlay/TimerAnimation';
 
 const ReadyButton = ({ isReady }) => {
     const socket = useContext(SocketContext);
-    const [checked, setChecked] = useState();
+    const [checked, setChecked] = useState(isReady);
+
     const handleCheckboxChange = () => {
         socket.emit('player:ready');
         setChecked(!checked);
     };
-    useEffect(() => {
-        setChecked(isReady);
-    });
     return (
         <div className='ready-container'>
             <Switch onChange={handleCheckboxChange} checked={checked || false} />

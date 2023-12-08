@@ -12,7 +12,7 @@ const ServerList = () => {
     const [rooms, setRooms] = useState([]);
     const [joining, setJoining] = useState(false);
     const [clickedRoom, setClickedRoom] = useState(null);
-    useEffect(async () => {
+    useEffect(() => {
         socket.emit('room:rooms');
         socket.on('room:rooms', data => {
             data = JSON.parse(data);
@@ -70,9 +70,7 @@ const ServerList = () => {
                     </div>
                 )}
             </div>
-            {joining ? (
-                <NameInput roomId={clickedRoom._id} isRoomPrivate={clickedRoom.private} />
-            ) : null}
+            {joining ? <NameInput roomId={clickedRoom._id} isRoomPrivate={clickedRoom.private} /> : null}
         </div>
     );
 };

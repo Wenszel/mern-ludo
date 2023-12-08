@@ -10,7 +10,6 @@ const AddServer = () => {
 
     useEffect(() => {
         socket.on('room:created', () => {
-            console.log('ewa');
             socket.emit('room:rooms');
         });
     }, []);

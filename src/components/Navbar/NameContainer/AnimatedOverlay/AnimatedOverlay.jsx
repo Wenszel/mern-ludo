@@ -1,13 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import { CSSTransition } from 'react-transition-group';
 import './TimerAnimation.js';
 
 const AnimatedOverlay = ({ time }) => {
-    const [animationDelay, setAnimationDelay] = useState();
-
-    useEffect(() => {
-        setAnimationDelay(15 - Math.ceil((time - Date.now()) / 1000));
-    }, [time]);
+    const animationDelay = useMemo(() => 15 - Math.ceil((time - Date.now()) / 1000), [time]);
 
     return (
         <CSSTransition

@@ -1,10 +1,10 @@
 import React from 'react';
-import Dice from './game-board-components/Dice';
-import NameContainer from './navbar-components/NameContainer';
-import ReadyButton from './navbar-components/ReadyButton';
+import Dice from '../Gameboard/Dice/Dice';
+import NameContainer from './NameContainer/NameContainer';
+import ReadyButton from './ReadyButton/ReadyButton';
 import './Navbar.css';
 import { useContext } from 'react';
-import { PlayerDataContext } from '../App';
+import { PlayerDataContext } from '../../App';
 const Navbar = ({ players, started, time, isReady, rolledNumber, nowMoving, rolledNumberCallback, movingPlayer }) => {
     const context = useContext(PlayerDataContext);
     const colors = ['red', 'blue', 'green', 'yellow'];
