@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import AnimatedOverlay from './AnimatedOverlay';
+import AnimatedOverlay from './AnimatedOverlay/AnimatedOverlay';
 
 const NameContainer = ({ player, time }) => {
     return (

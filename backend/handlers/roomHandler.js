@@ -1,19 +1,31 @@
-const RoomModel = require('../schemas/room');
+const { getRooms, getRoom, updateRoom, createNewRoom } = require('../controllers/roomController');
+const { sendToOnePlayerRooms, sendToOnePlayerData } = require('../socket/emits');
 
-module.exports = (io, socket) => {
+module.exports = socket => {
     const req = socket.request;
 
-    const getData = async () => {
-        let room = await RoomModel.findOne({ _id: req.session.roomId });
+    const handleGetData = async () => {
+        const room = await getRoom(req.session.roomId);
         // Handle the situation when the server crashes and any player reconnects after the time has expired
         // Typically, the responsibility for changing players is managed by gameHandler.js.
         if (room.nextMoveTime <= Date.now()) {
             room.changeMovingPlayer();
-            await RoomModel.findOneAndUpdate({ _id: req.session.roomId }, room);
-            io.to(req.session.roomId).emit('room:data', JSON.stringify(room));
-        } else {
-            io.to(socket.id).emit('room:data', JSON.stringify(room));
+            await updateRoom(room);
         }
+        sendToOnePlayerData(socket.id, room);
     };
-    socket.on('room:data', getData);
+
+    const handleGetAllRooms = async () => {
+        let rooms = await getRooms();
+        sendToOnePlayerRooms(socket.id, rooms);
+    };
+
+    const handleCreateRoom = async data => {
+        createNewRoom(data);
+        socket.to(socket.id).emit('room:created');
+    };
+
+    socket.on('room:data', handleGetData);
+    socket.on('room:rooms', handleGetAllRooms);
+    socket.on('room:create', handleCreateRoom);
 };

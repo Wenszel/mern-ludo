@@ -1,17 +1,16 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import ReactLoading from 'react-loading';
-import { PlayerDataContext, SocketContext } from '../App';
-import Map from './game-board-components/Map';
-import Navbar from './Navbar';
+import { PlayerDataContext, SocketContext } from '../../App';
+import Map from './Map/Map';
+import Navbar from '../Navbar/Navbar';
 
 const Gameboard = () => {
-    // Context data
     const socket = useContext(SocketContext);
     const context = useContext(PlayerDataContext);
-    // Render data
+
     const [pawns, setPawns] = useState([]);
     const [players, setPlayers] = useState([]);
-    // Game logic data
+
     const [rolledNumber, setRolledNumber] = useState(null);
     const [time, setTime] = useState();
     const [isReady, setIsReady] = useState();
@@ -19,7 +18,8 @@ const Gameboard = () => {
     const [started, setStarted] = useState(false);
 
     const [movingPlayer, setMovingPlayer] = useState('red');
-    const checkWin = useCallback(() => {
+
+    const checkWin = () => {
         // Player wins when all pawns with same color are inside end base
         if (pawns.filter(pawn => pawn.color === 'red' && pawn.position === 73).length === 4) {
             alert('Red Won');
@@ -30,7 +30,8 @@ const Gameboard = () => {
         } else if (pawns.filter(pawn => pawn.color === 'yellow' && pawn.position === 91).length === 4) {
             alert('Yellow Won');
         }
-    }, [pawns]);
+    };
+
     useEffect(() => {
         socket.emit('room:data', context.roomId);
         socket.on('room:data', data => {
@@ -59,9 +60,8 @@ const Gameboard = () => {
             setTime(data.nextMoveTime);
             setStarted(data.started);
         });
-    }, []);
+    }, [socket]);
 
-    // Callback to handle dice rolling between dice and map component
     const rolledNumberCallback = number => {
         setRolledNumber(number);
     };

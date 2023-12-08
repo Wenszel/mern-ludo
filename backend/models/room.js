@@ -1,11 +1,13 @@
 const mongoose = require('mongoose');
 const { colors } = require('../utils/constants');
-const { getPawnPositionAfterMove, getStartPositions } = require('../utils/functions');
-const Schema = mongoose.Schema;
+const { makeRandomMove } = require('../handlers/handlersFunctions');
 const PawnSchema = require('./pawn');
 const PlayerSchema = require('./player');
 
-const RoomSchema = new Schema({
+const RoomSchema = new mongoose.Schema({
+    name: String,
+    private: { type: Boolean, default: false },
+    password: String,
     createDate: { type: Date, default: Date.now },
     started: { type: Boolean, default: false },
     full: { type: Boolean, default: false },
@@ -13,7 +15,23 @@ const RoomSchema = new Schema({
     timeoutID: Number,
     rolledNumber: Number,
     players: [PlayerSchema],
-    pawns: { type: [PawnSchema], default: getStartPositions() },
+    pawns: {
+        type: [PawnSchema],
+        default: () => {
+            const startPositions = [];
+            for (let i = 0; i < 16; i++) {
+                let pawn = {};
+                pawn.basePos = i;
+                pawn.position = i;
+                if (i < 4) pawn.color = colors[0];
+                else if (i < 8) pawn.color = colors[1];
+                else if (i < 12) pawn.color = colors[2];
+                else if (i < 16) pawn.color = colors[3];
+                startPositions.push(pawn);
+            }
+            return startPositions;
+        },
+    },
 });
 
 RoomSchema.methods.beatPawns = function (position, attackingPawnColor) {
@@ -37,11 +55,11 @@ RoomSchema.methods.changeMovingPlayer = function () {
     this.nextMoveTime = Date.now() + 15000;
     this.rolledNumber = null;
     if (this.timeoutID) clearTimeout(this.timeoutID);
-    this.timeoutID = null;
+    this.timeoutID = setTimeout(makeRandomMove, 15000, this._id.toString());
 };
 
 RoomSchema.methods.movePawn = function (pawn) {
-    const newPositionOfMovedPawn = getPawnPositionAfterMove(this.rolledNumber, pawn);
+    const newPositionOfMovedPawn = pawn.getPositionAfterMove(this.rolledNumber);
     this.changePositionOfPawn(pawn, newPositionOfMovedPawn);
     this.beatPawns(newPositionOfMovedPawn, pawn.color);
 };
@@ -66,6 +84,7 @@ RoomSchema.methods.startGame = function () {
     this.nextMoveTime = Date.now() + 15000;
     this.players.forEach(player => (player.ready = true));
     this.players[0].nowMoving = true;
+    this.timeoutID = setTimeout(makeRandomMove, 15000, this._id.toString());
 };
 
 RoomSchema.methods.isFull = function () {
@@ -79,9 +98,10 @@ RoomSchema.methods.getPlayer = function (playerId) {
     return this.players.find(player => player._id.toString() === playerId.toString());
 };
 
-RoomSchema.methods.addPlayer = function (name) {
+RoomSchema.methods.addPlayer = function (name, id) {
     if (this.full) return;
     this.players.push({
+        sessionID: id,
         name: name,
         ready: false,
         color: colors[this.players.length],
@@ -104,6 +124,6 @@ RoomSchema.methods.getCurrentlyMovingPlayer = function () {
     return this.players.find(player => player.nowMoving === true);
 };
 
-const RoomModel = mongoose.model('Room', RoomSchema);
+const Room = mongoose.model('Room', RoomSchema);
 
-module.exports = RoomModel;
+module.exports = Room;

@@ -1,23 +1,29 @@
-const { colors } = require('./constants');
-function getStartPositions() {
-    const startPositions = [];
-    for (let i = 0; i < 16; i++) {
-        let pawn = {};
-        pawn.basePos = i;
-        pawn.position = i;
-        if (i < 4) pawn.color = colors[0];
-        else if (i < 8) pawn.color = colors[1];
-        else if (i < 12) pawn.color = colors[2];
-        else if (i < 16) pawn.color = colors[3];
-        startPositions.push(pawn);
+const mongoose = require('mongoose');
+
+const Schema = mongoose.Schema;
+
+const PawnSchema = new Schema({
+    color: String,
+    basePos: Number,
+    position: Number,
+});
+
+PawnSchema.methods.canMove = function (rolledNumber) {
+    if (this.position === this.basePos && (rolledNumber === 6 || rolledNumber === 1)) {
+        return true;
     }
-    return startPositions;
-}
-function getPawnPositionAfterMove(rolledNumber, pawn) {
-    const { position, color } = pawn;
+    // (if player's pawn is near finish line) if the move does not go beyond the win line
+    if (this.position !== this.getPositionAfterMove(rolledNumber) && this.position !== this.basePos) {
+        return true;
+    }
+    return false;
+};
+
+PawnSchema.methods.getPositionAfterMove = function (rolledNumber) {
+    const { position, color } = this;
     switch (color) {
         case 'red':
-            if (pawn.position + rolledNumber <= 73) {
+            if (position + rolledNumber <= 73) {
                 if (position >= 0 && position <= 3) {
                     return 16;
                 } else if (position <= 66 && position + rolledNumber >= 67) {
@@ -29,7 +35,7 @@ function getPawnPositionAfterMove(rolledNumber, pawn) {
                 return position;
             }
         case 'blue':
-            if (pawn.position + rolledNumber <= 79) {
+            if (position + rolledNumber <= 79) {
                 if (position >= 4 && position <= 7) {
                     return 55;
                 } else if (position <= 67 && position + rolledNumber > 67) {
@@ -43,7 +49,7 @@ function getPawnPositionAfterMove(rolledNumber, pawn) {
                 return position;
             }
         case 'green':
-            if (pawn.position + rolledNumber <= 85) {
+            if (position + rolledNumber <= 85) {
                 if (position >= 8 && position <= 11) {
                     return 42;
                 } else if (position <= 67 && position + rolledNumber > 67) {
@@ -57,7 +63,7 @@ function getPawnPositionAfterMove(rolledNumber, pawn) {
                 return position;
             }
         case 'yellow':
-            if (pawn.position + rolledNumber <= 85) {
+            if (position + rolledNumber <= 85) {
                 if (position >= 12 && position <= 15) {
                     return 29;
                 } else if (position <= 67 && position + rolledNumber > 67) {
@@ -71,5 +77,6 @@ function getPawnPositionAfterMove(rolledNumber, pawn) {
                 return position;
             }
     }
-}
-module.exports = { getStartPositions, getPawnPositionAfterMove };
+};
+
+module.exports = PawnSchema;

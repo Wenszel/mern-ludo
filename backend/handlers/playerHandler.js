@@ -1,34 +1,24 @@
-const RoomModel = require('../schemas/room');
+const { getRoom, updateRoom } = require('../controllers/roomController');
 const { colors } = require('../utils/constants');
 
-module.exports = (io, socket) => {
+module.exports = socket => {
     const req = socket.request;
 
     const handleLogin = async data => {
-        const room = await RoomModel.findOne({ full: false, started: false });
-        if (room) {
-            addPlayerToExistingRoom(room, data);
-        } else {
-            createNewRoom(data);
-        }
+        const room = await getRoom(data.roomId);
+        if (room.isFull()) return socket.emit('error:changeRoom');
+        if (room.started) return socket.emit('error:changeRoom');
+        if (room.private && room.password !== data.password) return socket.emit('error:wrongPassword');
+        addPlayerToExistingRoom(room, data);
     };
 
     const handleReady = async () => {
-        const { roomId, playerId } = req.session;
-        const room = await RoomModel.findOne({ _id: roomId });
-        room.getPlayer(playerId).changeReadyStatus();
+        const room = await getRoom(req.session.roomId);
+        room.getPlayer(req.session.playerId).changeReadyStatus();
         if (room.canStartGame()) {
             room.startGame();
         }
-        await RoomModel.findOneAndUpdate({ _id: roomId }, room);
-        io.to(roomId).emit('room:data', JSON.stringify(room));
-    };
-
-    const createNewRoom = async data => {
-        const room = new RoomModel();
-        room.addPlayer(data.name);
-        await room.save();
-        reloadSession(room);
+        await updateRoom(room);
     };
 
     const addPlayerToExistingRoom = async (room, data) => {
@@ -36,7 +26,7 @@ module.exports = (io, socket) => {
         if (room.isFull()) {
             room.startGame();
         }
-        await RoomModel.findOneAndUpdate({ _id: room._id }, room);
+        await updateRoom(room);
         reloadSession(room);
     };
 
