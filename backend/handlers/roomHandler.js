@@ -1,35 +1,31 @@
-const RoomModel = require('../schemas/room');
+const { getRooms, getRoom, updateRoom, createNewRoom } = require('../controllers/roomController');
+const { sendToOnePlayerRooms, sendToOnePlayerData } = require('../socket/emits');
 
-module.exports = (io, socket) => {
+module.exports = socket => {
     const req = socket.request;
-    const getData = () => {
-        RoomModel.findOne({ _id: req.session.roomId }, function (err, room) {
-            if (!room) return err;
-            if (room.nextMoveTime <= Date.now()) {
-                changeCurrentMovingPlayer();
-            } else {
-                io.to(req.session.roomId.toString()).emit('room:data', JSON.stringify(room));
-            }
-        });
+
+    const handleGetData = async () => {
+        const room = await getRoom(req.session.roomId);
+        // Handle the situation when the server crashes and any player reconnects after the time has expired
+        // Typically, the responsibility for changing players is managed by gameHandler.js.
+        if (room.nextMoveTime <= Date.now()) {
+            room.changeMovingPlayer();
+            await updateRoom(room);
+        }
+        sendToOnePlayerData(socket.id, room);
     };
 
-    socket.on('room:data', getData);
+    const handleGetAllRooms = async () => {
+        let rooms = await getRooms();
+        sendToOnePlayerRooms(socket.id, rooms);
+    };
 
-    function changeCurrentMovingPlayer() {
-        RoomModel.findOne({ _id: req.session.roomId }, function (err, room) {
-            if (!room) return err;
-            const index = room.players.findIndex(player => player.nowMoving === true);
-            const roomSize = room.players.length;
-            room.players[index].nowMoving = false;
-            if (index + 1 === roomSize) {
-                room.players[0].nowMoving = true;
-            } else {
-                room.players[index + 1].nowMoving = true;
-            }
-            room.nextMoveTime = Date.now() + 15000;
-            RoomModel.findOneAndUpdate({ _id: req.session.roomId }, room, function (err, updatedRoom) {
-                io.to(req.session.roomId).emit('room:data', JSON.stringify(updatedRoom));
-            });
-        });
-    }
+    const handleCreateRoom = async data => {
+        createNewRoom(data);
+        socket.to(socket.id).emit('room:created');
+    };
+
+    socket.on('room:data', handleGetData);
+    socket.on('room:rooms', handleGetAllRooms);
+    socket.on('room:create', handleCreateRoom);
 };

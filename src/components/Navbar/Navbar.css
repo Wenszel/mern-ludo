@@ -1,0 +1,55 @@
+.dice-container {
+    margin-left: 20px;
+    margin-right: 20px;
+    width: 50px;
+    height: 50px;
+}
+.roll {
+    cursor: pointer;
+}
+.ready-container {
+    display: flex;
+    width: 300px;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    flex-flow: row-reverse;
+    background-color: grey;
+    border-radius: 10px;
+    border: 2px solid white;
+}
+.ready-container > label {
+    margin-left: 10px;
+    margin-right: 10px;
+    width: 100px;
+    color: white;
+}
+.player-container {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    width: 100%;
+}
+.red {
+    margin-bottom: 50px;
+    grid-column: 1;
+    grid-row: 1;
+}
+.yellow {
+    margin-bottom: 50px;
+    flex-flow: row-reverse;
+    grid-column: 2;
+    grid-row: 1;
+}
+.blue {
+    margin-top: 50px;
+    grid-column: 1;
+    grid-row: 4;
+}
+.green {
+    margin-top: 50px;
+    flex-flow: row-reverse;
+    grid-column: 2;
+    grid-row: 4;
+}
+/* Styl dla overlay */

@@ -1,24 +1,28 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { SocketContext } from '../../App';
-import one from '../../images/dice/1.png';
-import two from '../../images/dice/2.png';
-import three from '../../images/dice/3.png';
-import four from '../../images/dice/4.png';
-import five from '../../images/dice/5.png';
-import six from '../../images/dice/6.png';
-import roll from '../../images/dice/roll.png';
+import React, { useEffect, useContext } from 'react';
+import { SocketContext } from '../../../App';
+import one from '../../../images/dice/1.png';
+import two from '../../../images/dice/2.png';
+import three from '../../../images/dice/3.png';
+import four from '../../../images/dice/4.png';
+import five from '../../../images/dice/5.png';
+import six from '../../../images/dice/6.png';
+import roll from '../../../images/dice/roll.png';
 
 const Dice = ({ rolledNumberCallback, rolledNumber, nowMoving, color, movingPlayer }) => {
     const socket = useContext(SocketContext);
-    const [images] = useState([one, two, three, four, five, six, roll]);
+
+    const images = [one, two, three, four, five, six, roll];
+
     const handleRoll = () => {
         socket.emit('game:roll');
     };
+
     useEffect(() => {
         socket.on('game:roll', number => {
             rolledNumberCallback(number);
         });
-    }, []);
+    }, [socket, rolledNumberCallback]);
+
     return (
         <div className={`dice-container dice-${color}`}>
             {movingPlayer === color ? (

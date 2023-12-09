@@ -1,0 +1,70 @@
+.name-input-container {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 20px 60px 20px;
+    width: 300px;
+    background: radial-gradient(circle, rgba(0, 138, 255, 1) 5%, rgba(9, 9, 121, 1) 81%);
+    border: 1px solid white;
+    border-radius: 8px;
+    margin: 20px;
+}
+.name-input-container > button {
+    margin-top: 5px;
+    text-align: center;
+    width: 100px;
+    align-self: center;
+}
+.name-input-container > input {
+    margin-top: 10px;
+}
+.name-overlay {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+}
+input,
+button {
+    padding: 0;
+    border: none;
+    outline: none;
+    box-sizing: border-box;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 8px;
+    color: white;
+    border: 1px solid #ccc;
+    background-color: rgba(0, 0, 0, 0.2);
+    transition: border-color 0.3s ease-in-out, background-color 0.3s ease-in-out;
+}
+
+input:focus {
+    color: black;
+    border-color: #4a90e2;
+    background-color: #fff;
+}
+
+button {
+    padding: 12px 20px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: none;
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+button:hover {
+    background-color: rgba(0, 0, 0, 1);
+}
