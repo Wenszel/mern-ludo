@@ -1,15 +1,19 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useCallback } from 'react';
 import { SocketContext } from '../../../App';
 import useInput from '../../../hooks/useInput';
 import './NameInput.css';
+import Overlay from '../../Overlay/Overlay';
+
 const NameInput = ({ isRoomPrivate, roomId }) => {
     const socket = useContext(SocketContext);
     const nickname = useInput('');
     const password = useInput('');
     const [isPasswordWrong, setIsPasswordWrong] = useState(false);
-    const handleButtonClick = () => {
+
+    const handleButtonClick = useCallback(() => {
         socket.emit('player:login', { name: nickname.value, password: password.value, roomId: roomId });
-    };
+    }, [socket, nickname.value, password.value, roomId]);
+
     useEffect(() => {
         socket.on('error:wrongPassword', () => {
             setIsPasswordWrong(true);
@@ -24,7 +28,7 @@ const NameInput = ({ isRoomPrivate, roomId }) => {
         return () => {
             document.removeEventListener('keydown', keyDownHandler);
         };
-    }, []);
+    }, [socket, handleButtonClick]);
 
     return (
         <div className='name-overlay'>

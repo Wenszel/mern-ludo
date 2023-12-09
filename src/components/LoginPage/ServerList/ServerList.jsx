@@ -18,7 +18,7 @@ const ServerList = () => {
             data = JSON.parse(data);
             setRooms(data);
         });
-    }, []);
+    }, [socket]);
 
     const getRooms = () => {
         setRooms(null);
@@ -35,7 +35,7 @@ const ServerList = () => {
             <div className='title-container'>
                 <h1>Server List</h1>
                 <div className='refresh'>
-                    <img src={refresh} onClick={getRooms}></img>
+                    <img src={refresh} alt='refresh' onClick={getRooms}></img>
                 </div>
             </div>
             <div className='server-container content-container'>
@@ -53,7 +53,7 @@ const ServerList = () => {
                         <tbody>
                             {rooms.map((room, index) => (
                                 <tr key={index}>
-                                    <td>{room.private ? <img src={lock} /> : null}</td>
+                                    <td>{room.private ? <img src={lock} alt='private' /> : null}</td>
                                     <td className='room-name'>{room.name}</td>
                                     <td>{`${room.players.length}/4`}</td>
                                     <td>{room.isStarted ? 'started' : 'waiting'}</td>

@@ -19,19 +19,6 @@ const Gameboard = () => {
 
     const [movingPlayer, setMovingPlayer] = useState('red');
 
-    const checkWin = () => {
-        // Player wins when all pawns with same color are inside end base
-        if (pawns.filter(pawn => pawn.color === 'red' && pawn.position === 73).length === 4) {
-            alert('Red Won');
-        } else if (pawns.filter(pawn => pawn.color === 'blue' && pawn.position === 79).length === 4) {
-            alert('Blue Won');
-        } else if (pawns.filter(pawn => pawn.color === 'green' && pawn.position === 85).length === 4) {
-            alert('Green Won');
-        } else if (pawns.filter(pawn => pawn.color === 'yellow' && pawn.position === 91).length === 4) {
-            alert('Yellow Won');
-        }
-    };
-
     useEffect(() => {
         socket.emit('room:data', context.roomId);
         socket.on('room:data', data => {
@@ -52,7 +39,6 @@ const Gameboard = () => {
                 setMovingPlayer(nowMovingPlayer.color);
             }
             const currentPlayer = data.players.find(player => player._id === context.playerId);
-            checkWin();
             setIsReady(currentPlayer.ready);
             setRolledNumber(data.rolledNumber);
             setPlayers(data.players);

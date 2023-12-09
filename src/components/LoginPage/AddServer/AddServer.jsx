@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import './AddServer.css';
-import Switch from '@material-ui/core/Switch';
+import Switch from '@mui/material/Switch';
 import { SocketContext } from '../../../App';
 const AddServer = () => {
     const socket = useContext(SocketContext);
@@ -12,7 +12,7 @@ const AddServer = () => {
         socket.on('room:created', () => {
             socket.emit('room:rooms');
         });
-    }, []);
+    }, [socket]);
 
     const handleButtonClick = e => {
         e.preventDefault();

@@ -1,6 +1,6 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import { SocketContext } from '../../../App';
-import Switch from '@material-ui/core/Switch';
+import Switch from '@mui/material/Switch';
 import '../Navbar.css';
 import '../NameContainer/AnimatedOverlay/TimerAnimation';
 

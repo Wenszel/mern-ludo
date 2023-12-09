@@ -1,4 +1,4 @@
-export default (pawn, rolledNumber) => {
+const getPositionAfterMove = (pawn, rolledNumber) => {
     const { position, color } = pawn;
     switch (color) {
         case 'red':
@@ -55,5 +55,9 @@ export default (pawn, rolledNumber) => {
             } else {
                 return position;
             }
+        default:
+            return position;
     }
 };
+
+export default getPositionAfterMove;

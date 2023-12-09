@@ -1,4 +1,4 @@
-export default (pawn, rolledNumber) => {
+const canPawnMove = (pawn, rolledNumber) => {
     // If is in base
     if ((rolledNumber === 1 || rolledNumber === 6) && pawn.position === pawn.basePos) {
         return true;
@@ -24,3 +24,4 @@ export default (pawn, rolledNumber) => {
         return false;
     }
 };
+export default canPawnMove;

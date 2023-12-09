@@ -21,7 +21,7 @@ const Dice = ({ rolledNumberCallback, rolledNumber, nowMoving, color, movingPlay
         socket.on('game:roll', number => {
             rolledNumberCallback(number);
         });
-    }, []);
+    }, [socket, rolledNumberCallback]);
 
     return (
         <div className={`dice-container dice-${color}`}>

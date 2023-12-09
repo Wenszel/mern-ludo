@@ -53,7 +53,7 @@ function handle() {
     count++;
 }
 
-const animation = document.styleSheets[0].insertRule(
+document.styleSheets[0].insertRule(
     `
   @keyframes timerAnimation {
     ${keyframes.join('\n')}

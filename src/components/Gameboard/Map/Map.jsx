@@ -19,9 +19,8 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
         touchableArea.arc(x, y, 12, 0, 2 * Math.PI);
         const image = new Image();
         image.src = pawnImages[color];
-        image.onload = function () {
-            context.drawImage(image, x - 17, y - 14, 35, 30);
-        };
+        // image.onload = function () {
+        context.drawImage(image, x - 17, y - 14, 35, 30);
         return touchableArea;
     };
 
@@ -73,29 +72,30 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
             setHintPawn(null);
         }
     };
-    const rerenderCanvas = () => {
-        const canvas = canvasRef.current;
-        const ctx = canvas.getContext('2d');
-        const image = new Image();
-        image.src = mapImage;
-        image.onload = function () {
-            ctx.drawImage(image, 0, 0);
-            pawns.forEach((pawn, index) => {
-                pawns[index].touchableArea = paintPawn(
-                    ctx,
-                    positions[pawn.position].x,
-                    positions[pawn.position].y,
-                    pawn.color
-                );
-            });
-            if (hintPawn) {
-                paintPawn(ctx, positions[hintPawn.position].x, positions[hintPawn.position].y, hintPawn.color);
-            }
-        };
-    };
+
     useEffect(() => {
+        const rerenderCanvas = () => {
+            const canvas = canvasRef.current;
+            const ctx = canvas.getContext('2d');
+            const image = new Image();
+            image.src = mapImage;
+            image.onload = function () {
+                ctx.drawImage(image, 0, 0);
+                pawns.forEach((pawn, index) => {
+                    pawns[index].touchableArea = paintPawn(
+                        ctx,
+                        positions[pawn.position].x,
+                        positions[pawn.position].y,
+                        pawn.color
+                    );
+                });
+                if (hintPawn) {
+                    paintPawn(ctx, positions[hintPawn.position].x, positions[hintPawn.position].y, hintPawn.color);
+                }
+            };
+        };
         rerenderCanvas();
-    }, [hintPawn, pawns, rerenderCanvas]);
+    }, [hintPawn, pawns]);
 
     return (
         <canvas
