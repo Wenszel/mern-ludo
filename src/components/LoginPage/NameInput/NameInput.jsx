@@ -22,19 +22,17 @@ const NameInput = ({ isRoomPrivate, roomId }) => {
     }, [socket]);
 
     return (
-        <div className='name-overlay'>
-            <div className='name-input-container' style={{ height: isRoomPrivate ? '100px' : '50px' }}>
-                <input placeholder='Nickname' type='text' onChange={nickname.onChange} />
-                {isRoomPrivate ? (
-                    <input
-                        placeholder='Room password'
-                        type='text'
-                        onChange={password.onChange}
-                        style={{ backgroundColor: isPasswordWrong ? 'red' : null }}
-                    />
-                ) : null}
-                <button onClick={handleButtonClick}>JOIN</button>
-            </div>
+        <div className='name-input-container' style={{ height: isRoomPrivate ? '100px' : '50px' }}>
+            <input placeholder='Nickname' type='text' onChange={nickname.onChange} />
+            {isRoomPrivate ? (
+                <input
+                    placeholder='Room password'
+                    type='text'
+                    onChange={password.onChange}
+                    style={{ backgroundColor: isPasswordWrong ? 'red' : null }}
+                />
+            ) : null}
+            <button onClick={handleButtonClick}>JOIN</button>
         </div>
     );
 };

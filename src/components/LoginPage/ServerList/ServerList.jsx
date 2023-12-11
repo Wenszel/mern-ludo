@@ -6,6 +6,7 @@ import ReactLoading from 'react-loading';
 
 import './ServerList.css';
 import NameInput from '../NameInput/NameInput';
+import Overlay from '../../Overlay/Overlay';
 
 const ServerList = () => {
     const socket = useContext(SocketContext);
@@ -70,7 +71,11 @@ const ServerList = () => {
                     </div>
                 )}
             </div>
-            {joining ? <NameInput roomId={clickedRoom._id} isRoomPrivate={clickedRoom.private} /> : null}
+            {joining ? (
+                <Overlay handleOverlayClose={() => setJoining(false)}>
+                    <NameInput roomId={clickedRoom._id} isRoomPrivate={clickedRoom.private} />
+                </Overlay>
+            ) : null}
         </div>
     );
 };
