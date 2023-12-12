@@ -29,19 +29,6 @@ canvas {
     flex-direction: row;
 }
 
-.name-container {
-    position: relative;
-    min-width: 100px;
-    min-height: 50px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 2px solid white;
-    border-radius: 5px;
-    color: white;
-    font-weight: bold;
-    text-align: center;
-}
 .timer {
     background-color: darkblue;
     color: white;

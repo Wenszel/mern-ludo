@@ -4,20 +4,20 @@ const steps = 86;
 let count = 0;
 let s = 'polygon(50% 50%, 50% 0%, 50% 0%';
 
-for (let i = 50; i <= 100; i += 5) {
+for (let i = 50; i < 100; i += 5) {
     s += `, ${i}% 0%`;
     handle();
 }
-for (let i = 0; i <= 100; i += 5) {
+for (let i = 0; i < 100; i += 5) {
     s += `, 100% ${i}%`;
     handle();
 }
-for (let i = 100; i >= 0; i -= 5) {
+for (let i = 100; i > 0; i -= 5) {
     s += `, ${i}% 100%`;
     handle();
 }
 
-for (let i = 100; i >= 0; i -= 5) {
+for (let i = 100; i > 0; i -= 5) {
     s += `, 0% ${i}%`;
     handle();
 }
@@ -52,12 +52,13 @@ function handle() {
     keyframes.push(step);
     count++;
 }
-
-document.styleSheets[0].insertRule(
-    `
+if (document && document.styleSheets && document.styleSheets[0]) {
+    document.styleSheets[0].insertRule(
+        `
   @keyframes timerAnimation {
     ${keyframes.join('\n')}
   }
 `,
-    document.styleSheets[0].cssRules.length
-);
+        document.styleSheets[0].cssRules.length
+    );
+}
