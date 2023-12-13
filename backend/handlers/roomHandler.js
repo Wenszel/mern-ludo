@@ -1,4 +1,4 @@
-const { getRooms, getRoom, updateRoom, createNewRoom } = require('../controllers/roomController');
+const { getRooms, getRoom, updateRoom, createNewRoom } = require('../services/roomService');
 const { sendToOnePlayerRooms, sendToOnePlayerData } = require('../socket/emits');
 
 module.exports = socket => {
