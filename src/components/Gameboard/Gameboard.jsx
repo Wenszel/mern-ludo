@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import ReactLoading from 'react-loading';
 import { PlayerDataContext, SocketContext } from '../../App';
+import useSocketData from '../../hooks/useSocketData';
 import Map from './Map/Map';
 import Navbar from '../Navbar/Navbar';
 
@@ -11,7 +12,7 @@ const Gameboard = () => {
     const [pawns, setPawns] = useState([]);
     const [players, setPlayers] = useState([]);
 
-    const [rolledNumber, setRolledNumber] = useState(null);
+    const [rolledNumber, setRolledNumber] = useSocketData('game:roll');
     const [time, setTime] = useState();
     const [isReady, setIsReady] = useState();
     const [nowMoving, setNowMoving] = useState(false);
@@ -48,10 +49,6 @@ const Gameboard = () => {
         });
     }, [socket]);
 
-    const rolledNumberCallback = number => {
-        setRolledNumber(number);
-    };
-
     return (
         <>
             {(players[0] && !started) || (time && started) ? (
@@ -64,7 +61,6 @@ const Gameboard = () => {
                         movingPlayer={movingPlayer}
                         rolledNumber={rolledNumber}
                         nowMoving={nowMoving}
-                        rolledNumberCallback={rolledNumberCallback}
                     />
                     <Map pawns={pawns} nowMoving={nowMoving} rolledNumber={rolledNumber} />
                 </div>

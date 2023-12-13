@@ -1,0 +1,28 @@
+.playerContainer {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    width: 100%;
+}
+.red {
+    margin-bottom: 50px;
+    grid-column: 1;
+    grid-row: 1;
+}
+.yellow {
+    margin-bottom: 50px;
+    flex-flow: row-reverse;
+    grid-column: 2;
+    grid-row: 1;
+}
+.blue {
+    margin-top: 50px;
+    grid-column: 1;
+    grid-row: 4;
+}
+.green {
+    margin-top: 50px;
+    flex-flow: row-reverse;
+    grid-column: 2;
+    grid-row: 4;
+}

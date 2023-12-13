@@ -6,7 +6,7 @@ const rollDice = () => {
 };
 
 const makeRandomMove = async roomId => {
-    const { updateRoom, getRoom } = require('../controllers/roomController');
+    const { updateRoom, getRoom } = require('../services/roomService');
     const room = await getRoom(roomId);
     if (room.rolledNumber === null) {
         room.rolledNumber = rollDice();

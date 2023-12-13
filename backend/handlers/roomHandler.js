@@ -1,4 +1,4 @@
-const { getRooms, getRoom, updateRoom, createNewRoom } = require('../controllers/roomController');
+const { getRooms, getRoom, updateRoom, createNewRoom } = require('../services/roomService');
 const { sendToOnePlayerRooms, sendToOnePlayerData } = require('../socket/emits');
 
 module.exports = socket => {
@@ -16,13 +16,13 @@ module.exports = socket => {
     };
 
     const handleGetAllRooms = async () => {
-        let rooms = await getRooms();
+        const rooms = await getRooms();
         sendToOnePlayerRooms(socket.id, rooms);
     };
 
     const handleCreateRoom = async data => {
         createNewRoom(data);
-        socket.to(socket.id).emit('room:created');
+        sendToOnePlayerRooms(socket.id, await getRooms());
     };
 
     socket.on('room:data', handleGetData);

@@ -1,0 +1,17 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px;
+    flex-direction: column;
+    flex-flow: row-reverse;
+    background-color: grey;
+    border-radius: 10px;
+    border: 2px solid white;
+}
+.container > label {
+    margin-left: 10px;
+    margin-right: 10px;
+    width: 100px;
+    color: white;
+}

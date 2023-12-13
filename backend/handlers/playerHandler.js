@@ -1,4 +1,4 @@
-const { getRoom, updateRoom } = require('../controllers/roomController');
+const { getRoom, updateRoom } = require('../services/roomService');
 const { colors } = require('../utils/constants');
 
 module.exports = socket => {

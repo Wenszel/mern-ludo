@@ -1,4 +1,4 @@
-const { getRoom, updateRoom } = require('../controllers/roomController');
+const { getRoom, updateRoom } = require('../services/roomService');
 const { sendToPlayersRolledNumber } = require('../socket/emits');
 const { rollDice, isMoveValid } = require('./handlersFunctions');
 

@@ -1,8 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { SocketContext } from '../../../App';
 import Switch from '@mui/material/Switch';
-import '../Navbar.css';
-import '../NameContainer/AnimatedOverlay/TimerAnimation';
+import styles from './ReadyButton.module.css';
 
 const ReadyButton = ({ isReady }) => {
     const socket = useContext(SocketContext);
@@ -13,7 +12,7 @@ const ReadyButton = ({ isReady }) => {
         setChecked(!checked);
     };
     return (
-        <div className='ready-container'>
+        <div className={styles.container}>
             <Switch onChange={handleCheckboxChange} checked={checked || false} />
             <label>{checked ? 'I want to play' : 'Im waiting'}</label>
         </div>

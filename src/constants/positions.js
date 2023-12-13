@@ -1,4 +1,4 @@
-const positions = [
+const positionMapCoords = [
     // Red base
     { x: 67, y: 67 }, // 0
     { x: 67, y: 116 },
@@ -114,4 +114,4 @@ const positions = [
     { x: 230, y: 200 }, // 91
 ];
 
-export default positions;
+export default positionMapCoords;
