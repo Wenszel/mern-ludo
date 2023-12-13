@@ -1,24 +1,28 @@
 import React, { useContext } from 'react';
 import { SocketContext } from '../../../App';
 import images from '../../../constants/diceImages';
+import styles from './Dice.module.css';
 
-const Dice = ({ rolledNumber, nowMoving, color, movingPlayer }) => {
+const Dice = ({ rolledNumber, nowMoving, playerColor, movingPlayer }) => {
     const socket = useContext(SocketContext);
 
-    const handleRoll = () => {
+    const handleClick = () => {
         socket.emit('game:roll');
     };
 
+    const isCurrentPlayer = movingPlayer === playerColor;
+    const hasRolledNumber = rolledNumber !== null;
+
     return (
-        <div className={`dice-container dice-${color}`}>
-            {movingPlayer === color ? (
-                rolledNumber ? (
-                    <img src={images[rolledNumber - 1]} alt={rolledNumber} width='100' height='100' />
-                ) : nowMoving ? (
-                    <img src={images[6]} className='roll' alt='roll' width='100' height='100' onClick={handleRoll} />
-                ) : null
-            ) : null}
+        <div className={styles.container}>
+            {isCurrentPlayer &&
+                (hasRolledNumber ? (
+                    <img src={images[rolledNumber - 1]} alt={rolledNumber} />
+                ) : (
+                    nowMoving && <img src={images[6]} alt='roll' onClick={handleClick} />
+                ))}
         </div>
     );
 };
+
 export default Dice;
