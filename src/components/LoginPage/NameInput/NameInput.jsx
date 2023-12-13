@@ -1,8 +1,8 @@
 import React, { useState, useContext, useEffect, useCallback } from 'react';
 import { SocketContext } from '../../../App';
 import useInput from '../../../hooks/useInput';
-import './NameInput.css';
 import useKeyPress from '../../../hooks/useKeyPress';
+import styles from './NameInput.module.css';
 
 const NameInput = ({ isRoomPrivate, roomId }) => {
     const socket = useContext(SocketContext);
@@ -10,11 +10,12 @@ const NameInput = ({ isRoomPrivate, roomId }) => {
     const password = useInput('');
     const [isPasswordWrong, setIsPasswordWrong] = useState(false);
 
-    const handleButtonClick = useCallback(() => {
+    const handleButtonClick = () => {
         socket.emit('player:login', { name: nickname.value, password: password.value, roomId: roomId });
-    }, [socket, nickname.value, password.value, roomId]);
+    };
 
     useKeyPress('Enter', handleButtonClick);
+
     useEffect(() => {
         socket.on('error:wrongPassword', () => {
             setIsPasswordWrong(true);
@@ -22,13 +23,13 @@ const NameInput = ({ isRoomPrivate, roomId }) => {
     }, [socket]);
 
     return (
-        <div className='name-input-container' style={{ height: isRoomPrivate ? '100px' : '50px' }}>
-            <input placeholder='Nickname' type='text' onChange={nickname.onChange} />
+        <div className={styles.container} style={{ height: isRoomPrivate ? '100px' : '50px' }}>
+            <input placeholder='Nickname' type='text' {...nickname} />
             {isRoomPrivate ? (
                 <input
                     placeholder='Room password'
                     type='text'
-                    onChange={password.onChange}
+                    {...password}
                     style={{ backgroundColor: isPasswordWrong ? 'red' : null }}
                 />
             ) : null}

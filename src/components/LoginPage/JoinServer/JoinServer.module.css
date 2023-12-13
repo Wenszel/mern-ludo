@@ -1,0 +1,20 @@
+.serversTableContainer {
+    display: flex;
+    height: 500px;
+    overflow: scroll;
+    width: 100%;
+}
+.refresh {
+    display: flex;
+    margin-left: auto;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 100%;
+    border: 1px solid white;
+}
+.refresh > img {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}

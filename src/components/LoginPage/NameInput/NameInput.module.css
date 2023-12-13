@@ -1,0 +1,20 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 20px 60px 20px;
+    width: 300px;
+    background: radial-gradient(circle, rgba(0, 138, 255, 1) 5%, rgba(9, 9, 121, 1) 81%);
+    border: 1px solid white;
+    border-radius: 8px;
+    margin: 20px;
+    z-index: 2;
+}
+.container > button {
+    margin-top: 5px;
+    text-align: center;
+    width: 100px;
+    align-self: center;
+}
+.container > input {
+    margin-top: 10px;
+}

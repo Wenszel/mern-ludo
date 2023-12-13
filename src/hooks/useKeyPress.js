@@ -11,5 +11,5 @@ export default function useKeyPress(targetKey, callback) {
         return () => {
             window.removeEventListener('keydown', keyPressHandler);
         };
-    }, []);
+    }, [keyPressHandler]);
 }

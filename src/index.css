@@ -67,3 +67,70 @@ canvas {
     grid-column: 1 / span 2;
     grid-row: 2 / span 2;
 }
+
+input,
+button {
+    padding: 0;
+    border: none;
+    outline: none;
+    box-sizing: border-box;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 8px;
+    color: white;
+    border: 1px solid #ccc;
+    background-color: rgba(0, 0, 0, 0.2);
+    transition: border-color 0.3s ease-in-out, background-color 0.3s ease-in-out;
+}
+
+input:disabled {
+    background-color: black;
+    color: #999;
+    border: 1px solid #ddd;
+}
+
+input:focus {
+    color: black;
+    border-color: #4a90e2;
+    background-color: #fff;
+}
+
+button {
+    padding: 12px 20px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: none;
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+button:hover {
+    background-color: rgba(0, 0, 0, 1);
+}
+
+/* Firefox */
+* {
+    scrollbar-width: auto;
+    scrollbar-color: #ffffff rgba(0, 0, 0, 0.1);
+}
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+    background: rgba(0, 0, 0, 0);
+    width: 10px;
+}
+
+*::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0);
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: #ffffff;
+    border-radius: 10px;
+}

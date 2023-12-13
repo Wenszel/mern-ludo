@@ -1,56 +1,50 @@
-import React, { useState, useContext, useEffect } from 'react';
-import './AddServer.css';
+import React, { useState, useContext } from 'react';
 import Switch from '@mui/material/Switch';
 import { SocketContext } from '../../../App';
+import WindowLayout from '../WindowLayout/WindowLayout';
+import useInput from '../../../hooks/useInput';
+import styles from './AddServer.module.css';
+
 const AddServer = () => {
     const socket = useContext(SocketContext);
     const [isPrivate, setIsPrivate] = useState(false);
-    const [serverName, setServerName] = useState('');
-    const [password, setPassword] = useState('');
-
-    useEffect(() => {
-        socket.on('room:created', () => {
-            socket.emit('room:rooms');
-        });
-    }, [socket]);
+    const [isIncorrect, setIsIncorrect] = useState(false);
+    const serverName = useInput('');
+    const password = useInput('');
 
     const handleButtonClick = e => {
         e.preventDefault();
-        socket.emit('room:create', {
-            name: serverName,
-            private: isPrivate,
-            password: password,
-        });
+        if (!serverName.value) setIsIncorrect(true);
+        else
+            socket.emit('room:create', {
+                name: serverName.value,
+                password: password.value,
+                private: isPrivate,
+            });
     };
 
     return (
-        <div className='lp-container'>
-            <div className='title-container'>
-                <h1>Host A Server</h1>
-            </div>
-            <div className='content-container'>
-                <form>
+        <WindowLayout
+            title='Host A Server'
+            content={
+                <form className={styles.formContainer}>
                     <input
                         type='text'
-                        value={serverName}
-                        onChange={e => setServerName(e.target.value)}
                         placeholder='Server Name'
+                        {...serverName}
+                        style={{
+                            border: isIncorrect ? '1px solid red' : '1px solid white',
+                        }}
                     />
-                    <div className='private-container'>
-                        <p>Private</p>
+                    <div className={styles.privateContainer}>
+                        <label>Private</label>
                         <Switch checked={isPrivate} color='primary' onChange={() => setIsPrivate(!isPrivate)} />
                     </div>
-                    <input
-                        type='text'
-                        value={password}
-                        onChange={e => setPassword(e.target.value)}
-                        placeholder='password'
-                        disabled={!isPrivate}
-                    />
+                    <input type='text' placeholder='password' disabled={!isPrivate} {...password} />
                     <button onClick={handleButtonClick}>Host</button>
                 </form>
-            </div>
-        </div>
+            }
+        />
     );
 };
 
