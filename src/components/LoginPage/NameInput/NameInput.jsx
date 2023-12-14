@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useCallback } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { SocketContext } from '../../../App';
 import useInput from '../../../hooks/useInput';
 import useKeyPress from '../../../hooks/useKeyPress';

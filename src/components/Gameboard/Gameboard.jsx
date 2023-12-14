@@ -47,7 +47,7 @@ const Gameboard = () => {
             setTime(data.nextMoveTime);
             setStarted(data.started);
         });
-    }, [socket]);
+    }, [socket, context.playerId, context.roomId, setRolledNumber]);
 
     return (
         <>
