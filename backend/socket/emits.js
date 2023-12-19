@@ -16,4 +16,14 @@ const sendToOnePlayerRooms = (id, rooms) => {
     socketManager.getIO().to(id).emit('room:rooms', JSON.stringify(rooms));
 };
 
-module.exports = { sendToPlayersData, sendToPlayersRolledNumber, sendToOnePlayerData, sendToOnePlayerRooms };
+const sendWinner = (id, winner) => {
+    socketManager.getIO().to(id).emit('game:winner', winner);
+};
+
+module.exports = {
+    sendToPlayersData,
+    sendToPlayersRolledNumber,
+    sendToOnePlayerData,
+    sendToOnePlayerRooms,
+    sendWinner,
+};

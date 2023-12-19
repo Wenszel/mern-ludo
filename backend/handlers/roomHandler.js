@@ -1,5 +1,5 @@
 const { getRooms, getRoom, updateRoom, createNewRoom } = require('../services/roomService');
-const { sendToOnePlayerRooms, sendToOnePlayerData } = require('../socket/emits');
+const { sendToOnePlayerRooms, sendToOnePlayerData, sendWinner } = require('../socket/emits');
 
 module.exports = socket => {
     const req = socket.request;
@@ -13,6 +13,7 @@ module.exports = socket => {
             await updateRoom(room);
         }
         sendToOnePlayerData(socket.id, room);
+        if (room.winner) sendWinner(socket.id, room.winner);
     };
 
     const handleGetAllRooms = async () => {

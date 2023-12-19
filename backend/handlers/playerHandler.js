@@ -12,6 +12,14 @@ module.exports = socket => {
         addPlayerToExistingRoom(room, data);
     };
 
+    const handleExit = async () => {
+        req.session.reload(err => {
+            if (err) return socket.disconnect();
+            req.session.destroy();
+            socket.emit('redirect');
+        });
+    };
+
     const handleReady = async () => {
         const room = await getRoom(req.session.roomId);
         room.getPlayer(req.session.playerId).changeReadyStatus();
@@ -45,4 +53,5 @@ module.exports = socket => {
 
     socket.on('player:login', handleLogin);
     socket.on('player:ready', handleReady);
+    socket.on('player:exit', handleExit);
 };
