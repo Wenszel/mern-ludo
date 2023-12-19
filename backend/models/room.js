@@ -15,6 +15,7 @@ const RoomSchema = new mongoose.Schema({
     timeoutID: Number,
     rolledNumber: Number,
     players: [PlayerSchema],
+    winner: { type: String, default: null },
     pawns: {
         type: [PawnSchema],
         default: () => {
@@ -45,6 +46,7 @@ RoomSchema.methods.beatPawns = function (position, attackingPawnColor) {
 };
 
 RoomSchema.methods.changeMovingPlayer = function () {
+    if (this.winner) return;
     const playerIndex = this.players.findIndex(player => player.nowMoving === true);
     this.players[playerIndex].nowMoving = false;
     if (playerIndex + 1 === this.players.length) {
@@ -85,6 +87,31 @@ RoomSchema.methods.startGame = function () {
     this.players.forEach(player => (player.ready = true));
     this.players[0].nowMoving = true;
     this.timeoutID = setTimeout(makeRandomMove, 15000, this._id.toString());
+};
+
+RoomSchema.methods.endGame = function (winner) {
+    this.timeoutID = null;
+    this.rolledNumber = null;
+    this.nextMoveTime = null;
+    this.players.map(player => (player.nowMoving = false));
+    this.winner = winner;
+    this.save();
+};
+
+RoomSchema.methods.getWinner = function () {
+    if (this.pawns.filter(pawn => pawn.color === 'red' && pawn.position === 73).length === 4) {
+        return 'red';
+    }
+    if (this.pawns.filter(pawn => pawn.color === 'blue' && pawn.position === 79).length === 4) {
+        return 'blue';
+    }
+    if (this.pawns.filter(pawn => pawn.color === 'green' && pawn.position === 85).length === 4) {
+        return 'green';
+    }
+    if (this.pawns.filter(pawn => pawn.color === 'yellow' && pawn.position === 91).length === 4) {
+        return 'yellow';
+    }
+    return null;
 };
 
 RoomSchema.methods.isFull = function () {

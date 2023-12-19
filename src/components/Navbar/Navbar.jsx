@@ -7,7 +7,7 @@ import { useContext } from 'react';
 import { PlayerDataContext } from '../../App';
 import styles from './Navbar.module.css';
 
-const Navbar = ({ players, started, time, isReady, rolledNumber, nowMoving, movingPlayer }) => {
+const Navbar = ({ players, started, time, isReady, rolledNumber, nowMoving, movingPlayer, ended }) => {
     const context = useContext(PlayerDataContext);
 
     const diceProps = {
@@ -21,7 +21,7 @@ const Navbar = ({ players, started, time, isReady, rolledNumber, nowMoving, movi
             {players.map((player, index) => (
                 <div className={`${styles.playerContainer} ${styles[PLAYER_COLORS[index]]}`} key={index}>
                     <NameContainer player={player} time={time} />
-                    {started ? <Dice playerColor={PLAYER_COLORS[index]} {...diceProps} /> : null}
+                    {started && !ended ? <Dice playerColor={PLAYER_COLORS[index]} {...diceProps} /> : null}
                     {context.color === player.color && !started ? <ReadyButton isReady={isReady} /> : null}
                 </div>
             ))}

@@ -1,4 +1,4 @@
-const { sendToPlayersRolledNumber } = require('../socket/emits');
+const { sendToPlayersRolledNumber, sendWinner } = require('../socket/emits');
 
 const rollDice = () => {
     const rolledNumber = Math.ceil(Math.random() * 6);
@@ -8,6 +8,7 @@ const rollDice = () => {
 const makeRandomMove = async roomId => {
     const { updateRoom, getRoom } = require('../services/roomService');
     const room = await getRoom(roomId);
+    if (room.winner) return;
     if (room.rolledNumber === null) {
         room.rolledNumber = rollDice();
         sendToPlayersRolledNumber(room._id.toString(), room.rolledNumber);
@@ -19,6 +20,11 @@ const makeRandomMove = async roomId => {
         room.movePawn(randomPawn);
     }
     room.changeMovingPlayer();
+    const winner = room.getWinner();
+    if (winner) {
+        room.endGame(winner);
+        sendWinner(room._id.toString(), winner);
+    }
     await updateRoom(room);
 };
 

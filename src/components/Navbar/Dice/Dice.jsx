@@ -11,16 +11,17 @@ const Dice = ({ rolledNumber, nowMoving, playerColor, movingPlayer }) => {
     };
 
     const isCurrentPlayer = movingPlayer === playerColor;
-    const hasRolledNumber = rolledNumber !== null;
+    const hasRolledNumber = rolledNumber !== null && rolledNumber !== undefined;
 
     return (
         <div className={styles.container}>
-            {isCurrentPlayer &&
-                (hasRolledNumber ? (
+            {isCurrentPlayer ? (
+                hasRolledNumber ? (
                     <img src={images[rolledNumber - 1]} alt={rolledNumber} />
-                ) : (
-                    nowMoving && <img src={images[6]} alt='roll' onClick={handleClick} />
-                ))}
+                ) : nowMoving ? (
+                    <img src={images[6]} className='roll' alt='roll' onClick={handleClick} />
+                ) : null
+            ) : null}
         </div>
     );
 };
