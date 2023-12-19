@@ -58,6 +58,7 @@ const Gameboard = () => {
         socket.on('redirect', () => {
             window.location.reload();
         });
+
     }, [socket, context.playerId, context.roomId, setRolledNumber]);
 
     return (
