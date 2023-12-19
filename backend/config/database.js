@@ -6,6 +6,7 @@ module.exports = function (mongoose) {
         .connect(CONNECTION_URI, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
+            dbName: 'test',
         })
         .then(() => {
             console.log('MongoDB Connected…');

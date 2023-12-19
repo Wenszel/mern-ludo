@@ -1,26 +1,11 @@
 # <center>Online Multiplayer Ludo Game</center>
 
-\>\> [Play Online here](www.github.com/wenszel/mern-ludo) <<
-
-\>\> [Watch YouTube Video here](www.github.com/wenszel/mern-ludo) <<
-
-## Table of content
-
--   [About](#about)
-
--   [Architecture](#architecture)
-
--   [Key Features and Challenges](#key-features-and-challenges)
-
--   [Tech Stack](#tech-stack)
-
--   [Installation](#installation)
-
--   [Screenshots](#screenshots)
-
 ## About
 
 Ludo Online is a multiplayer web-based implementation of the classic board game Ludo, built using the MERN stack and integrated with SocketIO for real-time communication.
+
+\>\> Play Online here <<
+\>\> [Watch YouTube Video here](https://youtu.be/mGMnH9Nvsyw) <<
 
 ## Architecture
 
@@ -34,7 +19,7 @@ Frontend:
 Backend:
 ![MongoDB](https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=for-the-badge&logo=mongodb&logoColor=white) ![Express.js](https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB) ![Socket.io](https://img.shields.io/badge/Socket.io-black?style=for-the-badge&logo=socket.io&badgeColor=010101) ![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
 Tests:
-![Mocha](https://img.shields.io/badge/-mocha-%238D6748?style=for-the-badge&logo=mocha&logoColor=white) ![Jest](https://img.shields.io/badge/-jest-%23C21325?style=for-the-badge&logo=jest&logoColor=white)
+![cypress](https://img.shields.io/badge/-cypress-%23E5E5E5?style=for-the-badge&logo=cypress&logoColor=058a5e) ![Mocha](https://img.shields.io/badge/-mocha-%238D6748?style=for-the-badge&logo=mocha&logoColor=white) ![Jest](https://img.shields.io/badge/-jest-%23C21325?style=for-the-badge&logo=jest&logoColor=white)
 Tools:
 ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white) ![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white) ![CircleCI](https://img.shields.io/badge/circle%20ci-%23161616.svg?style=for-the-badge&logo=circleci&logoColor=white) ![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white) ![Jira](https://img.shields.io/badge/jira-%230A0FFF.svg?style=for-the-badge&logo=jira&logoColor=white)
 
@@ -42,9 +27,10 @@ Tools:
 
 -   Maintained session consistency with **Express Session** and **MongoDB**.
 -   Enabled real-time communication via **WebSocket** and **SocketIO**.
--   Ensured code reliability with testing using **Mocha**, **Chai**, and **Jest**.
+-   Maintained code reliability by implementing unit and integration tests using **Mocha**, **Chai**, and **Jest**.
 -   Hosted in a **Docker** container on **AWS EC2**.
 -   Established CI/CD using **CircleCI**.
+-   Implemented E2E tests utilizing **Cypress**, addressing challenges related to [testing collaboration](https://docs.cypress.io/guides/references/trade-offs#Multiple-browsers-open-at-the-same-time) and canvas functionality in the application.
 
 ## Installation
 
