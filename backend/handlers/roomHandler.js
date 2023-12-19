@@ -21,7 +21,7 @@ module.exports = socket => {
     };
 
     const handleCreateRoom = async data => {
-        createNewRoom(data);
+        await createNewRoom(data);
         sendToOnePlayerRooms(socket.id, await getRooms());
     };
 
