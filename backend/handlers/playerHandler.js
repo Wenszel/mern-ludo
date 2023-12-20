@@ -1,5 +1,5 @@
 const { getRoom, updateRoom } = require('../services/roomService');
-const { colors } = require('../utils/constants');
+const { COLORS } = require('../utils/constants');
 
 module.exports = socket => {
     const req = socket.request;
@@ -44,7 +44,7 @@ module.exports = socket => {
             if (err) return socket.disconnect();
             req.session.roomId = room._id.toString();
             req.session.playerId = room.players[room.players.length - 1]._id.toString();
-            req.session.color = colors[room.players.length - 1];
+            req.session.color = COLORS[room.players.length - 1];
             req.session.save();
             socket.join(room._id.toString());
             socket.emit('player:data', JSON.stringify(req.session));
