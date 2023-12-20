@@ -23,9 +23,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "heroku-postbuild": "cd backend && npm install && cd .. && npm install && npm run build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "test": "react-scripts test"
   },
   "eslintConfig": {
     "extends": [
@@ -48,11 +46,10 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:5000",
   "devDependencies": {
     "@testing-library/jest-dom": "^6.1.5",
     "@testing-library/react": "^14.1.2",
     "cypress": "^13.6.1",
-    "@babel/plugin-proposal-private-property-in-object": "^7.16.7"
+    "@babel/plugin-transform-private-property-in-object": "^7.16.7"
   }
 }

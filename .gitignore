@@ -9,7 +9,7 @@ backend/node_modules
 /coverage
 
 # production
-/build
+build
 
 # misc
 .DS_Store
@@ -21,3 +21,4 @@ backend/node_modules
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+.env

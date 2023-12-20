@@ -59,7 +59,7 @@ mongodb+srv://madmin:<password>@clustername.mongodb.net/<dbname>?retryWrites=tru
 
 ```
 
-3.  Add this URL to the /backend/credentials.js file
+3.  Add this URL to the /backend/.env file (refer to .env.example)
 
 4.  Perform these commands in the main directory:
 
