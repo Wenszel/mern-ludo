@@ -1,12 +1,13 @@
 version: 2.1
+orbs:
+  aws-cli: circleci/aws-cli@4.1.2
+  aws-ecr: circleci/aws-ecr@9.0.1
 
 jobs:
     build_and_test:
         docker:
             - image: circleci/node:14
-
         working_directory: ~/app
-
         steps:
             - checkout
             - run:
@@ -26,32 +27,23 @@ jobs:
                   name: Test Frontend
                   command: |
                       npm test
-    build_docker_image:
-        docker:
-            - image: circleci/node:14
-
-        working_directory: ~/app
-
-        steps:
-            - checkout
-            - run:
-                  name: Build Docker Image
-                  command: |
-                      docker build -t $DOCKER_HUB_USERNAME/mern-ludo:latest .
-            - run:
-                  name: Push Docker Image
-                  command: |
-                      echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
-                      docker push $DOCKER_HUB_USERNAME/mern-ludo:latest
-        
 
 
 workflows:
-    version: 2
-    build:
-        jobs:
-            - build_and_test
-            - build_docker_image:
-                filters:
-                    branches:
-                        only: main
+  test: 
+    jobs:
+      - build_and_test
+  build_and_deploy:
+    jobs:
+      - aws-ecr/build_and_push_image:
+            auth:
+                - aws-cli/setup:
+                    role_arn: arn:aws:iam::797929460436:role/openid
+                    role_session_name: example-session
+            repo: mern-ludo
+            public_registry: true
+            tag: latest
+            filters:
+                branches:
+                    only:
+                        - main
