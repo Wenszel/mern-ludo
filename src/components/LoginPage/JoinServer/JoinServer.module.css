@@ -1,7 +1,7 @@
 .serversTableContainer {
     display: flex;
-    height: 500px;
     overflow: scroll;
+    height: 500px;
     width: 100%;
 }
 .refresh {

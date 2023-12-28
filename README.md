@@ -3,8 +3,8 @@
 Ludo Online is a multiplayer web-based implementation of the classic board game Ludo, built using the MERN stack and integrated with SocketIO for real-time communication.
 
 <p align="center">
->> Play Online here <<
-</p>
+>> <a href="http://ec2-51-20-142-4.eu-north-1.compute.amazonaws.com:8080">Play online here</a> <<
+  </p>
   
 <p align="center">
 >> <a href="https://youtu.be/mGMnH9Nvsyw">Watch YouTube Video here</a> <<
@@ -29,7 +29,7 @@ Tests:
 
 ![cypress](https://img.shields.io/badge/-cypress-%23E5E5E5?style=for-the-badge&logo=cypress&logoColor=058a5e) ![Mocha](https://img.shields.io/badge/-mocha-%238D6748?style=for-the-badge&logo=mocha&logoColor=white) ![Jest](https://img.shields.io/badge/-jest-%23C21325?style=for-the-badge&logo=jest&logoColor=white)
 
-Tools:
+Other:
 
 ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white) ![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white) ![CircleCI](https://img.shields.io/badge/circle%20ci-%23161616.svg?style=for-the-badge&logo=circleci&logoColor=white) ![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white) ![Jira](https://img.shields.io/badge/jira-%230A0FFF.svg?style=for-the-badge&logo=jira&logoColor=white)
 
@@ -41,11 +41,10 @@ Tools:
 
 -   Maintained code reliability by implementing unit and integration tests using **Mocha**, **Chai**, and **Jest**.
 
--   Hosted in a **Docker** container on **AWS EC2**.
-
--   Established CI/CD using **CircleCI**.
-
 -   Implemented E2E tests utilizing **Cypress**, addressing challenges related to [testing collaboration](https://docs.cypress.io/guides/references/trade-offs#Multiple-browsers-open-at-the-same-time) and canvas functionality in the application.
+
+-   Established a CI/CD pipeline using **CircleCI**, with pushing **Docker** container to **AWS ECR** and deploying to **AWS ECS**
+
 
 ## Installation
 
