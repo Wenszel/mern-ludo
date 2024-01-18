@@ -1,2 +1,3 @@
-const colors = ["red", "blue", "green", "yellow"];
-module.exports = { colors };
+const COLORS = ['red', 'blue', 'green', 'yellow'];
+const MOVE_TIME = 15000;
+module.exports = { COLORS, MOVE_TIME };

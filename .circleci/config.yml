@@ -1,12 +1,13 @@
 version: 2.1
-
+orbs:
+    aws-cli: circleci/aws-cli@4.1.2
+    aws-ecr: circleci/aws-ecr@9.0.1
+    aws-ecs: circleci/aws-ecs@4.0.0
 jobs:
     build_and_test:
         docker:
             - image: circleci/node:14
-
         working_directory: ~/app
-
         steps:
             - checkout
             - run:
@@ -26,9 +27,41 @@ jobs:
                   name: Test Frontend
                   command: |
                       npm test
+    run_task:
+        docker:
+            - image: cimg/python:3.10
+        steps:
+            - aws-cli/setup:
+                  role_arn: arn:aws:iam::797929460436:role/ecs
+                  role_session_name: example-session
+            - aws-ecs/run_task:
+                  awsvpc: false
+                  cluster: arn:aws:ecs:eu-north-1:797929460436:cluster/mern-ludo-cluster
+                  launch_type: EC2
+                  task_definition: mern-ludo-docker-task
 
 workflows:
-    version: 2
-    build:
+    build_and_test_and_deploy:
         jobs:
             - build_and_test
+            - aws-ecr/build_and_push_image:
+                  auth:
+                      - aws-cli/setup:
+                            role_arn: arn:aws:iam::797929460436:role/openid
+                            role_session_name: example-session
+                  repo: mern-ludo
+                  public_registry: true
+                  tag: latest
+                  requires:
+                      - build_and_test
+                  filters:
+                      branches:
+                          only:
+                              - main
+            - run_task:
+                  requires:
+                      - aws-ecr/build_and_push_image
+                  filters:
+                      branches:
+                          only:
+                              - main

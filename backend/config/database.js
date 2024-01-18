@@ -1,9 +1,7 @@
-const CONNECTION_URI = require('../credentials.js');
-
 module.exports = function (mongoose) {
     mongoose.set('useFindAndModify', false);
     mongoose
-        .connect(CONNECTION_URI, {
+        .connect(process.env.CONNECTION_URI, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
             dbName: 'test',

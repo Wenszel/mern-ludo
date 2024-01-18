@@ -1,8 +1,8 @@
 const session = require('express-session');
-const CONNECTION_URI = require('../credentials.js');
 const MongoDBStore = require('connect-mongodb-session')(session);
+
 const store = new MongoDBStore({
-    uri: CONNECTION_URI,
+    uri: process.env.CONNECTION_URI,
     collection: 'sessions',
 });
 const sessionMiddleware = session({
