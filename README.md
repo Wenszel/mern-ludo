@@ -3,7 +3,7 @@
 Ludo Online is a multiplayer web-based implementation of the classic board game Ludo, built using the MERN stack and integrated with SocketIO for real-time communication.
 
 <p align="center">
->> <a href="http://ec2-51-20-142-4.eu-north-1.compute.amazonaws.com:8080">Play online here</a> <<
+>> <a href="http://16.171.137.235:8080">Play online here</a> <<
   </p>
   
 <p align="center">
