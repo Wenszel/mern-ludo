@@ -3,22 +3,22 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@emotion/react": "^11.11.1",
-    "@emotion/styled": "^11.11.0",
-    "@mui/material": "^5.14.20",
-    "@testing-library/user-event": "^14.5.1",
-    "axios": "^1.6.2",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/material": "^5.18.0",
+    "@testing-library/user-event": "^14.6.4",
+    "axios": "^1.19.0",
     "prop-types": "^15.8.1",
-    "react": "^18.2.0",
-    "react-beforeunload": "^2.6.0",
-    "react-dom": "^18.2.0",
+    "react": "^18.3.1",
+    "react-beforeunload": "^2.7.0",
+    "react-dom": "^18.3.1",
     "react-loading": "^2.0.3",
-    "react-router-dom": "^6.20.1",
+    "react-router-dom": "^6.30.4",
     "react-scripts": "^5.0.1",
     "react-transition-group": "^4.4.5",
-    "socket.io": "^4.7.2",
-    "socket.io-client": "^4.7.2",
-    "web-vitals": "^3.5.0"
+    "socket.io": "^4.8.3",
+    "socket.io-client": "^4.8.3",
+    "web-vitals": "^3.5.2"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -32,7 +32,7 @@
     ]
   },
   "engines": {
-    "node": "10.16.0"
+    "node": ">=18"
   },
   "browserslist": {
     "production": [
@@ -47,9 +47,9 @@
     ]
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^6.1.5",
-    "@testing-library/react": "^14.1.2",
-    "cypress": "^13.6.1",
-    "@babel/plugin-transform-private-property-in-object": "^7.16.7"
+    "@testing-library/jest-dom": "6.9.1",
+    "@testing-library/react": "^14.3.1",
+    "cypress": "^13.17.0",
+    "@babel/plugin-transform-private-property-in-object": "^7.29.7"
   }
 }
