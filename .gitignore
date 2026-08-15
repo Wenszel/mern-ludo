@@ -1,4 +1,5 @@
 backend/node_modules
+backend/dist
 
 # dependencies
 /node_modules

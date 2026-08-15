@@ -15,16 +15,21 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@types/node": "^24.13.3",
     "chai": "^4.5.0",
     "mocha": "^10.8.2",
-    "socket.io-client": "^4.8.3"
+    "socket.io-client": "^4.8.3",
+    "tsx": "^4.23.12",
+    "typescript": "^5.9.3"
   },
   "scripts": {
-    "mcp:rooms": "node mcp/rooms-server.mjs",
+    "mcp:rooms": "node --import tsx mcp/rooms-server.mts",
+    "mcp:build": "tsc --project tsconfig.mcp.json",
+    "mcp:typecheck": "tsc --project tsconfig.mcp.json --noEmit",
     "test": "mocha tests/**/*.js",
-    "test:mcp": "mocha tests/mcp/**/*.test.js"
+    "test:mcp": "node --import tsx node_modules/mocha/bin/mocha tests/mcp/**/*.test.js"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=20.6"
   }
 }

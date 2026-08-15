@@ -87,14 +87,14 @@ Example MCP client configuration:
 {
     "mcpServers": {
         "mern-ludo-rooms": {
-            "command": "node",
-            "args": ["/absolute/path/to/mern-ludo/backend/mcp/rooms-server.mjs"]
+            "command": "npm",
+            "args": ["--prefix", "/absolute/path/to/mern-ludo/backend", "run", "mcp:rooms", "--silent"]
         }
     }
 }
 ```
 
-Replace the example path with the absolute path to this checkout. The server loads `CONNECTION_URI` from `backend/.env` regardless of the MCP client's working directory. Set `MONGODB_DB_NAME` there to override the default `test` database.
+Replace the example path with the absolute path to this checkout. The MCP server is written in TypeScript and runs through `tsx`; use `npm run mcp:typecheck` to type-check it or `npm run mcp:build` to compile it into `backend/dist`. The server loads `CONNECTION_URI` from `backend/.env` regardless of the MCP client's working directory. Set `MONGODB_DB_NAME` there to override the default `test` database.
 
 ## Screenshots
 

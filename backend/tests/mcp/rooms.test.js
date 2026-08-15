@@ -5,8 +5,8 @@ describe('rooms MCP', function () {
     let registerRoomTools;
 
     before(async function () {
-        repository = await import('../../mcp/room-repository.mjs');
-        ({ registerRoomTools } = await import('../../mcp/room-tools.mjs'));
+        repository = await import('../../mcp/room-repository.mts');
+        ({ registerRoomTools } = await import('../../mcp/room-tools.mts'));
     });
 
     const room = overrides => ({

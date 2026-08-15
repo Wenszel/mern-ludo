@@ -1,3 +1,4 @@
+import { McpServer, type CallToolResult, type JSONObject, type ToolAnnotations } from '@modelcontextprotocol/server';
 import { z } from 'zod';
 
 import {
@@ -15,7 +16,7 @@ const readOnlyAnnotations = {
     destructiveHint: false,
     idempotentHint: true,
     openWorldHint: false,
-};
+} satisfies ToolAnnotations;
 
 const listRoomsInput = z
     .object({
@@ -70,22 +71,30 @@ const createRoomInput = z
         }
     });
 
-function success(result) {
+function success<T extends object>(result: T): CallToolResult {
     return {
         content: [{ type: 'text', text: JSON.stringify(result, null, 2) }],
-        structuredContent: result,
+        structuredContent: result as JSONObject,
     };
 }
 
-function failure(error, fallback) {
+function failure(error: unknown, fallback: string): CallToolResult {
     return {
         isError: true,
         content: [{ type: 'text', text: error instanceof Error ? error.message : fallback }],
     };
 }
 
-export function registerRoomTools(server, operations = {}) {
-    const roomOperations = {
+export interface RoomOperations {
+    checkAvailableRooms: typeof checkAvailableRooms;
+    createRoom: typeof createRoom;
+    listRooms: typeof listRooms;
+    getRoomDetails: typeof getRoomDetails;
+    getLobbySummary: typeof getLobbySummary;
+}
+
+export function registerRoomTools(server: McpServer, operations: Partial<RoomOperations> = {}): void {
+    const roomOperations: RoomOperations = {
         checkAvailableRooms,
         createRoom,
         listRooms,
