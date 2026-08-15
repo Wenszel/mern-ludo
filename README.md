@@ -68,9 +68,16 @@ node server.js
 
 ## MCP Server
 
-The backend includes a local stdio MCP server with one tool:
+The backend includes a local stdio MCP server with six tools:
 
--   `check_available_rooms` lists rooms that are not full and have not started.
+-   `check_available_rooms` provides the legacy, simple list of rooms that are not full and have not started.
+-   `list_rooms` lists rooms with optional filters for status, privacy, and player count, plus configurable sorting and result limits.
+-   `get_room_details` returns a sanitized snapshot of one room's players and game state, with pawn data included only when requested.
+-   `get_lobby_summary` reports aggregate room counts, player occupancy, and data-quality information for the lobby.
+-   `check_new_rooms` lists currently available rooms created after a supplied ISO timestamp.
+-   `create_room` creates a public room or a password-protected private room using validated inputs.
+
+All query tools are read-only. `create_room` is the only mutating tool and is marked non-idempotent. Responses are sanitized and never return room passwords or player session IDs.
 
 The MCP server communicates over stdio, so it is normally launched by an MCP client rather than used interactively in a terminal.
 
@@ -87,7 +94,7 @@ Example MCP client configuration:
 }
 ```
 
-Replace the example path with the absolute path to this checkout. The server loads `CONNECTION_URI` from `backend/.env` regardless of the MCP client's working directory.
+Replace the example path with the absolute path to this checkout. The server loads `CONNECTION_URI` from `backend/.env` regardless of the MCP client's working directory. Set `MONGODB_DB_NAME` there to override the default `test` database.
 
 ## Screenshots
 
