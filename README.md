@@ -66,6 +66,29 @@ npm i
 node server.js
 ```
 
+## MCP Server
+
+The backend includes a local stdio MCP server with one tool:
+
+-   `check_available_rooms` lists rooms that are not full and have not started.
+
+The MCP server communicates over stdio, so it is normally launched by an MCP client rather than used interactively in a terminal.
+
+Example MCP client configuration:
+
+```json
+{
+    "mcpServers": {
+        "mern-ludo-rooms": {
+            "command": "node",
+            "args": ["/absolute/path/to/mern-ludo/backend/mcp/rooms-server.mjs"]
+        }
+    }
+}
+```
+
+Replace the example path with the absolute path to this checkout. The server loads `CONNECTION_URI` from `backend/.env` regardless of the MCP client's working directory.
+
 ## Screenshots
 
 ![Interface](https://github.com/Wenszel/mern-ludo/blob/main/src/images/readme1.png?raw=true)
